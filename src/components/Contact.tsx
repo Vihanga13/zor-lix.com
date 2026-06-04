@@ -37,6 +37,7 @@ export default function Contact() {
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   
   // Real-time terminal diagnostic simulator
   const [terminalFeed, setTerminalFeed] = useState<string[]>([
@@ -103,9 +104,10 @@ export default function Contact() {
     ]);
   };
 
-  const handlePostSubmit = (e: React.FormEvent) => {
+  const handlePostSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !email || !message) {
+      setSubmissionError("All fields are required");
       setTerminalFeed((prev) => [
         ...prev.slice(-3),
         "SYS_ERR: Packet rejection due to incomplete payload attributes."
@@ -114,21 +116,48 @@ export default function Contact() {
     }
 
     setIsSubmitting(true);
+    setSubmissionError(null);
     setTerminalFeed((prev) => [
       ...prev.slice(-2),
       "INITIALIZING: Synthesizing secure TLS handshake credentials...",
       "CIPHER: Rotating Kyber-768 session keys..."
     ]);
 
-    setTimeout(() => {
+    try {
+      const response = await fetch("https://formspree.io/f/xkoanyvg", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: fullName,
+          email: email,
+          channel: activeChannel,
+          urgency: urgency,
+          message: message,
+        }),
+      });
+
+      if (response.ok) {
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+        setTerminalFeed([
+          `DISPATCH_SUCCESS: Core envelope verified and pushed to routing nodes.`,
+          `NODE_RESPONSE: SSL verification code: [200_OK_ZORLIX]`,
+          `TELEMETRY_STATUS: Connection dispatcher offline.`
+        ]);
+      } else {
+        throw new Error("Failed to submit form");
+      }
+    } catch (error) {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-      setTerminalFeed([
-        `DISPATCH_SUCCESS: Core envelope verified and pushed to routing nodes.`,
-        `NODE_RESPONSE: SSL verification code: [200_OK_ZORLIX]`,
-        `TELEMETRY_STATUS: Connection dispatcher offline.`
+      const errorMsg = error instanceof Error ? error.message : "Unknown error occurred";
+      setSubmissionError(errorMsg);
+      setTerminalFeed((prev) => [
+        ...prev.slice(-3),
+        `SYS_ERR: Transmission failed - ${errorMsg}`
       ]);
-    }, 1800);
+    }
   };
 
   const resetForm = () => {
@@ -137,6 +166,7 @@ export default function Contact() {
     setUrgency("Routine");
     setMessage("");
     setIsSubmitted(false);
+    setSubmissionError(null);
     setTerminalFeed([
       "SECURE_GATEWAY: Ingress control panel re-initialized.",
       "BOND_STATUS: Clean AES-256 session established on fresh virtual node."
@@ -276,6 +306,17 @@ export default function Contact() {
                 ENVELOPE // ACTIVE_INGRESS
               </div>
             </div>
+
+            {/* Error Alert */}
+            {submissionError && !isSubmitted && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-mono text-[9px] mb-6"
+              >
+                <span className="font-bold">ERROR:</span> {submissionError}
+              </motion.div>
+            )}
 
             {/* State Form block with animations */}
             <AnimatePresence mode="wait">

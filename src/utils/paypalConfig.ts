@@ -4,7 +4,6 @@ export const PAYPAL_CONFIG = {
   SECRET_KEY: "EGIL9A41metxd7q1XlwL6BXy5oQFkpV5YUT4NsCYPz32I-5cNm-Z7_N99EyNNeGGFmHI2C1ZFtGpq2wt",
   MODE: "sandbox", // Use "sandbox" for testing, "production" for live
   SCRIPT_URL: "https://www.paypal.com/sdk/js",
-  API_BASE_URL: process.env.NODE_ENV === "production" ? "" : "http://localhost:5000",
 };
 
 // Plan pricing mapping for PayPal
@@ -50,8 +49,7 @@ export const createPayPalOrder = async (
   }
 
   try {
-    const apiUrl = `${PAYPAL_CONFIG.API_BASE_URL}/api/paypal/create-order`;
-    const response = await fetch(apiUrl, {
+    const response = await fetch("/api/paypal/create-order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,7 +62,8 @@ export const createPayPalOrder = async (
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create PayPal order");
+      const errorData = await response.text();
+      throw new Error(`Failed to create PayPal order: ${errorData}`);
     }
 
     const data = await response.json();
@@ -80,8 +79,7 @@ export const capturePayPalOrder = async (
   orderID: string
 ): Promise<any> => {
   try {
-    const apiUrl = `${PAYPAL_CONFIG.API_BASE_URL}/api/paypal/capture-order`;
-    const response = await fetch(apiUrl, {
+    const response = await fetch("/api/paypal/capture-order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,7 +88,8 @@ export const capturePayPalOrder = async (
     });
 
     if (!response.ok) {
-      throw new Error("Failed to capture PayPal order");
+      const errorData = await response.text();
+      throw new Error(`Failed to capture PayPal order: ${errorData}`);
     }
 
     return await response.json();
