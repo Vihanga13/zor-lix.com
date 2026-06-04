@@ -1,22 +1,8 @@
 import { useState, useEffect } from "react";
-import { 
-  Menu, 
-  X, 
-  ArrowUpRight, 
-  Cpu, 
-  Network, 
-  Settings, 
-  LineChart, 
-  Activity, 
-  Compass, 
-  SlidersHorizontal,
-  Workflow,
-  Sparkles,
-  RefreshCw,
-  ShieldCheck,
-  Radio,
-  Zap,
-  Maximize2
+import {
+  Menu, X, ArrowUpRight, Network, Settings, LineChart,
+  Activity, Compass, SlidersHorizontal, Workflow, Sparkles,
+  RefreshCw, Radio, Zap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -26,360 +12,418 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollPercent, setScrollPercent] = useState(0);
-  const [sysOverhead, setSysOverhead] = useState("0.038ms");
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const [isSystemCalibrating, setIsSystemCalibrating] = useState(false);
-  const [activeSignalStream, setActiveSignalStream] = useState<number[]>(
-    Array.from({ length: 8 }, () => Math.floor(Math.random() * 12) + 3)
+  const [isOpen, setIsOpen]                   = useState(false);
+  const [scrolled, setScrolled]               = useState(false);
+  const [scrollPercent, setScrollPercent]     = useState(0);
+  const [sysOverhead, setSysOverhead]         = useState("0.038ms");
+  const [hoveredLink, setHoveredLink]         = useState<string | null>(null);
+  const [isCalibrating, setIsCalibrating]     = useState(false);
+  const [glitchActive, setGlitchActive]       = useState(false);
+  const [bars, setBars]                       = useState<number[]>(
+    Array.from({ length: 7 }, () => Math.floor(Math.random() * 12) + 3)
   );
 
   useEffect(() => {
-    const handleScroll = () => {
+    const onScroll = () => {
       setScrolled(window.scrollY > 30);
-      
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalScroll > 0) {
-        setScrollPercent(Math.min((window.scrollY / totalScroll) * 100, 100));
-      }
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total > 0) setScrollPercent(Math.min((window.scrollY / total) * 100, 100));
     };
-
-    // Update system latency overhead fluctuating organically
-    const interval = setInterval(() => {
-      const overhead = (0.024 + Math.random() * 0.011).toFixed(3);
-      setSysOverhead(`${overhead}ms`);
-      
-      // Update micro modular signal bars
-      setActiveSignalStream(
-        Array.from({ length: 8 }, () => Math.floor(Math.random() * 14) + 3)
-      );
-    }, 2500);
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearInterval(interval);
-    };
+    const ticker = setInterval(() => {
+      setSysOverhead(`${(0.024 + Math.random() * 0.011).toFixed(3)}ms`);
+      setBars(Array.from({ length: 7 }, () => Math.floor(Math.random() * 14) + 3));
+    }, 2200);
+    window.addEventListener("scroll", onScroll);
+    return () => { window.removeEventListener("scroll", onScroll); clearInterval(ticker); };
   }, []);
 
-  const triggerCalibration = () => {
-    if (isSystemCalibrating) return;
-    setIsSystemCalibrating(true);
-    setTimeout(() => {
-      setIsSystemCalibrating(false);
-    }, 1500);
+  const calibrate = () => {
+    if (isCalibrating) return;
+    setIsCalibrating(true);
+    setGlitchActive(true);
+    setTimeout(() => setGlitchActive(false), 350);
+    setTimeout(() => setIsCalibrating(false), 1400);
   };
 
   const navLinks = [
-    { name: "Home", id: "home", code: "01/HM", icon: Compass },
-    { name: "Features", id: "features", code: "02/FT", icon: SlidersHorizontal },
-    { name: "Solution", id: "pipeline", code: "03/SL", icon: Workflow },
-    { name: "Dashboard", id: "dashboard", code: "04/DB", icon: LineChart },
-    { name: "Pricing", id: "pricing", code: "05/PR", icon: Settings },
-    { name: "FAQ", id: "faq", code: "06/FQ", icon: Activity },
-    { name: "Contact", id: "contact", code: "07/CN", icon: Sparkles },
+    { name: "Home",      id: "home",      code: "01", Icon: Compass },
+    { name: "Features",  id: "features",  code: "02", Icon: SlidersHorizontal },
+    { name: "Solution",  id: "pipeline",  code: "03", Icon: Workflow },
+    { name: "Dashboard", id: "dashboard", code: "04", Icon: LineChart },
+    { name: "Pricing",   id: "pricing",   code: "05", Icon: Settings },
+    { name: "FAQ",       id: "faq",       code: "06", Icon: Activity },
+    { name: "Contact",   id: "contact",   code: "07", Icon: Sparkles },
   ];
 
+  const telemetry = [
+    "AI_INFERENCE · READY", "PIPELINE_SYNC · 14,892 ROWS/S",
+    "ACCURACY · 98.4%",     "LATENCY · 0.038MS",
+    "NODES · 24 ACTIVE",    "ANOMALY · 0 FLAGS",
+    "VAULT · SECURE",
+  ];
+
+  /* ─────────────────────────────────────────────── */
   return (
-    <header
-      id="navbar-header"
-      className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center px-4 sm:px-6 pointer-events-none"
-    >
-      {/* 
-        PRECISE DYNAMICAL HUD OUTLINE
-        Top margin line representing modern dashboard frame
-      */}
-      <div className="w-full max-w-[1520px] h-[1px] bg-gradient-to-r from-transparent via-[#FFAF87]/20 to-transparent mt-3 opacity-80" />
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
 
-      {/* 
-        THE COGNITIVE HUB COCKPIT (Interactive HUD Capsule)
-        Beautiful border textures, micro neon indicators, and asymmetrically balanced functional sectors.
-      */}
-      <div
-        id="navbar-capsule"
-        className={`pointer-events-auto w-full transition-all duration-500 ease-out flex items-center justify-between py-2 px-3 sm:px-6 rounded-[28px] border mt-2.5 relative ${
-          scrolled
-            ? "max-w-[1440px] bg-[#020202]/95 backdrop-blur-2xl border-[#FFAF87]/25 shadow-[0_24px_64px_-12px_rgba(255,175,135,0.15)]"
-            : "max-w-[1490px] bg-black/70 backdrop-blur-md border-white/5 shadow-[0_12px_45px_rgba(0,0,0,0.9)]"
-        }`}
-      >
-        {/* Dynamic Holographic Progress Trace on bottom path */}
-        <div className="absolute bottom-0 left-8 right-8 h-[1px] bg-white/5 overflow-hidden rounded-full">
-          <motion.div 
-            className="h-full bg-gradient-to-r from-[#FFAF87] via-[#FFF] to-[#C5E898] shadow-[0_0_8px_#FFAF87]" 
-            style={{ width: `${scrollPercent}%` }}
-          />
+        /* ticker */
+        @keyframes nb-ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        .nb-ticker { animation: nb-ticker 30s linear infinite; display:flex; white-space:nowrap; }
+
+        /* orbit */
+        @keyframes nb-cw  { to{transform:rotate(360deg)}  }
+        @keyframes nb-ccw { to{transform:rotate(-360deg)} }
+        .nb-cw  { animation: nb-cw  9s linear infinite; }
+        .nb-ccw { animation: nb-ccw 5s linear infinite; }
+
+        /* ping */
+        @keyframes nb-ping { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.8);opacity:0} }
+        .nb-ping { position:relative; display:inline-flex; align-items:center; justify-content:center; }
+        .nb-ping::after {
+          content:''; position:absolute; inset:0; border-radius:50%;
+          background:currentColor; animation:nb-ping 1.6s ease-out infinite;
+        }
+
+        /* glitch */
+        @keyframes nb-glitch {
+          0%  {clip-path:inset(10% 0 75% 0);transform:translateX(-3px)}
+          30% {clip-path:inset(60% 0 10% 0);transform:translateX(3px)}
+          60% {clip-path:inset(30% 0 50% 0);transform:translateX(-2px)}
+          100%{clip-path:inset(0 0 0 0);transform:translateX(0)}
+        }
+        .nb-glitch { animation: nb-glitch .3s steps(2) forwards; }
+
+        /* scan */
+        @keyframes nb-scan { from{transform:translateY(-100%)} to{transform:translateY(500%)} }
+        .nb-scan-wrap { pointer-events:none; position:absolute; inset:0; overflow:hidden; border-radius:inherit; }
+        .nb-scan-wrap::after {
+          content:''; position:absolute; left:0; right:0; height:16%;
+          background:linear-gradient(to bottom,transparent,rgba(197,232,152,.025),transparent);
+          animation:nb-scan 4.5s linear infinite;
+        }
+
+        /* shimmer on hover */
+        @keyframes nb-shimmer { from{transform:skewX(-12deg) translateX(-200%)} to{transform:skewX(-12deg) translateX(300%)} }
+        .nb-hs-btn .nb-shim  { pointer-events:none; position:absolute; inset:0; width:45%;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent); }
+        .nb-hs-btn:hover .nb-shim { animation: nb-shimmer .8s ease forwards; }
+
+        /* grid texture */
+        .nb-grid-bg {
+          background-image: linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+                            linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+          background-size: 34px 34px;
+        }
+
+        /* ── THE HANDSHAKE BUTTON ── */
+        .nb-hs-btn {
+          position: relative;
+          overflow: hidden;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 22px;
+          border-radius: 14px;
+          background: linear-gradient(135deg, rgba(255,175,135,.22), rgba(255,130,60,.1));
+          border: 1.5px solid rgba(255,175,135,.55);
+          color: #FFAF87;
+          cursor: pointer;
+          font-family: 'Syne', sans-serif;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: .15em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          transition: all .22s ease;
+          flex-shrink: 0;
+        }
+        .nb-hs-btn:hover {
+          background: linear-gradient(135deg, rgba(255,175,135,.36), rgba(255,130,60,.22));
+          border-color: rgba(255,175,135,.9);
+          color: #fff;
+          box-shadow: 0 0 24px rgba(255,175,135,.28), 0 4px 16px rgba(0,0,0,.4);
+          transform: translateY(-1px);
+        }
+        .nb-hs-btn:active { transform: translateY(0); }
+        .nb-hs-btn .nb-arrow { transition: transform .18s ease; }
+        .nb-hs-btn:hover .nb-arrow { transform: translate(2px,-2px); }
+
+        /* nav pill */
+        .nb-nav-item {
+          position: relative;
+          display: flex; align-items: center; gap: 5px;
+          padding: 7px 13px;
+          border-radius: 999px;
+          cursor: pointer;
+          font-family: 'Syne', sans-serif;
+          font-size: 10px; font-weight: 700;
+          letter-spacing: .09em; text-transform: uppercase;
+          color: #6b7280;
+          border: 1px solid transparent;
+          transition: color .15s, border-color .15s, background .15s;
+          white-space: nowrap;
+          background: none;
+        }
+        .nb-nav-item:hover { color: #e5e7eb; border-color: rgba(255,255,255,.07); background: rgba(255,255,255,.03); }
+        .nb-nav-item.nb-active { color: #fff; }
+        .nb-nav-item .nb-code {
+          font-family:'DM Mono',monospace; font-size:7px; color:#374151;
+          transition:color .15s;
+        }
+        .nb-nav-item:hover .nb-code,
+        .nb-nav-item.nb-active .nb-code { color: #FFAF87; }
+
+        /* active pill bg (rendered via motion div) */
+        .nb-active-bg {
+          position:absolute; inset:0; border-radius:999px;
+          background:linear-gradient(135deg,rgba(255,175,135,.13),rgba(197,232,152,.07));
+          border:1px solid rgba(255,175,135,.28);
+        }
+
+        /* mobile card */
+        .nb-mob-card {
+          display:flex; flex-direction:column; justify-content:space-between;
+          padding:13px; border-radius:14px; height:70px;
+          border:1px solid rgba(255,255,255,.06);
+          background:rgba(255,255,255,.02);
+          cursor:pointer; transition:all .16s;
+          position:relative; overflow:hidden;
+          text-align:left;
+        }
+        .nb-mob-card:hover { border-color:rgba(255,175,135,.3); background:rgba(255,175,135,.04); }
+        .nb-mob-card.nb-active { border-color:rgba(255,175,135,.4); background:rgba(255,175,135,.06); }
+        .nb-mob-card.nb-active::before {
+          content:''; position:absolute; top:0; left:0; right:0; height:2px;
+          background:linear-gradient(90deg,#FFAF87,#C5E898);
+        }
+
+        /* font utils */
+        .nb-mono { font-family:'DM Mono',monospace; }
+        .nb-syne { font-family:'Syne',sans-serif; }
+      `}</style>
+
+      <header className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center pointer-events-none px-3 sm:px-4">
+
+        {/* ══ TICKER TAPE ══════════════════════════════════════ */}
+        <div className="pointer-events-auto w-full max-w-[1480px] mt-2.5 h-[22px] rounded-lg overflow-hidden bg-black/65 border border-white/[0.05] relative flex items-center flex-shrink-0">
+          <div className="absolute left-0 inset-y-0 w-10 bg-gradient-to-r from-black to-transparent z-10 flex items-center justify-center flex-shrink-0">
+            <Zap className="w-2.5 h-2.5 text-[#FFAF87]" />
+          </div>
+          <div className="nb-ticker pl-10">
+            {[...telemetry, ...telemetry].map((t, i) => (
+              <span key={i} className="nb-mono text-[6.5px] tracking-[.16em] text-[#C5E898]/40 mx-6">◈ {t}</span>
+            ))}
+          </div>
+          <div className="absolute right-0 inset-y-0 w-10 bg-gradient-to-l from-black to-transparent z-10" />
         </div>
 
-        {/* Tactical Crosshair Flaring Brackets */}
-        <div className="absolute left-[3px] top-1/2 -translate-y-1/2 w-1.5 h-6 border-l border-y border-[#FFAF87]/20 rounded-l-md pointer-events-none" />
-        <div className="absolute right-[3px] top-1/2 -translate-y-1/2 w-1.5 h-6 border-r border-y border-[#C5E898]/20 rounded-r-md pointer-events-none" />
+        {/* ══ MAIN NAVBAR ══════════════════════════════════════ */}
+        <div className={`pointer-events-auto w-full mt-1.5 transition-all duration-300 ${scrolled ? "max-w-[1440px]" : "max-w-[1480px]"}`}>
+          <div className={`relative flex items-center rounded-2xl border overflow-hidden transition-all duration-300 ${
+            scrolled
+              ? "bg-[#020202]/97 backdrop-blur-2xl border-[#FFAF87]/18 shadow-[0_16px_48px_-8px_rgba(255,175,135,.14)]"
+              : "bg-[#050505]/82 backdrop-blur-xl border-white/[0.07]"
+          }`}>
 
-        {/* LEFT SECTOR: The Cybernetic Orbital Core Logo */}
-        <div id="navbar-left-cluster" className="flex items-center gap-4 shrink-0">
-          <button
-            id="navbar-logo-btn"
-            onClick={() => {
-              onNavigate("home");
-              setIsOpen(false);
-            }}
-            className="flex items-center gap-3.5 group cursor-pointer focus:outline-none"
-          >
-            {/* Spinning Neon Core Reactor */}
-            <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-[#121212] to-black border border-white/10 flex items-center justify-center overflow-hidden group-hover:border-[#FFAF87]/60 transition-colors shadow-inner">
-              
-              {/* Concentric spin dashes */}
-              <div className="absolute inset-1.5 rounded-xl border border-dashed border-[#FFAF87]/15 animate-spin [animation-duration:8s]" />
-              <div className="absolute inset-3 rounded-lg border border-spacing-1 border-[#C5E898]/10 animate-spin [animation-duration:4s] [animation-direction:reverse]" />
-              
-              {/* Dynamic pulse node core */}
-              <div className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-[#FFAF87] to-amber-300 shadow-[0_0_12px_#FFAF87] group-hover:scale-125 transition-transform" />
-              
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 44 44">
-                <circle cx="22" cy="22" r="19" stroke="#C5E898" strokeWidth="0.75" fill="none" strokeDasharray="4 14" className="opacity-30 group-hover:opacity-100 transition-opacity" />
-              </svg>
+            <div className="nb-scan-wrap" />
+
+            {/* Scroll progress — top edge */}
+            <div className="absolute top-0 left-0 right-0 h-[1.5px] z-20 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-[#FFAF87] via-white/70 to-[#C5E898]"
+                style={{ width: `${scrollPercent}%` }}
+              />
             </div>
 
-            {/* Glowing Brand Typography & Status Info */}
-            <div className="flex flex-col text-left leading-none">
-              <span className="font-sans font-black text-sm tracking-widest text-white uppercase flex items-center gap-1.5">
-                Zor-Lix
-                <span className="text-[8.5px] font-mono text-[#C5E898] hover:text-[#FFAF87] font-bold px-1.5 py-0.5 rounded bg-[#C5E898]/10 border border-[#C5E898]/20 transition-all">
-                  v3.9
-                </span>
-              </span>
-              <span className="font-mono text-[7px] text-gray-500 uppercase tracking-[0.25em] mt-1 block">
-                COGNITIVE SYSTEMS
-              </span>
-            </div>
-          </button>
-          
-          <div className="hidden xl:block h-7 w-[1px] bg-white/10" />
+            {/* ── ZONE 1 · LOGO ──────────────────────────────── */}
+            <button
+              onClick={() => { onNavigate("home"); setIsOpen(false); }}
+              className={`flex items-center gap-3 px-5 py-3.5 cursor-pointer focus:outline-none group hover:bg-white/[0.025] transition-colors border-r border-white/[0.06] flex-shrink-0 ${glitchActive ? "nb-glitch" : ""}`}
+            >
+              {/* reactor */}
+              <div className="relative w-9 h-9 rounded-xl bg-black border border-white/10 flex items-center justify-center group-hover:border-[#FFAF87]/45 transition-colors flex-shrink-0">
+                <div className="absolute inset-[5px] rounded-lg border border-dashed border-[#FFAF87]/14 nb-cw" />
+                <div className="absolute inset-[8px] rounded-md border border-[#C5E898]/10 nb-ccw" />
+                <span className="nb-ping w-[5px] h-[5px] rounded-full bg-[#C5E898] text-[#C5E898]" />
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15.5" stroke="#C5E898" strokeWidth="0.5" fill="none"
+                    strokeDasharray="3 10" className="opacity-20 group-hover:opacity-55 transition-opacity" />
+                </svg>
+              </div>
+              {/* wordmark */}
+              <div className="text-left flex-shrink-0">
+                <div className="nb-syne font-black text-[13px] tracking-[.2em] text-white uppercase flex items-center gap-2">
+                  Zor-Lix
+                  <span className="nb-mono text-[7px] text-[#C5E898] px-1.5 py-0.5 rounded-md bg-[#C5E898]/10 border border-[#C5E898]/22 tracking-widest">v3.9</span>
+                </div>
+                <div className="nb-mono text-[6px] text-gray-600 uppercase tracking-[.28em] mt-0.5">COGNITIVE SYSTEMS</div>
+              </div>
+            </button>
 
-          {/* Micro Ambient Realout HUD */}
-          <div className="hidden xl:flex items-center gap-2 text-left select-none">
-            <div className="flex flex-col leading-none">
-              <span className="font-mono text-[6.5px] text-gray-500 tracking-widest uppercase">MATRIX SEC_STATUS</span>
-              <span className="font-mono text-[8.5px] text-[#C5E898] font-black tracking-widest mt-1 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C5E898] animate-ping" />
+            {/* ── ZONE 2 · STATUS (xl only) ──────────────────── */}
+            <div className="hidden xl:flex flex-col justify-center px-4 border-r border-white/[0.06] self-stretch flex-shrink-0 select-none gap-1">
+              <div className="nb-mono text-[6px] text-gray-600 uppercase tracking-[.18em]">MATRIX SEC_STATUS</div>
+              <div className="nb-mono text-[8px] text-[#C5E898] font-bold tracking-widest flex items-center gap-1.5">
+                <span className="nb-ping w-[5px] h-[5px] rounded-full bg-[#C5E898] text-[#C5E898]" />
                 SSL_SECURE
-              </span>
+              </div>
+            </div>
+
+            {/* ── ZONE 3 · NAV LINKS (lg+, hidden on mobile) ─── */}
+            <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center px-3 py-2.5 overflow-hidden">
+              {navLinks.map(({ name, id, code, Icon }) => {
+                const isActive = activeSection === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => onNavigate(id)}
+                    onMouseEnter={() => setHoveredLink(id)}
+                    onMouseLeave={() => setHoveredLink(null)}
+                    className={`nb-nav-item focus:outline-none ${isActive ? "nb-active" : ""}`}
+                  >
+                    {isActive && (
+                      <motion.div layoutId="nb-active-pill" className="nb-active-bg"
+                        transition={{ type: "spring", stiffness: 420, damping: 32 }} />
+                    )}
+                    <span className="nb-code relative z-10">{code}</span>
+                    <Icon className={`w-3 h-3 relative z-10 flex-shrink-0 transition-colors ${isActive ? "text-[#FFAF87]" : "text-gray-600"}`} />
+                    <span className="relative z-10">{name}</span>
+                    <AnimatePresence>
+                      {hoveredLink === id && !isActive && (
+                        <motion.span
+                          initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: 1, opacity: 1 }}
+                          exit={{ scaleX: 0, opacity: 0 }} transition={{ duration: 0.13 }}
+                          className="absolute bottom-[5px] left-3 right-3 h-[1.5px] rounded-full bg-[#FFAF87]/38 origin-left"
+                        />
+                      )}
+                    </AnimatePresence>
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* ── ZONE 4 · RIGHT CLUSTER ─────────────────────── */}
+            {/* This is a flex row. On mobile: only hs-btn + hamburger show.
+                On lg+: signal bars + latency/calibrate + hs-btn (no hamburger). */}
+            <div className="flex items-center flex-shrink-0 ml-auto border-l border-white/[0.06]">
+
+              {/* Signal bars (xl+) */}
+             
+
+              
+
+              {/* Calibrate (lg+) */}
+              <button onClick={calibrate} title="Recalibrate"
+                className="hidden lg:flex self-stretch px-3 items-center justify-center text-gray-600 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer focus:outline-none relative border-r border-white/[0.06]">
+                <RefreshCw className={`w-3.5 h-3.5 ${isCalibrating ? "animate-spin text-[#C5E898]" : ""}`} />
+                <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#FFAF87] ring-[3px] ring-black nb-ping text-[#FFAF87]" />
+              </button>
+
+              {/* ── HANDSHAKE BUTTON — always visible ─────────
+                  Visible on ALL screen sizes. No hidden class. */}
+              <div className="px-3 py-2.5 flex items-center self-stretch">
+                <button
+                  onClick={() => onNavigate("contact")}
+                  className="nb-hs-btn focus:outline-none"
+                >
+                  <div className="nb-shim" />
+                  <span className="relative z-10">Handshake</span>
+                  <ArrowUpRight className="nb-arrow w-3.5 h-3.5 flex-shrink-0 relative z-10" />
+                </button>
+              </div>
+
+              {/* Hamburger — only on mobile (lg:hidden) */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                aria-label="Toggle Menu"
+                className="lg:hidden flex self-stretch items-center justify-center px-4 border-l border-white/[0.06] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer focus:outline-none"
+              >
+                {isOpen ? <X className="w-4.5 h-4.5" /> : <Menu className="w-4.5 h-4.5" />}
+              </button>
             </div>
           </div>
         </div>
 
-        {/* CENTER SECTOR: Tactile Dashboard Index Dials */}
-        <nav 
-          id="desktop-nav" 
-          className="hidden lg:flex items-center gap-1 bg-[#050505]/40 border border-white/5 p-1 rounded-full relative z-10 box-glow-peach"
-        >
-          {navLinks.map((link) => {
-            const isSelected = activeSection === link.id;
-            const isHovered = hoveredLink === link.id;
-            const LinkIcon = link.icon;
+        {/* ══ MOBILE DRAWER ════════════════════════════════════ */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 380, damping: 28 }}
+              className="pointer-events-auto absolute top-[5.2rem] left-3 right-3 bg-[#040404]/98 backdrop-blur-2xl border border-white/[0.09] rounded-[20px] shadow-[0_24px_60px_rgba(0,0,0,.95)] lg:hidden z-50 overflow-hidden nb-grid-bg"
+            >
+              {/* ambient glows */}
+              <div className="absolute top-0 right-0 w-48 h-36 bg-[#FFAF87]/5 blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-40 h-32 bg-[#C5E898]/4 blur-3xl pointer-events-none" />
 
-            return (
-              <button
-                key={link.id}
-                id={`nav-link-${link.id}`}
-                onClick={() => onNavigate(link.id)}
-                onMouseEnter={() => setHoveredLink(link.id)}
-                onMouseLeave={() => setHoveredLink(null)}
-                className={`font-sans text-[10.5px] font-bold tracking-widest uppercase transition-all duration-300 relative px-4 py-2.5 rounded-full cursor-pointer flex items-center gap-2 overflow-hidden ${
-                  isSelected ? "text-neutral-950 font-black" : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {/* Friction-less fluid spring indicator pill */}
-                {isSelected && (
-                  <motion.div
-                    layoutId="activeHUDIndicator"
-                    className="absolute inset-0 bg-gradient-to-r from-[#FFAF87] via-[#FFF] to-[#C5E898] rounded-full z-0 shadow-[0_4px_16px_rgba(255,175,135,0.4)]"
-                    transition={{ type: "spring", stiffness: 420, damping: 30 }}
-                  />
-                )}
+              <div className="relative z-10 p-5 flex flex-col gap-4">
 
-                {/* Index numeral identifier code */}
-                <span className={`font-mono text-[6.5px] block ${
-                  isSelected ? "text-black/60 font-black" : isHovered ? "text-[#FFAF87]" : "text-gray-600"
-                }`}>
-                  {link.code}
-                </span>
+                {/* Drawer header */}
+                <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+                  <span className="nb-mono text-[7px] text-[#FFAF87] uppercase tracking-[.2em] font-bold">
+                    CONSTELLATION NETWORK DRAWER
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="nb-ping w-[5px] h-[5px] rounded-full bg-[#C5E898] text-[#C5E898]" />
+                    <span className="nb-mono text-[6.5px] text-[#C5E898] uppercase tracking-widest">LIVE</span>
+                  </div>
+                </div>
 
-                <span className="relative z-10 flex items-center gap-1.5">
-                  <LinkIcon className={`w-3.5 h-3.5 ${isSelected ? "text-black/80 stroke-[2.5px]" : "text-gray-500 group-hover:text-[#FFAF87]"}`} />
-                  {link.name}
-                </span>
+                {/* Nav 2-col grid */}
+                <div className="grid grid-cols-2 gap-2">
+                  {navLinks.map(({ name, id, code, Icon }) => {
+                    const isActive = activeSection === id;
+                    return (
+                      <button key={id}
+                        onClick={() => { onNavigate(id); setIsOpen(false); }}
+                        className={`nb-mob-card focus:outline-none ${isActive ? "nb-active" : ""}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="nb-mono text-[6.5px] font-bold tracking-widest text-gray-600">{code}/</span>
+                          <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#FFAF87]" : "text-gray-600"}`} />
+                        </div>
+                        <span className="nb-syne font-black text-[11px] uppercase tracking-widest text-white">{name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
 
-                {/* Bottom line hover spark */}
-                <AnimatePresence>
-                  {isHovered && !isSelected && (
-                    <motion.div 
-                      layoutId="hoverGlowNode"
-                      className="absolute bottom-0 inset-x-0 h-[1.5px] bg-[#FFAF87]"
-                      transition={{ duration: 0.2 }}
-                    />
-                  )}
-                </AnimatePresence>
-              </button>
-            );
-          })}
-        </nav>
+                {/* Status bar */}
+                <div className="flex items-center justify-between bg-black/50 px-4 py-2.5 rounded-xl border border-white/[0.05]">
+                  <span className="nb-mono text-[7px] text-[#C5E898] font-bold uppercase tracking-widest flex items-center gap-1.5">
+                    <Network className="w-3 h-3 animate-pulse" />MOBILE_FEED: ACTIVE
+                  </span>
+                  <span className="nb-mono text-[7px] text-gray-500 tracking-widest">LATENCY: {sysOverhead}</span>
+                </div>
 
-        {/* RIGHT SECTOR: Micro Sensory Level, Latency and Calibration Tools */}
-        <div id="navbar-right-cluster" className="flex items-center gap-3 shrink-0">
-          
-          {/* Uncommon interactive soundwave level simulation */}
-          <div className="hidden lg:flex items-center gap-1 border-l border-white/10 pl-3 h-7 select-none" title="Live System Event Frequency">
-            <Radio className="w-3.5 h-3.5 stroke-[1.5px] text-gray-500" />
-            <div className="flex items-end gap-0.5 h-3.5 w-16">
-              {activeSignalStream.map((h, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ height: `${h}px` }}
-                  transition={{ type: "spring", stiffness: 150, damping: 10 }}
-                  className="w-[2px] bg-[#C5E898]/40 rounded-full"
-                />
-              ))}
-            </div>
-          </div>
+                {/* Handshake CTA — full width in drawer */}
+                <button
+                  onClick={() => { onNavigate("contact"); setIsOpen(false); }}
+                  className="nb-hs-btn focus:outline-none w-full justify-center"
+                >
+                  <div className="nb-shim" />
+                  <span className="relative z-10">Handshake</span>
+                  <ArrowUpRight className="nb-arrow w-4 h-4 flex-shrink-0 relative z-10" />
+                </button>
 
-          {/* Trigger calibration panel with spin kinetics */}
-          <button
-            onClick={triggerCalibration}
-            title="Recalibrate Interface Feeds"
-            className="hidden sm:flex relative p-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-[#FFAF87]/30 text-gray-400 hover:text-white transition-all cursor-pointer focus:outline-none"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isSystemCalibrating ? "animate-spin text-[#C5E898]" : "text-gray-500"}`} />
-            <span className="absolute top-[2px] right-[2px] w-2 h-2 rounded-full bg-[#FFAF87] ring-4 ring-black animate-pulse" />
-          </button>
+                {/* Dispatch Signal gradient CTA */}
+                <button
+                  onClick={() => { onNavigate("contact"); setIsOpen(false); }}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FFAF87] via-white/85 to-[#C5E898] text-black flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-[.99] transition-transform focus:outline-none"
+                >
+                  <span className="nb-syne text-[11px] font-black tracking-widest uppercase">Dispatch Signal</span>
+                  <ArrowUpRight className="w-4 h-4 stroke-[2.5px]" />
+                </button>
 
-          {/* Latency HUD statistics */}
-          <div className="hidden sm:flex flex-col text-right font-mono text-[6.5px] text-gray-500 leading-tight uppercase select-none border-r border-white/10 pr-3 h-7 justify-center">
-            <span className="flex items-center gap-1 justify-end text-[#C5E898] font-bold">
-              <span className="w-1 h-1 rounded-full bg-[#C5E898] animate-pulse" />
-              STABLE_INP
-            </span>
-            <span className="mt-0.5 text-gray-400 font-extrabold tracking-widest">BUS: {sysOverhead}</span>
-          </div>
-
-          {/* Compliance Vault trigger */}
-          <button
-            id="navbar-vault-btn"
-            onClick={() => onNavigate("audits")}
-            className="group hidden sm:flex px-4 py-2 sm:px-4 sm:py-2.5 rounded-full bg-[#0d0d0d] hover:bg-black border border-[#C5E898]/15 text-white hover:border-[#C5E898] hover:shadow-[0_0_15px_rgba(197,232,152,0.15)] font-sans text-[9px] font-black tracking-widest uppercase transition-all duration-300 items-center gap-1.5 cursor-pointer relative overflow-hidden"
-          >
-            <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 translate-x-[-150%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-            <ShieldCheck className="w-3.5 h-3.5 text-[#C5E898]" />
-            <span>Vault</span>
-          </button>
-
-          {/* Call-to-Action Dynamic Handshake button */}
-          <button
-            id="navbar-get-started-btn"
-            onClick={() => onNavigate("contact")}
-            className="group px-4.5 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#101010] hover:bg-black border border-white/10 text-white hover:border-[#FFAF87] hover:shadow-[0_0_15px_rgba(255,175,135,0.15)] font-sans text-[9.5px] font-black tracking-widest uppercase transition-all duration-300 flex items-center gap-1.5 cursor-pointer relative overflow-hidden"
-          >
-            {/* Travelling laser trigger */}
-            <div className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-150%] group-hover:translate-x-[200%] transition-transform duration-1000" />
-            <span>Handshake</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-[#FFAF87] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </button>
-
-          {/* Responsive Mobile Trigger */}
-          <button
-            id="mobile-menu-toggle"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle Menu"
-            className="lg:hidden p-2.5 text-gray-400 hover:text-white bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 transition-colors focus:outline-none cursor-pointer"
-          >
-            {isOpen ? <X className="w-4.5 h-4.5" /> : <Menu className="w-4.5 h-4.5" />}
-          </button>
-        </div>
-
-      </div>
-
-      {/* MOBILE UNIQUE HUD DRAWER */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            id="mobile-drawer"
-            initial={{ opacity: 0, y: -12, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -12, scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 350, damping: 26 }}
-            className="absolute top-[82px] left-4 right-4 bg-black/95 backdrop-blur-2xl border border-white/10 rounded-[30px] shadow-[0_32px_64px_rgba(0,0,0,0.92)] lg:hidden z-40 overflow-hidden"
-          >
-            {/* Cyber Grid pattern background */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#ffffff01_1px,transparent_1px)] bg-[size:100%_1.5rem] pointer-events-none" />
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFAF87]/5 blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 p-6 flex flex-col gap-4">
-              <span className="font-mono text-[7.5px] text-[#FFAF87] uppercase tracking-[0.25em] block border-b border-white/5 pb-2.5 select-none font-black text-left">
-                CONSTELLATION NETWORK DRAWER
-              </span>
-
-              {/* Asymmetrical grid menu mapping */}
-              <div className="grid grid-cols-2 gap-2.5 mt-1">
-                {navLinks.map((link) => {
-                  const isSelected = activeSection === link.id;
-                  const LinkIcon = link.icon;
-
-                  return (
-                    <button
-                      key={link.id}
-                      id={`mobile-nav-link-${link.id}`}
-                      onClick={() => {
-                        onNavigate(link.id);
-                        setIsOpen(false);
-                      }}
-                      className={`text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between h-[76px] relative overflow-hidden group ${
-                        isSelected
-                          ? "bg-gradient-to-tr from-[#121212] to-black border-[#FFAF87] text-[#FFAF87]"
-                          : "bg-[#050505]/60 border-white/5 text-gray-400 hover:text-white"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="font-mono text-[7px] text-gray-500 font-extrabold group-hover:text-[#FFAF87] transition-colors font-bold">
-                          {link.code}
-                        </span>
-                        <LinkIcon className={`w-3.5 h-3.5 ${isSelected ? "text-[#FFAF87]" : "text-gray-500 group-hover:text-white"}`} />
-                      </div>
-                      
-                      <span className="font-sans font-black text-[11px] uppercase tracking-widest block mt-2 text-white">
-                        {link.name}
-                      </span>
-                    </button>
-                  );
-                })}
               </div>
-
-              {/* High precision diagnostic status metrics */}
-              <div className="bg-[#050505]/90 p-3.5 rounded-2xl border border-white/5 flex items-center justify-between mt-1 font-mono text-[8px] text-gray-500 select-none text-left">
-                <span className="flex items-center gap-1.5 uppercase font-bold text-[#C5E898]">
-                  <Network className="w-3.5 h-3.5 text-[#C5E898] animate-pulse" />
-                  MOBILE_FEED: ACTIVE
-                </span>
-                <span>LATENCY: {sysOverhead}</span>
-              </div>
-
-              {/* Action trigger dispatch */}
-              <button
-                id="mobile-get-started-btn"
-                onClick={() => {
-                  onNavigate("contact");
-                  setIsOpen(false);
-                }}
-                className="mt-2 w-full py-4 rounded-xl bg-gradient-to-tr from-[#FFAF87] via-white to-[#C5E898] text-black font-sans text-center font-bold text-[10.5px] tracking-widest uppercase shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-transform duration-300 hover:scale-[1.01]"
-              >
-                <span>Dispatch Signal</span>
-                <ArrowUpRight className="w-4 h-4 stroke-[3px] text-neutral-900" />
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+    </>
   );
 }

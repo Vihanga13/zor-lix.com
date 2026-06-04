@@ -1,28 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { 
-  ArrowRight, 
-  Rocket, 
-  Database, 
-  ShieldCheck, 
-  Sliders, 
-  Cpu, 
-  CloudLightning, 
-  Share2, 
-  Settings,
-  Zap,
-  Globe,
-  Compass,
-  Layers,
-  Crosshair,
-  Radio,
-  RefreshCw,
-  Sparkles,
-  Binary,
-  Activity,
-  Terminal,
-  ChevronRight
-} from "lucide-react";
 
 interface HeroProps {
   onNavigate: (sectionId: string) => void;
@@ -38,592 +14,999 @@ interface Particle {
   color: string;
 }
 
+const databasesList = [
+  { id: "snowflake", name: "Snowflake", iconPath: "M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.47,5.34 14.86,5.08L14.47,2.42C14.43,2.18 14.22,2 13.97,2H9.97C9.72,2 9.51,2.18 9.47,2.42L9.08,5.08C8.47,5.34 7.9,5.66 7.38,6.05L4.89,5.05C4.67,4.96 4.4,5.05 4.28,5.27L2.28,8.73C2.16,8.95 2.21,9.22 2.4,9.37L4.51,11C4.47,11.34 4.45,11.67 4.45,12C4.45,12.33 4.47,12.65 4.51,12.97L2.4,14.63C2.21,14.78 2.16,15.05 2.28,15.27L4.28,18.73C4.4,18.95 4.67,19.03 4.89,18.95L7.38,17.95C7.9,18.34 8.47,18.66 9.08,18.92L9.47,21.58C9.51,21.82 9.72,22 9.97,22H13.97C14.22,22 14.43,21.82 14.47,21.58L14.86,18.92C15.47,18.66 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z", speed: "0.08ms", color: "#FFAF87" },
+  { id: "google",    name: "Google BigQuery", iconPath: "M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.47,5.34 14.86,5.08L14.47,2.42C14.43,2.18 14.22,2 13.97,2H9.97C9.72,2 9.51,2.18 9.47,2.42L9.08,5.08C8.47,5.34 7.9,5.66 7.38,6.05L4.89,5.05C4.67,4.96 4.4,5.05 4.28,5.27L2.28,8.73C2.16,8.95 2.21,9.22 2.4,9.37L4.51,11C4.47,11.34 4.45,11.67 4.45,12C4.45,12.33 4.47,12.65 4.51,12.97L2.4,14.63C2.21,14.78 2.16,15.05 2.28,15.27L4.28,18.73C4.4,18.95 4.67,19.03 4.89,18.95L7.38,17.95C7.9,18.34 8.47,18.66 9.08,18.92L9.47,21.58C9.51,21.82 9.72,22 9.97,22H13.97C14.22,22 14.43,21.82 14.47,21.58L14.86,18.92C15.47,18.66 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z", speed: "0.12ms", color: "#C5E898" },
+  { id: "aws",       name: "Amazon AWS S3", iconPath: "M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.47,5.34 14.86,5.08L14.47,2.42C14.43,2.18 14.22,2 13.97,2H9.97C9.72,2 9.51,2.18 9.47,2.42L9.08,5.08C8.47,5.34 7.9,5.66 7.38,6.05L4.89,5.05C4.67,4.96 4.4,5.05 4.28,5.27L2.28,8.73C2.16,8.95 2.21,9.22 2.4,9.37L4.51,11C4.47,11.34 4.45,11.67 4.45,12C4.45,12.33 4.47,12.65 4.51,12.97L2.4,14.63C2.21,14.78 2.16,15.05 2.28,15.27L4.28,18.73C4.4,18.95 4.67,19.03 4.89,18.95L7.38,17.95C7.9,18.34 8.47,18.66 9.08,18.92L9.47,21.58C9.51,21.82 9.72,22 9.97,22H13.97C14.22,22 14.43,21.82 14.47,21.58L14.86,18.92C15.47,18.66 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z", speed: "0.15ms", color: "#FFFFFF" },
+  { id: "stripe",    name: "Stripe Ledger", iconPath: "M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.47,5.34 14.86,5.08L14.47,2.42C14.43,2.18 14.22,2 13.97,2H9.97C9.72,2 9.51,2.18 9.47,2.42L9.08,5.08C8.47,5.34 7.9,5.66 7.38,6.05L4.89,5.05C4.67,4.96 4.4,5.05 4.28,5.27L2.28,8.73C2.16,8.95 2.21,9.22 2.4,9.37L4.51,11C4.47,11.34 4.45,11.67 4.45,12C4.45,12.33 4.47,12.65 4.51,12.97L2.4,14.63C2.21,14.78 2.16,15.05 2.28,15.27L4.28,18.73C4.4,18.95 4.67,19.03 4.89,18.95L7.38,17.95C7.9,18.34 8.47,18.66 9.08,18.92L9.47,21.58C9.51,21.82 9.72,22 9.97,22H13.97C14.22,22 14.43,21.82 14.47,21.58L14.86,18.92C15.47,18.66 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z", speed: "0.04ms", color: "#F59E0B" },
+];
+
+const dbLogs: Record<string, string[]> = {
+  snowflake: [
+    "SNOWFLAKE_CONNECT: Discovered 8 active query clusters.",
+    "COMPILER_PROBE: Handshake established under TLS_v1.3.",
+    "INGRESS_OK: Live staging pipelines synced successfully.",
+  ],
+  google: [
+    "BIGQUERY_LINKED: Reconciling ledger records in real-time.",
+    "CLUSTER_SCAN: Partition scanning of 14M rows compiled.",
+    "DENSITY_INDEX: High fidelity vector stream secure.",
+  ],
+  aws: [
+    "S3_BUCKET_ATTACH: Listening to event notifications.",
+    "SECURITY_DECRYPT: Decoying telemetry feeds with custom keys.",
+    "INTEGRITY_OK: All cloud telemetry blocks verified.",
+  ],
+  stripe: [
+    "STRIPE_LEDGER: Syncing instant processing pipelines.",
+    "EXCHANGE_RECONCILE: Currencies linked for universal index.",
+    "DISPATCH_PEAK: Ledger pipeline established in 0.03ms.",
+  ],
+};
+
+const GEAR_PATH =
+  "M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.47,5.34 14.86,5.08L14.47,2.42C14.43,2.18 14.22,2 13.97,2H9.97C9.72,2 9.51,2.18 9.47,2.42L9.08,5.08C8.47,5.34 7.9,5.66 7.38,6.05L4.89,5.05C4.67,4.96 4.4,5.05 4.28,5.27L2.28,8.73C2.16,8.95 2.21,9.22 2.4,9.37L4.51,11C4.47,11.34 4.45,11.67 4.45,12C4.45,12.33 4.47,12.65 4.51,12.97L2.4,14.63C2.21,14.78 2.16,15.05 2.28,15.27L4.28,18.73C4.4,18.95 4.67,19.03 4.89,18.95L7.38,17.95C7.9,18.34 8.47,18.66 9.08,18.92L9.47,21.58C9.51,21.82 9.72,22 9.97,22H13.97C14.22,22 14.43,21.82 14.47,21.58L14.86,18.92C15.47,18.66 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z";
+
 export default function Hero({ onNavigate }: HeroProps) {
-  // Synthesizer / Wave Controls
   const [streamFrequency, setStreamFrequency] = useState<number>(5);
   const [amplitude, setAmplitude] = useState<number>(35);
   const [selectedNode, setSelectedNode] = useState<string>("snowflake");
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
-  const [systemTime, setSystemTime] = useState<string>("12:00:00 UTC");
+  const [systemTime, setSystemTime] = useState<string>("12:00:00.000 UTC");
   const [radialAngle, setRadialAngle] = useState<number>(0);
   const [isCalibrating, setIsCalibrating] = useState<boolean>(false);
   const [gearRotation, setGearRotation] = useState<number>(0);
-  
-  // Custom interactive waterfall floating nodes
+  const [wavePath, setWavePath] = useState<string>("");
+  const [sweepEnd, setSweepEnd] = useState<{ x: number; y: number }>({ x: 230, y: 120 });
+  const [orbPositions, setOrbPositions] = useState<{ x: number; y: number }[]>([
+    { x: 190, y: 120 },
+    { x: 50, y: 120 },
+    { x: 120, y: 50 },
+  ]);
   const [particles, setParticles] = useState<Particle[]>([]);
-  const particleIdCounter = useRef(0);
-
   const [logs, setLogs] = useState<string[]>([
     "SYS_STAGE_OK: Ingestion matrix listening on port 3000.",
     "ZOR-LIX CORE: Standing by for telemetry stream alignments.",
-    "SECURITY: Universal SSL tunnel status validated."
+    "SECURITY: Universal SSL tunnel status validated.",
   ]);
 
-  // Handle UTC Millisecond Ticker, Rotating Orbital Feeds & Gear Physics
+  const particleIdCounter = useRef(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const radialRef = useRef(0);
+  const gearRef = useRef(0);
+  const freqRef = useRef(streamFrequency);
+  const ampRef = useRef(amplitude);
+  const isSyncingRef = useRef(isSyncing);
+  const rafRef = useRef<number>(0);
+  const lastFrameRef = useRef(0);
+
+  // Keep refs in sync
+  useEffect(() => { freqRef.current = streamFrequency; }, [streamFrequency]);
+  useEffect(() => { ampRef.current = amplitude; }, [amplitude]);
+  useEffect(() => { isSyncingRef.current = isSyncing; }, [isSyncing]);
+
+  // UTC Clock
   useEffect(() => {
-    const clockTimer = setInterval(() => {
+    const t = setInterval(() => {
       const now = new Date();
       const ms = String(now.getMilliseconds()).padStart(3, "0");
-      const baseTime = now.toISOString().slice(11, 19);
-      setSystemTime(`${baseTime}.${ms} UTC`);
+      setSystemTime(`${now.toISOString().slice(11, 19)}.${ms} UTC`);
     }, 45);
+    return () => clearInterval(t);
+  }, []);
 
-    // Continuous gear physics & radar angle animation
-    const motionTimer = setInterval(() => {
-      setRadialAngle((prev) => (prev + 1.2) % 360);
-      setGearRotation((prev) => (prev + (isSyncing ? 3.5 : 0.8)) % 360);
-    }, 35);
-
-    return () => {
-      clearInterval(clockTimer);
-      clearInterval(motionTimer);
-    };
-  }, [isSyncing]);
-
-  // Particle updates (Interactive Waterfall Simulation inside Bento Box)
+  // Main animation RAF loop
   useEffect(() => {
-    const particleTimer = setInterval(() => {
-      setParticles((prevParticles) => {
-        // Increment Y coordinates & drop off particles that drift off screen
-        const filtered = prevParticles
-          .map((p) => ({ ...p, y: p.y + p.speed }))
-          .filter((p) => p.y < 220);
+    function generateWavePath(angle: number, freq: number, amp: number): string {
+      const cx = 120, cy = 120;
+      const baseR = 70 + amp * 0.4;
+      const points: string[] = [];
+      for (let theta = 0; theta <= 360; theta += 2.5) {
+        const rad = (theta * Math.PI) / 180;
+        const offset =
+          Math.sin(rad * freq + (angle * Math.PI) / 110) * (amp * 0.35) +
+          Math.cos(rad * 3 - (angle * Math.PI) / 180) * 4;
+        const r = baseR + offset;
+        points.push(`${(cx + r * Math.cos(rad)).toFixed(1)},${(cy + r * Math.sin(rad)).toFixed(1)}`);
+      }
+      return `M ${points.join(" L ")} Z`;
+    }
 
-        // Periodically inject random organic particles if count is low
-        if (filtered.length < 15 && Math.random() > 0.4) {
+    function getOrbPos(i: number, angle: number, amp: number, freq: number) {
+      const angleOffset = (360 / 3) * i;
+      const speedMult = freq * 0.25 + 0.45;
+      const t = (angle * speedMult + angleOffset) % 360;
+      const rad = (t * Math.PI) / 180;
+      const r = 70 + amp * 0.4;
+      return { x: 120 + r * Math.cos(rad), y: 120 + r * Math.sin(rad) };
+    }
+
+    function frame(ts: number) {
+      const dt = ts - lastFrameRef.current;
+      if (dt >= 35) {
+        lastFrameRef.current = ts;
+        radialRef.current = (radialRef.current + 1.2) % 360;
+        gearRef.current = (gearRef.current + (isSyncingRef.current ? 3.5 : 0.8)) % 360;
+
+        const angle = radialRef.current;
+        const freq = freqRef.current;
+        const amp = ampRef.current;
+
+        setRadialAngle(angle);
+        setGearRotation(gearRef.current);
+        setWavePath(generateWavePath(angle, freq, amp));
+
+        const rad2 = (angle * Math.PI) / 180;
+        setSweepEnd({
+          x: parseFloat((120 + 118 * Math.cos(rad2)).toFixed(1)),
+          y: parseFloat((120 + 118 * Math.sin(rad2)).toFixed(1)),
+        });
+
+        setOrbPositions([0, 1, 2].map((i) => getOrbPos(i, angle, amp, freq)));
+      }
+      rafRef.current = requestAnimationFrame(frame);
+    }
+
+    rafRef.current = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  // Particle canvas render
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p) => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.opacity;
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = p.color;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+  }, [particles]);
+
+  // Particle physics loop
+  useEffect(() => {
+    const t = setInterval(() => {
+      setParticles((prev) => {
+        const moved = prev
+          .map((p) => ({ ...p, y: p.y + p.speed }))
+          .filter((p) => p.y < 160);
+        if (moved.length < 15 && Math.random() > 0.4) {
           particleIdCounter.current += 1;
-          const randomCol = Math.random() > 0.5 ? "#FFAF87" : "#C5E898";
-          filtered.push({
+          moved.push({
             id: particleIdCounter.current,
-            x: Math.random() * 260 + 20,
+            x: Math.random() * 240 + 10,
             y: 0,
             speed: Math.random() * 1.5 + 0.8,
             size: Math.random() * 3 + 1.5,
             opacity: Math.random() * 0.7 + 0.2,
-            color: randomCol
+            color: Math.random() > 0.5 ? "#FFAF87" : "#C5E898",
           });
         }
-        return filtered;
+        return moved;
       });
     }, 40);
-
-    return () => clearInterval(particleTimer);
+    return () => clearInterval(t);
   }, []);
 
-  // Event trigger to manually inject massive event spikes
   const injectQuantumPeak = () => {
-    const freshParticles: Particle[] = [];
     const colors = ["#FFAF87", "#C5E898", "#FFFFFF"];
-    
-    for (let i = 0; i < 12; i++) {
+    const fresh: Particle[] = Array.from({ length: 12 }, (_, i) => {
       particleIdCounter.current += 1;
-      freshParticles.push({
+      return {
         id: particleIdCounter.current,
-        x: Math.random() * 260 + 20,
+        x: Math.random() * 240 + 10,
         y: Math.random() * -30 - 5,
         speed: Math.random() * 3.5 + 2,
         size: Math.random() * 4.5 + 2,
         opacity: Math.random() * 0.9 + 0.3,
-        color: colors[Math.floor(Math.random() * colors.length)]
-      });
-    }
-
-    setParticles((prev) => [...prev, ...freshParticles]);
-    setLogs((prev) => [
-      `SYS_ANOMALY: Manual high-frequency event spike injected! [${freshParticles.length} nodes]`,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      };
+    });
+    setParticles((prev) => [...prev, ...fresh]);
+    setLogs([
+      `SYS_ANOMALY: Manual high-frequency event spike injected! [12 nodes]`,
       "STREAM_DENSITY: Dynamic queue latency peaked to 0.08ms.",
-      ...prev.slice(0, 2)
+      ...logs.slice(0, 2),
     ]);
   };
 
-  // Swapping core ingestion sources
   const handleNodeClick = (nodeId: string, nodeName: string) => {
     setSelectedNode(nodeId);
     setIsSyncing(true);
-
-    const matchLogs = {
-      snowflake: [
-        "SNOWFLAKE_CONNECT: Discovered 8 active query clusters.",
-        "COMPILER_PROBE: Handshake established under TLS_v1.3.",
-        "INGRESS_OK: Live staging pipelines synced successfully."
-      ],
-      google: [
-        "BIGQUERY_LINKED: Reconciling ledger records in real-time.",
-        "CLUSTER_SCAN: Partition scanning of 14M rows compiled.",
-        "DENSITY_INDEX: High fidelity vector stream secure."
-      ],
-      aws: [
-        "S3_BUCKET_ATTACH: Listening to event notifications.",
-        "SECURITY_DECRYPT: Decoying telemetry feeds with custom keys.",
-        "INTEGRITY_OK: All cloud telemetry blocks verified."
-      ],
-      stripe: [
-        "STRIPE_LEDGER: Syncing instant processing pipelines.",
-        "EXCHANGE_RECONCILE: Currencies linked for universal index.",
-        "DISPATCH_PEAK: Ledger pipeline established in 0.03ms."
-      ]
-    };
-
+    isSyncingRef.current = true;
     setLogs([
       `ROUTING_TARGET: Ingestion hub routed to [${nodeName.toUpperCase()}]`,
-      ...matchLogs[nodeId as keyof typeof matchLogs] || []
+      ...(dbLogs[nodeId] || []),
     ]);
-
     setTimeout(() => {
       setIsSyncing(false);
+      isSyncingRef.current = false;
     }, 700);
   };
 
   const handleCalibration = () => {
     setIsCalibrating(true);
-    setLogs((prev) => [
+    setLogs([
       "CALIBRATION_PROBE: Restructuring kinetic orbital frequencies...",
       "CALIBRATION_SUCCESS: Phase alignment synced cleanly.",
-      ...prev.slice(0, 2)
+      ...logs.slice(0, 2),
     ]);
-    setTimeout(() => {
-      setIsCalibrating(false);
-    }, 1200);
+    setTimeout(() => setIsCalibrating(false), 1200);
   };
 
-  // Generates coordinate paths representing circular interactive sine-waves
-  const generateCircularWavePath = () => {
-    const cx = 150;
-    const cy = 150;
-    const baseRadius = 70 + amplitude * 0.4;
-    const points: string[] = [];
-    const step = 2.5; // High density angle step
-    
-    for (let theta = 0; theta <= 360; theta += step) {
-      const rad = (theta * Math.PI) / 180;
-      const waveFreq = streamFrequency;
-      // Synthesize multi-harmonic sine modulation
-      const offset = Math.sin(rad * waveFreq + (radialAngle * Math.PI) / 110) * (amplitude * 0.35)
-                     + Math.cos(rad * 3 - (radialAngle * Math.PI) / 180) * 4;
-      const r = baseRadius + offset;
-      const x = cx + r * Math.cos(rad);
-      const y = cy + r * Math.sin(rad);
-      points.push(`${x.toFixed(1)},${y.toFixed(1)}`);
-    }
-    return `M ${points.join(" L ")} Z`;
-  };
-
-  // Orbital satellites following the waveform boundaries
-  const orbitalNodes = [0, 1, 2].map((i) => {
-    const angleOffset = (360 / 3) * i;
-    const speedMultiplier = streamFrequency * 0.25 + 0.45;
-    const t = (radialAngle * speedMultiplier + angleOffset) % 360;
-    const rad = (t * Math.PI) / 180;
-    const r = 70 + amplitude * 0.4;
-    const cx = 150;
-    const cy = 150;
-    return {
-      x: cx + r * Math.cos(rad),
-      y: cy + r * Math.sin(rad),
-      id: i,
-    };
-  });
-
-  const databasesList = [
-    { id: "snowflake", name: "Snowflake Cluster", icon: Database, speed: "0.08ms", color: "#FFAF87" },
-    { id: "google", name: "Google BigQuery", icon: Cpu, speed: "0.12ms", color: "#C5E898" },
-    { id: "aws", name: "Amazon AWS S3", icon: Share2, speed: "0.15ms", color: "#FFFFFF" },
-    { id: "stripe", name: "Stripe Ledger", icon: CloudLightning, speed: "0.04ms", color: "#F59E0B" }
-  ];
+  const signalSpan = (streamFrequency * 18.5 + 23.4).toFixed(1);
 
   return (
-    <section 
-      id="home" 
-      className="relative min-h-screen pt-28 pb-16 lg:py-24 overflow-hidden bg-[#020202] flex flex-col justify-center border-b border-white/5"
+    <section
+      id="home"
+      className="relative min-h-screen pt-20 pb-12 lg:py-24 overflow-hidden flex flex-col justify-center border-b border-white/5"
+      style={{ background: "#020202" }}
     >
-      {/* Immersive Cyber Fog Ambient backlighting */}
-      <div 
-        className="absolute top-[8%] left-[15%] w-[800px] h-[350px] rounded-full bg-[#FFAF87]/10 blur-[160px] pointer-events-none transition-transform duration-1000"
-        style={{ transform: `scale(${1 + amplitude * 0.004})` }}
+      {/* Ambient glows */}
+      <div
+        className="absolute top-[5%] left-[10%] w-[600px] h-[300px] rounded-full pointer-events-none transition-transform duration-1000"
+        style={{
+          background: "rgba(255,175,135,0.08)",
+          filter: "blur(120px)",
+          transform: `scale(${1 + amplitude * 0.004})`,
+        }}
       />
-      <div 
-        className="absolute bottom-[10%] right-[10%] w-[700px] h-[320px] rounded-full bg-[#C5E898]/5 blur-[150px] pointer-events-none"
+      <div
+        className="absolute bottom-[10%] right-[5%] w-[500px] h-[250px] rounded-full pointer-events-none"
+        style={{ background: "rgba(197,232,152,0.05)", filter: "blur(100px)" }}
       />
 
-      {/* Modern High-density grid visual layout */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:5rem_5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none" />
+      {/* Grid background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right,rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,0.015) 1px,transparent 1px)",
+          backgroundSize: "5rem 5rem",
+          maskImage:
+            "radial-gradient(ellipse 60% 50% at 50% 50%,#000 80%,transparent 100%)",
+        }}
+      />
 
-      {/* Main Responsive Grid Container */}
-      <div className="max-w-[1560px] mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
-        
-        {/* Three-compartment asymmetric control layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-          
-          {/* ==========================================================
-              SECTOR 1: SWISS-BRUTALIST INTEL-GRID & PARAMETER CONTROLS (Col: 5)
-              ========================================================== */}
-          <div className="lg:col-span-5 flex flex-col justify-between gap-8 h-full bg-black/40 border border-white/5 rounded-[36px] p-6 sm:p-8 relative overflow-hidden backdrop-blur-md">
-            {/* Top neon indicator glowline */}
-            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#FFAF87]/40 to-transparent" />
-            
-            <div className="flex flex-col gap-6 text-left">
-              {/* Cockpit system status identifier */}
-              <div className="flex items-center justify-between">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0d0d0d] border border-white/10 text-[#FFAF87] text-[8px] font-mono tracking-widest uppercase select-none font-black"
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-stretch">
+
+          {/* ===================== SECTOR 1 ===================== */}
+          <div
+            className="lg:col-span-5 flex flex-col gap-6 relative overflow-hidden rounded-[32px] p-6 sm:p-8"
+            style={{
+              background: "rgba(0,0,0,0.45)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              backdropFilter: "blur(16px)",
+            }}
+          >
+            {/* Top glow line */}
+            <div
+              className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(to right,transparent,rgba(255,175,135,0.4),transparent)",
+              }}
+            />
+
+            {/* Status row */}
+            <div className="flex items-center justify-between">
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full select-none"
+                style={{
+                  background: "#0d0d0d",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#FFAF87",
+                  fontFamily: "monospace",
+                  fontSize: "9px",
+                  fontWeight: 900,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                }}
+              >
+                <span
+                  className="rounded-full"
+                  style={{
+                    width: 6,
+                    height: 6,
+                    background: "#FFAF87",
+                    animation: "heroPing 1.2s ease-in-out infinite",
+                    display: "inline-block",
+                    flexShrink: 0,
+                  }}
+                />
+                FLIGHTDECK CORE v3.9
+              </div>
+              <span
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: "8px",
+                  color: "#555",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                SYS_ANCHOR // 04-26
+              </span>
+            </div>
+
+            {/* Headline */}
+            <div className="flex flex-col gap-2">
+              <h1
+                style={{
+                  fontSize: "clamp(28px, 4.5vw, 52px)",
+                  fontWeight: 900,
+                  letterSpacing: "-0.03em",
+                  lineHeight: 1.05,
+                  textTransform: "uppercase",
+                  color: "#fff",
+                }}
+              >
+                Unify Stream{" "}
+                <span
+                  style={{
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                    fontFamily: "Georgia, serif",
+                    color: "#FFAF87",
+                    textTransform: "lowercase",
+                    letterSpacing: "0.01em",
+                  }}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FFAF87] animate-ping" />
-                  <span>FLIGHTDECK CORE v3.9</span>
-                </motion.div>
-                <div className="text-[8px] font-mono text-gray-500 uppercase tracking-widest">
-                  SYS_ANCHOR // 04-26
-                </div>
+                  noise
+                </span>
+                .
+                <span
+                  style={{
+                    display: "block",
+                    fontWeight: 300,
+                    color: "#999",
+                    marginTop: 4,
+                  }}
+                >
+                  Discover latent
+                </span>
+                <span
+                  style={{
+                    display: "block",
+                    fontFamily: "monospace",
+                    fontSize: "clamp(18px, 3vw, 32px)",
+                    fontWeight: 900,
+                    letterSpacing: "0.08em",
+                    textTransform: "none",
+                    background: "linear-gradient(90deg,#FFAF87,#fff,#C5E898)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    marginTop: 6,
+                  }}
+                >
+                  forecasting feeds.
+                </span>
+              </h1>
+              <p
+                className="select-none"
+                style={{
+                  color: "#888",
+                  fontWeight: 300,
+                  fontSize: "11px",
+                  lineHeight: 1.7,
+                  maxWidth: 440,
+                  marginTop: 10,
+                }}
+              >
+                Consolidate high-frequency records, remote database queries, and
+                volatile transaction ledgers directly into a beautiful circular
+                cockpit map. Calibrate phase-modulators live to isolate signals
+                cleanly.
+              </p>
+            </div>
+
+            {/* Harmonizer sliders */}
+            <div
+              className="flex flex-col gap-3 p-4 sm:p-5 rounded-2xl relative overflow-hidden"
+              style={{
+                background: "rgba(0,0,0,0.6)",
+                border: "1px solid rgba(255,255,255,0.05)",
+              }}
+            >
+              <div
+                className="flex items-center justify-between pb-2"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+              >
+                <span
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "8.5px",
+                    color: "#FFAF87",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    fontWeight: 900,
+                  }}
+                >
+                  HARMONIZER CONSTANTS
+                </span>
+                <span
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "7.5px",
+                    color: "#555",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Interactive Oscillations
+                </span>
               </div>
 
-              {/* Bold Brutalist Typographical Accent and Header */}
-              <div className="flex flex-col gap-2 mt-2">
-                <h1 className="text-4xl sm:text-5xl md:text-[56px] font-sans font-black tracking-tighter text-white leading-[1.05] uppercase">
-                  Unify Stream <br />
-                  <span className="text-[#FFAF87] italic font-serif lowercase tracking-normal font-normal">noise</span>.
-                  <span className="block mt-1 font-light text-neutral-400">Discover latent</span>
-                  <span className="block bg-gradient-to-r from-[#FFAF87] via-white to-[#C5E898] bg-clip-text text-transparent italic font-mono font-black tracking-widest normal-case text-3xl sm:text-4xl">
-                    forecasting feeds.
-                  </span>
-                </h1>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 select-none">
+                {/* Frequency */}
+                <div
+                  className="flex flex-col gap-1.5 p-3 rounded-xl"
+                  style={{
+                    background: "#050505",
+                    border: "1px solid rgba(255,255,255,0.05)",
+                  }}
+                >
+                  <div
+                    className="flex items-center justify-between"
+                    style={{
+                      fontFamily: "monospace",
+                      fontSize: "9px",
+                      color: "#999",
+                      fontWeight: 700,
+                    }}
+                  >
+                    <span>⚡ WAVE_FREQ:</span>
+                    <span style={{ color: "#FFAF87", fontWeight: 900 }}>
+                      {streamFrequency} Hz
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="12"
+                    step="1"
+                    value={streamFrequency}
+                    onChange={(e) => setStreamFrequency(Number(e.target.value))}
+                    className="w-full cursor-pointer"
+                    style={{ accentColor: "#FFAF87" }}
+                  />
+                  <div
+                    className="flex items-center justify-between"
+                    style={{
+                      fontFamily: "monospace",
+                      fontSize: "6.5px",
+                      color: "#444",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    <span>1 HZ MIN</span>
+                    <span>12 HZ PEAK</span>
+                  </div>
+                </div>
 
-                <p className="text-gray-400 font-light text-xs sm:text-xs max-w-xl leading-relaxed mt-4 select-none">
-                  Consolidate high-frequency records, remote database queries, and volatile transaction ledgers directly into a beautiful circular cockpit map. Calibrate phase-modulators live to isolate signals cleanly.
-                </p>
+                {/* Amplitude */}
+                <div
+                  className="flex flex-col gap-1.5 p-3 rounded-xl"
+                  style={{
+                    background: "#050505",
+                    border: "1px solid rgba(255,255,255,0.05)",
+                  }}
+                >
+                  <div
+                    className="flex items-center justify-between"
+                    style={{
+                      fontFamily: "monospace",
+                      fontSize: "9px",
+                      color: "#999",
+                      fontWeight: 700,
+                    }}
+                  >
+                    <span>⚡ WAVE_AMP:</span>
+                    <span style={{ color: "#C5E898", fontWeight: 900 }}>
+                      {amplitude}px
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="5"
+                    max="75"
+                    step="5"
+                    value={amplitude}
+                    onChange={(e) => setAmplitude(Number(e.target.value))}
+                    className="w-full cursor-pointer"
+                    style={{ accentColor: "#C5E898" }}
+                  />
+                  <div
+                    className="flex items-center justify-between"
+                    style={{
+                      fontFamily: "monospace",
+                      fontSize: "6.5px",
+                      color: "#444",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    <span>5PX MIN</span>
+                    <span>75PX MAX</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Micro Parameter Harmonizer Sliders */}
-            <div className="flex flex-col gap-5 mt-6">
-              <div className="p-4 sm:p-5 rounded-2xl bg-black/60 border border-white/5 flex flex-col gap-4 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[#FFAF87]/3 blur-2xl pointer-events-none" />
-                
-                <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                  <span className="font-mono text-[8.5px] text-[#FFAF87] tracking-widest uppercase block font-black">
-                    HARMONIZER CONSTANTS
-                  </span>
-                  <span className="text-[7.5px] font-mono text-gray-500 uppercase">
-                    Interactive Oscillations
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 select-none">
-                  {/* Frequency dial */}
-                  <div className="flex flex-col gap-1.5 p-3 bg-[#050505] rounded-xl border border-white/5">
-                    <div className="flex items-center justify-between text-[9px] font-mono text-gray-400">
-                      <span className="flex items-center gap-1 font-bold">
-                        <Sliders className="w-3 h-3 text-[#FFAF87]" /> WAVE_FREQ:
-                      </span>
-                      <span className="text-[#FFAF87] font-black">{streamFrequency} Hz</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="1"
-                      max="12"
-                      step="1"
-                      value={streamFrequency}
-                      onChange={(e) => setStreamFrequency(Number(e.target.value))}
-                      className="w-full accent-[#FFAF87] cursor-pointer bg-white/5 h-1 rounded-full mt-1.5"
-                    />
-                    <div className="flex items-center justify-between text-[6.5px] text-gray-600 font-mono mt-0.5 font-bold">
-                      <span>1 HZ MIN</span>
-                      <span>12 HZ PEAK</span>
-                    </div>
-                  </div>
-
-                  {/* Amplitude dial */}
-                  <div className="flex flex-col gap-1.5 p-3 bg-[#050505] rounded-xl border border-white/5">
-                    <div className="flex items-center justify-between text-[9px] font-mono text-gray-400">
-                      <span className="flex items-center gap-1 font-bold">
-                        <Zap className="w-3 h-3 text-[#C5E898]" /> WAVE_AMP:
-                      </span>
-                      <span className="text-[#C5E898] font-black">{amplitude}px</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="5"
-                      max="75"
-                      step="5"
-                      value={amplitude}
-                      onChange={(e) => setAmplitude(Number(e.target.value))}
-                      className="w-full accent-[#C5E898] cursor-pointer bg-white/5 h-1 rounded-full mt-1.5"
-                    />
-                    <div className="flex items-center justify-between text-[6.5px] text-gray-600 font-mono mt-0.5 font-bold">
-                      <span>5PX MIN</span>
-                      <span>75PX MAX</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action commands navigation */}
-              <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center w-full mt-2">
-                <button
-                  onClick={() => onNavigate("pipeline")}
-                  className="flex-1 px-5 py-3.5 rounded-xl bg-gradient-to-tr from-[#FFAF87] via-white to-[#C5E898] text-black font-sans font-black text-[10.5px] tracking-widest uppercase hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg select-none"
-                >
-                  Explore Solutions
-                  <Rocket className="w-4 h-4 stroke-[2.5px] text-neutral-900" />
-                </button>
-                
-                <button
-                  onClick={() => onNavigate("dashboard")}
-                  className="flex-1 px-5 py-3.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-sans font-bold text-[10.5px] tracking-widest uppercase hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer select-none"
-                >
-                  Launch Console
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#C5E898] animate-pulse" />
-                </button>
-              </div>
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => onNavigate("pipeline")}
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl select-none transition-all hover:scale-[1.01] active:scale-[0.98]"
+                style={{
+                  padding: "12px 18px",
+                  background: "linear-gradient(135deg,#FFAF87,#fff,#C5E898)",
+                  color: "#111",
+                  fontWeight: 900,
+                  fontSize: "10.5px",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  border: "none",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 24px rgba(255,175,135,0.15)",
+                }}
+              >
+                Explore Solutions
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: 16, height: 16 }}>
+                  <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <button
+                onClick={() => onNavigate("dashboard")}
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl select-none transition-all hover:scale-[1.01] active:scale-[0.98]"
+                style={{
+                  padding: "12px 18px",
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "10.5px",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                }}
+              >
+                Launch Console
+                <span
+                  className="rounded-full"
+                  style={{
+                    width: 6,
+                    height: 6,
+                    background: "#C5E898",
+                    animation: "heroPing 1.5s ease-in-out infinite",
+                    display: "inline-block",
+                  }}
+                />
+              </button>
             </div>
           </div>
 
-          {/* ==========================================================
-              SECTOR 2: KINETIC RADAR WAVE SCOPE & RADIAL HARMONIZER (Col: 4)
-              ========================================================== */}
-          <div className="lg:col-span-4 flex flex-col justify-between h-full bg-black/60 border border-white/10 rounded-[36px] p-6 relative overflow-hidden backdrop-blur-md shadow-2xl select-none group">
-            {/* Pulsating central energy glow sphere */}
-            <div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-[#FFAF87]/5 blur-xl pointer-events-none"
-              style={{ transform: `translate(-50%, -50%) scale(${1 + amplitude * 0.006})` }}
-            />
-
-            {/* Scope Identifier header */}
-            <div className="flex items-center justify-between border-b border-white/5 pb-3">
-              <span className="font-mono text-[8px] text-[#FFAF87] tracking-widest uppercase flex items-center gap-1.5 font-bold">
-                <Radio className="w-4 h-4 text-[#FFAF87] animate-pulse" />
+          {/* ===================== SECTOR 2 — RADAR ===================== */}
+          <div
+            className="lg:col-span-4 flex flex-col justify-between relative overflow-hidden rounded-[32px] p-6"
+            style={{
+              background: "rgba(0,0,0,0.6)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              backdropFilter: "blur(16px)",
+              boxShadow: "0 20px 80px rgba(0,0,0,0.5)",
+            }}
+          >
+            {/* Scope header */}
+            <div
+              className="flex items-center justify-between pb-3"
+              style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+            >
+              <span
+                className="flex items-center gap-2"
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: "8px",
+                  color: "#FFAF87",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  fontWeight: 700,
+                }}
+              >
+                <span
+                  className="rounded-full"
+                  style={{
+                    width: 8,
+                    height: 8,
+                    background: "#FFAF87",
+                    animation: "heroPing 1.8s ease-in-out infinite",
+                    display: "inline-block",
+                    flexShrink: 0,
+                  }}
+                />
                 ORBITAL_SCOPE_V3
               </span>
-              <button 
+              <button
                 onClick={handleCalibration}
-                title="Calibrate Circular Orbit Phase"
-                className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 hover:border-[#FFAF87]/40 border border-transparent transition-all cursor-pointer focus:outline-none"
+                title="Calibrate"
+                className="flex items-center justify-center rounded-lg transition-all"
+                style={{
+                  padding: "5px 7px",
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid transparent",
+                  color: "#888",
+                  cursor: "pointer",
+                }}
               >
-                <RefreshCw className={`w-3.5 h-3.5 text-gray-400 hover:text-white ${isCalibrating ? "animate-spin text-[#C5E898]" : ""}`} />
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  style={{
+                    width: 14,
+                    height: 14,
+                    animation: isCalibrating ? "heroSpin 0.7s linear infinite" : "none",
+                    color: isCalibrating ? "#C5E898" : undefined,
+                  }}
+                >
+                  <path
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </button>
             </div>
 
-            {/* Kinetic SVG Scope Screen with micro-ticks */}
-            <div className="w-full flex items-center justify-center py-6 my-auto">
-              <div className="relative w-[280px] h-[280px] flex items-center justify-center border border-white/5 rounded-full bg-black/30">
-                
-                {/* Concentric crosshair dials */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-[84%] h-[84%] rounded-full border border-dashed border-white/5" />
-                  <div className="w-[60%] h-[60%] rounded-full border border-dashed border-white/5" />
-                  <div className="w-[36%] h-[36%] rounded-full border border-white/5" />
-                  
-                  {/* Axis dividers */}
-                  <div className="absolute w-full h-[0.75px] bg-white/5" />
-                  <div className="absolute h-full w-[0.75px] bg-white/5" />
-                  
-                  {/* Compass markings */}
-                  <span className="absolute top-1.5 text-[6px] font-mono text-gray-500 tracking-widest">000° TRAC</span>
-                  <span className="absolute right-1.5 text-[6px] font-mono text-gray-500 tracking-widest">090° SYNC</span>
-                  <span className="absolute bottom-1.5 text-[6px] font-mono text-gray-500 tracking-widest">180° CORE</span>
-                  <span className="absolute left-1.5 text-[6px] font-mono text-gray-500 tracking-widest">270° INP</span>
-                </div>
-
-                {/* Micro rotating ring ticks */}
-                <svg 
-                  className="absolute inset-[10px] w-[260px] h-[260px] pointer-events-none opacity-30 transition-transform duration-300" 
-                  viewBox="0 0 200 200"
-                  style={{ transform: `rotate(${-radialAngle}deg)` }}
+            {/* SVG Scope */}
+            <div className="flex items-center justify-center py-4 flex-1">
+              <div
+                className="relative flex items-center justify-center"
+                style={{
+                  width: 260,
+                  height: 260,
+                  borderRadius: "50%",
+                  border: "1px solid rgba(255,255,255,0.05)",
+                  background: "rgba(0,0,0,0.3)",
+                  flexShrink: 0,
+                }}
+              >
+                <svg
+                  viewBox="0 0 240 240"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
                 >
-                  <circle cx="100" cy="100" r="95" stroke="#FFF" strokeWidth="0.5" strokeDasharray="1 10" fill="none" />
-                </svg>
-
-                {/* Concentric Live Waves SVG Plot */}
-                <svg className="w-full h-full absolute inset-0 z-10 pointer-events-none" viewBox="0 0 300 300">
-                  {/* Scanning sweep radial line */}
-                  <line 
-                    x1="150" 
-                    y1="150" 
-                    x2={150 + 130 * Math.cos((radialAngle * Math.PI) / 180)} 
-                    y2={150 + 130 * Math.sin((radialAngle * Math.PI) / 180)} 
-                    stroke="rgba(255,175,135,0.22)" 
+                  {/* Dashed rings */}
+                  <circle cx="120" cy="120" r="100" stroke="rgba(255,255,255,0.04)" strokeWidth="1" fill="none" strokeDasharray="2 8" />
+                  <circle cx="120" cy="120" r="72" stroke="rgba(255,255,255,0.04)" strokeWidth="1" fill="none" strokeDasharray="2 8" />
+                  <circle cx="120" cy="120" r="44" stroke="rgba(255,255,255,0.04)" strokeWidth="1" fill="none" />
+                  {/* Axis lines */}
+                  <line x1="0" y1="120" x2="240" y2="120" stroke="rgba(255,255,255,0.04)" strokeWidth="0.75" />
+                  <line x1="120" y1="0" x2="120" y2="240" stroke="rgba(255,255,255,0.04)" strokeWidth="0.75" />
+                  {/* Compass labels */}
+                  <text x="120" y="14" textAnchor="middle" fontFamily="monospace" fontSize="6" fill="#444">000° TRAC</text>
+                  <text x="226" y="123" textAnchor="end" fontFamily="monospace" fontSize="6" fill="#444">090°</text>
+                  <text x="120" y="236" textAnchor="middle" fontFamily="monospace" fontSize="6" fill="#444">180° CORE</text>
+                  <text x="14" y="123" textAnchor="start" fontFamily="monospace" fontSize="6" fill="#444">270°</text>
+                  {/* Rotating tick ring */}
+                  <circle
+                    cx="120" cy="120" r="110"
+                    stroke="rgba(255,255,255,0.12)"
+                    strokeWidth="0.5"
+                    fill="none"
+                    strokeDasharray="1 9"
+                    transform={`rotate(${-radialAngle},120,120)`}
+                  />
+                  {/* Sweep line */}
+                  <line
+                    x1="120" y1="120"
+                    x2={sweepEnd.x} y2={sweepEnd.y}
+                    stroke="rgba(255,175,135,0.2)"
                     strokeWidth="1"
                     strokeDasharray="4 2"
                   />
-                  
-                  {/* Main sine modulated circle path */}
-                  <motion.path
-                    animate={{ d: generateCircularWavePath() }}
-                    transition={{ type: "spring", stiffness: 120, damping: 10 }}
-                    stroke="url(#customScopeGradient)"
+                  {/* Main wave path */}
+                  <path
+                    d={wavePath}
+                    stroke="url(#heroGrad)"
                     strokeWidth="2.5"
                     fill="none"
                     strokeLinecap="round"
                   />
-
-                  {/* Nodes orbiting on path boundaries */}
-                  {orbitalNodes.map((node) => (
+                  {/* Orbital nodes */}
+                  {orbPositions.map((pos, i) => (
                     <circle
-                      key={node.id}
-                      cx={node.x}
-                      cy={node.y}
+                      key={i}
+                      cx={pos.x}
+                      cy={pos.y}
                       r="4"
-                      fill={node.id === 0 ? "#FFAF87" : node.id === 1 ? "#FFFFFF" : "#C5E898"}
-                      style={{ filter: "drop-shadow(0px 0px 4px rgba(255,175,135,0.8))" }}
+                      fill={i === 0 ? "#FFAF87" : i === 1 ? "#ffffff" : "#C5E898"}
                     />
                   ))}
-
-                  {/* Gradient mapping for standard wave */}
                   <defs>
-                    <linearGradient id="customScopeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="#FFAF87" />
-                      <stop offset="50%" stopColor="#FFFFFF" />
+                      <stop offset="50%" stopColor="#ffffff" />
                       <stop offset="100%" stopColor="#C5E898" />
                     </linearGradient>
                   </defs>
                 </svg>
 
-                {/* Central trigger key button */}
-                <div className="relative z-20 flex flex-col items-center justify-center w-16 h-16 rounded-full bg-black border border-white/10 shadow-2xl group-hover:border-[#FFAF87]/60 transition-colors">
-                  <div className="absolute inset-1 rounded-full border border-dashed border-[#FFAF87]/20 animate-spin [animation-duration:10s]" />
-                  <Crosshair className="w-5 h-5 text-[#FFAF87] group-hover:scale-125 transition-transform" />
-                </div>
+                {/* Center crosshair button */}
+                <button
+                  onClick={handleCalibration}
+                  className="relative flex items-center justify-center rounded-full transition-all"
+                  style={{
+                    zIndex: 20,
+                    width: 56,
+                    height: 56,
+                    background: "#000",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    cursor: "pointer",
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#FFAF87" strokeWidth="2" style={{ width: 20, height: 20 }}>
+                    <circle cx="12" cy="12" r="9" />
+                    <circle cx="12" cy="12" r="1" />
+                    <line x1="12" y1="3" x2="12" y2="7" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                    <line x1="3" y1="12" x2="7" y2="12" />
+                    <line x1="17" y1="12" x2="21" y2="12" />
+                  </svg>
+                </button>
               </div>
             </div>
 
-            {/* Micro Operational diagnostic values */}
-            <div className="border-t border-white/5 pt-3">
-              <div className="grid grid-cols-3 gap-2 text-center select-none font-bold">
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-mono text-[6.5px] text-gray-500 uppercase">SIGNAL_SPAN</span>
-                  <span className="font-mono text-[9px] text-white font-extrabold uppercase">
-                    {(streamFrequency * 18.5 + 23.4).toFixed(1)}° RAD
+            {/* Scope stats */}
+            <div
+              className="grid grid-cols-3 gap-0 pt-3 select-none"
+              style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+            >
+              {[
+                { label: "SIGNAL_SPAN", val: `${signalSpan}° RAD`, color: "#fff" },
+                { label: "FEED_CALIB",  val: "99.98%",             color: "#C5E898" },
+                { label: "PHASE_SWEEP", val: `${Math.round(radialAngle)}° DEG`, color: "#FFAF87" },
+              ].map((s, i) => (
+                <div
+                  key={s.label}
+                  className="flex flex-col items-center gap-1 text-center"
+                  style={i === 1 ? { borderLeft: "1px solid rgba(255,255,255,0.05)", borderRight: "1px solid rgba(255,255,255,0.05)" } : {}}
+                >
+                  <span style={{ fontFamily: "monospace", fontSize: "6.5px", color: "#555", textTransform: "uppercase", fontWeight: 700 }}>
+                    {s.label}
+                  </span>
+                  <span style={{ fontFamily: "monospace", fontSize: "9px", fontWeight: 900, textTransform: "uppercase", color: s.color }}>
+                    {s.val}
                   </span>
                 </div>
-                <div className="flex flex-col gap-0.5 border-x border-white/5">
-                  <span className="font-mono text-[6.5px] text-gray-500 uppercase">FEED_CALIB</span>
-                  <span className="font-mono text-[9px] text-[#C5E898] font-extrabold uppercase">
-                    99.98%
-                  </span>
-                </div>
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-mono text-[6.5px] text-gray-500 uppercase">PHASE_SWEEP</span>
-                  <span className="font-mono text-[9px] text-[#FFAF87] font-extrabold uppercase">
-                    {radialAngle.toFixed(0)}° DEG
-                  </span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* ==========================================================
-              SECTOR 3: INTERLOCKING ROTOR SYSTEM & WAVE WATERFALL HUD (Col: 3)
-              ========================================================== */}
-          <div className="lg:col-span-3 flex flex-col justify-between gap-4 h-full bg-black/40 border border-white/5 rounded-[36px] p-6 relative overflow-hidden backdrop-blur-md">
-            <div className="absolute bottom-0 right-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#C5E898]/30 to-transparent" />
-            
-            {/* Live UTC Millisecond Clock */}
-            <div className="flex flex-col gap-1.5 p-3.5 rounded-2xl bg-black border border-white/5 text-left select-none relative overflow-hidden">
-              <div className="absolute top-1 right-2 flex items-center gap-1 font-mono text-[6.5px] text-[#C5E898] font-extrabold">
-                <span className="w-1 h-1 rounded-full bg-[#C5E898] animate-ping" />
+          {/* ===================== SECTOR 3 — RIGHT PANEL ===================== */}
+          <div
+            className="lg:col-span-3 flex flex-col gap-4 relative overflow-hidden rounded-[32px] p-6"
+            style={{
+              background: "rgba(0,0,0,0.4)",
+              border: "1px solid rgba(255,255,255,0.05)",
+              backdropFilter: "blur(16px)",
+            }}
+          >
+            <div
+              className="absolute bottom-0 left-0 right-0 h-[2px] pointer-events-none"
+              style={{ background: "linear-gradient(to right,transparent,rgba(197,232,152,0.3),transparent)" }}
+            />
+
+            {/* UTC Clock */}
+            <div
+              className="p-3.5 rounded-2xl relative overflow-hidden text-left"
+              style={{ background: "#000", border: "1px solid rgba(255,255,255,0.05)" }}
+            >
+              <div
+                className="absolute top-2 right-2.5 flex items-center gap-1.5"
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: "6.5px",
+                  color: "#C5E898",
+                  fontWeight: 900,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                <span
+                  className="rounded-full"
+                  style={{
+                    width: 4,
+                    height: 4,
+                    background: "#C5E898",
+                    animation: "heroPing 1.4s ease-in-out infinite",
+                    display: "inline-block",
+                  }}
+                />
                 SECURE
               </div>
-              <span className="font-mono text-[7px] text-gray-500 tracking-wider">HARNESS_UTC_CLOCK</span>
-              <div className="font-mono text-[11px] text-white font-black tracking-wider flex items-center justify-between">
-                <span>{systemTime}</span>
+              <div style={{ fontFamily: "monospace", fontSize: "7px", color: "#555", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                HARNESS_UTC_CLOCK
+              </div>
+              <div style={{ fontFamily: "monospace", fontSize: "11px", color: "#fff", fontWeight: 900, letterSpacing: "0.06em", marginTop: 4 }}>
+                {systemTime}
               </div>
             </div>
 
-            {/* Interlocking physical gear assembly & database switch board */}
-            <div className="flex flex-col text-left">
+            {/* Ingestion gears */}
+            <div>
               <div className="flex items-center justify-between mb-2 select-none">
-                <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest font-bold">
+                <span style={{ fontFamily: "monospace", fontSize: "8px", color: "#555", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>
                   INGESTION_TUNNEL_GEARS:
                 </span>
-                
-                {/* Visual indicator representation */}
-                <div className="flex items-center gap-1">
-                  <span className="font-mono text-[7px] text-gray-400 font-bold uppercase">PHYS_ENGAGED</span>
-                  <Activity className="w-2.5 h-2.5 text-[#C5E898] animate-pulse" />
+                <div className="flex items-center gap-1" style={{ fontFamily: "monospace", fontSize: "7px", color: "#888", fontWeight: 700, textTransform: "uppercase" }}>
+                  PHYS_ENGAGED
+                  <span
+                    className="rounded-full"
+                    style={{
+                      width: 6,
+                      height: 6,
+                      background: "#C5E898",
+                      animation: "heroPing 1.5s ease-in-out infinite",
+                      display: "inline-block",
+                      marginLeft: 4,
+                    }}
+                  />
                 </div>
               </div>
 
-              {/* Interactive sources buttons */}
-              <div className="flex flex-col gap-2" id="database-connector-nodes">
+              <div className="flex flex-col gap-1.5">
                 {databasesList.map((db) => {
-                  const DbIcon = db.icon;
                   const isActive = selectedNode === db.id;
-
                   return (
                     <button
                       key={db.id}
                       onClick={() => handleNodeClick(db.id, db.name)}
-                      className={`p-2.5 rounded-xl border text-left flex items-center justify-between transition-all duration-300 relative overflow-hidden select-none cursor-pointer group ${
-                        isActive
-                          ? "bg-gradient-to-r from-[#121212] to-[#040404] border-[#FFAF87] shadow-[0_4px_12px_rgba(255,175,135,0.05)] scale-[1.01]"
-                          : "bg-black/60 border-white/5 hover:border-white/10 hover:bg-white/5"
-                      }`}
+                      className="w-full flex items-center justify-between text-left select-none cursor-pointer transition-all"
+                      style={{
+                        padding: "8px 10px",
+                        borderRadius: 12,
+                        border: isActive ? "1px solid #FFAF87" : "1px solid rgba(255,255,255,0.05)",
+                        background: isActive
+                          ? "linear-gradient(90deg,#121212,#040404)"
+                          : "rgba(0,0,0,0.6)",
+                        boxShadow: isActive ? "0 4px 12px rgba(255,175,135,0.06)" : "none",
+                        transform: isActive ? "scale(1.01)" : "scale(1)",
+                      }}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div className={`p-1.5 rounded-lg ${isActive ? "bg-[#FFAF87] text-black" : "bg-white/5 text-gray-400"} transition-all`}>
-                          <DbIcon className={`w-3.5 h-3.5 ${isSyncing && isActive ? "animate-spin" : ""}`} />
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="flex items-center justify-center rounded-lg transition-all"
+                          style={{
+                            padding: 5,
+                            background: isActive ? "#FFAF87" : "rgba(255,255,255,0.05)",
+                            color: isActive ? "#000" : "#888",
+                          }}
+                        >
+                          {/* DB icon (reuse gear path as placeholder, or swap per-db) */}
+                          <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, animation: isSyncing && isActive ? "heroSpin 0.6s linear infinite" : "none" }} fill="currentColor">
+                            <path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4zM4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4S4 11.21 4 9zm0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4z" />
+                          </svg>
                         </div>
-                        <h4 className="font-sans font-black text-[10px] text-white tracking-widest uppercase">
+                        <span style={{ fontFamily: "monospace", fontSize: "10px", fontWeight: 900, color: "#fff", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                           {db.id}
-                        </h4>
+                        </span>
                       </div>
-
-                      <div className="flex items-center gap-1.5">
-                        {/* High-fidelity gear representation */}
-                        <svg className={`w-6 h-6 transform transition-all ${isActive ? "text-[#FFAF87]" : "text-gray-600 group-hover:text-gray-400"}`} viewBox="0 0 24 24" style={{ transform: `rotate(${isActive ? gearRotation : -gearRotation * 0.4}deg)` }}>
-                          <path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.47,5.34 14.86,5.08L14.47,2.42C14.43,2.18 14.22,2 13.97,2H9.97C9.72,2 9.51,2.18 9.47,2.42L9.08,5.08C8.47,5.34 7.9,5.66 7.38,6.05L4.89,5.05C4.67,4.96 4.4,5.05 4.28,5.27L2.28,8.73C2.16,8.95 2.21,9.22 2.4,9.37L4.51,11C4.47,11.34 4.45,11.67 4.45,12C4.45,12.33 4.47,12.65 4.51,12.97L2.4,14.63C2.21,14.78 2.16,15.05 2.28,15.27L4.28,18.73C4.4,18.95 4.67,19.03 4.89,18.95L7.38,17.95C7.9,18.34 8.47,18.66 9.08,18.92L9.47,21.58C9.51,21.82 9.72,22 9.97,22H13.97C14.22,22 14.43,21.82 14.47,21.58L14.86,18.92C15.47,18.66 16.04,18.34 16.56,17.95L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
-                        </svg>
-                      </div>
+                      {/* Gear icon */}
+                      <svg
+                        viewBox="0 0 24 24"
+                        style={{
+                          width: 22,
+                          height: 22,
+                          color: isActive ? "#FFAF87" : "#555",
+                          transform: `rotate(${isActive ? gearRotation : -gearRotation * 0.4}deg)`,
+                          transition: "color 0.25s",
+                          flexShrink: 0,
+                        }}
+                        fill="currentColor"
+                      >
+                        <path d={GEAR_PATH} />
+                      </svg>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Interactive Particle Waterfall simulation and logs */}
-            <div className="rounded-2xl bg-black border border-white/5 flex flex-col p-4 relative overflow-hidden text-left min-h-[170px]">
-              
-              {/* Floating active event particles canvas overlay */}
-              <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30 select-none">
-                {particles.map((p) => (
-                  <div
-                    key={p.id}
-                    className="absolute rounded-full transition-all duration-300"
-                    style={{
-                      left: `${p.x}px`,
-                      top: `${p.y}px`,
-                      width: `${p.size}px`,
-                      height: `${p.size}px`,
-                      backgroundColor: p.color,
-                      opacity: p.opacity,
-                      boxShadow: `0 0 6px ${p.color}`
-                    }}
-                  />
-                ))}
-              </div>
+            {/* Telemetry log with particle canvas */}
+            <div
+              className="rounded-2xl flex flex-col relative overflow-hidden flex-1"
+              style={{
+                background: "#000",
+                border: "1px solid rgba(255,255,255,0.05)",
+                padding: "12px 14px",
+                minHeight: 140,
+              }}
+            >
+              <canvas
+                ref={canvasRef}
+                width={260}
+                height={160}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  pointerEvents: "none",
+                  opacity: 0.28,
+                  width: "100%",
+                  height: "100%",
+                }}
+              />
 
-              {/* Header inside debugging waterfall card */}
-              <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2 z-10 relative select-none">
-                <span className="font-mono text-[8px] text-[#C5E898] uppercase tracking-widest block font-bold flex items-center gap-1">
-                  <Terminal className="w-3 h-3 text-[#C5E898]" />
+              <div
+                className="flex items-center justify-between relative z-10"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: 8, marginBottom: 8 }}
+              >
+                <span
+                  className="flex items-center gap-1"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "8px",
+                    color: "#C5E898",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    fontWeight: 700,
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 13, height: 13 }}>
+                    <polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" />
+                  </svg>
                   TELEMETRY_LOGS
                 </span>
-                
-                {/* Simulated event triggers */}
-                <button 
+                <button
                   onClick={injectQuantumPeak}
-                  className="font-mono text-[7px] text-[#FFAF87] font-black border border-[#FFAF87]/20 px-1.5 py-0.5 rounded bg-[#FFAF87]/10 hover:bg-[#FFAF87] hover:text-black transition-colors cursor-pointer select-none"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "7px",
+                    color: "#FFAF87",
+                    fontWeight: 900,
+                    border: "1px solid rgba(255,175,135,0.2)",
+                    padding: "3px 7px",
+                    borderRadius: 4,
+                    background: "rgba(255,175,135,0.08)",
+                    cursor: "pointer",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    transition: "all 0.15s",
+                  }}
                 >
                   INJECT_PEAK
                 </button>
               </div>
 
-              {/* Scrolling log text stream */}
-              <div className="flex-grow flex flex-col gap-1 pr-1 overflow-y-auto max-h-[90px] z-10 relative select-none">
+              <div
+                className="flex flex-col gap-1 relative z-10"
+                style={{ overflowY: "auto", maxHeight: 80 }}
+              >
                 {logs.map((log, idx) => (
-                  <div key={idx} className="font-mono text-[8.5px] leading-normal flex items-start gap-1">
-                    <span className="text-[#FFAF87] font-semibold">{">"}</span>
-                    <p className={idx === 0 && isSyncing ? "text-[#FFAF87] animate-pulse" : idx === 0 ? "text-[#C5E898] font-semibold" : "text-gray-400"}>
+                  <div key={idx} className="flex items-start gap-1" style={{ fontFamily: "monospace", fontSize: "8.5px", lineHeight: 1.4 }}>
+                    <span style={{ color: "#FFAF87", fontWeight: 700, flexShrink: 0 }}>{">"}</span>
+                    <p
+                      style={{
+                        color:
+                          idx === 0 && isSyncing
+                            ? "#FFAF87"
+                            : idx === 0
+                            ? "#C5E898"
+                            : "#666",
+                        fontWeight: idx === 0 ? 700 : 400,
+                        animation: idx === 0 && isSyncing ? "heroTextPulse 1s ease-in-out infinite" : "none",
+                        margin: 0,
+                      }}
+                    >
                       {log}
                     </p>
                   </div>
@@ -631,18 +1014,49 @@ export default function Hero({ onNavigate }: HeroProps) {
               </div>
             </div>
 
-            {/* Static footer metadata for aesthetic integrity */}
-            <div className="pt-2 border-t border-white/5 flex items-center justify-between font-mono text-[7.5px] text-gray-500 select-none text-left">
+            {/* Footer */}
+            <div
+              className="flex items-center justify-between pt-2 select-none"
+              style={{
+                borderTop: "1px solid rgba(255,255,255,0.05)",
+                fontFamily: "monospace",
+                fontSize: "7.5px",
+                color: "#555",
+              }}
+            >
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#C5E898]" /> ENCRYPTED_STREAMS
+                <svg viewBox="0 0 24 24" fill="none" stroke="#C5E898" strokeWidth="2" style={{ width: 14, height: 14 }}>
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                ENCRYPTED_STREAMS
               </span>
-              <span>DELAY: <span className="text-white font-bold">{isSyncing ? "..." : "0.04 ms"}</span></span>
+              <span>
+                DELAY:{" "}
+                <span style={{ color: "#fff", fontWeight: 700 }}>
+                  {isSyncing ? "..." : "0.04 ms"}
+                </span>
+              </span>
             </div>
           </div>
 
         </div>
-
       </div>
+
+      {/* Global keyframe injector */}
+      <style>{`
+        @keyframes heroPing {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(1.4); }
+        }
+        @keyframes heroSpin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes heroTextPulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
     </section>
   );
 }
