@@ -240,33 +240,33 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             {/* ── ZONE 1 · LOGO ──────────────────────────────── */}
             <button
               onClick={() => { onNavigate("home"); setIsOpen(false); }}
-              className={`flex items-center gap-3 px-5 py-3.5 cursor-pointer focus:outline-none group transition-colors border-r border-white/[0.06] flex-shrink-0 ${glitchActive ? "nb-glitch" : ""}`}
+              className={`flex items-center gap-3 px-5 py-3.5 cursor-pointer focus:outline-none group transition-colors border-r ${glitchActive ? "nb-glitch" : ""}`}
             >
               {/* reactor */}
-              <div className="relative w-9 h-9 rounded-xl bg-black border border-white/10 flex items-center justify-center group-hover:border-[#FFAF87]/45 transition-colors flex-shrink-0">
-                <div className="absolute inset-[5px] rounded-lg border border-dashed border-[#FFAF87]/14 nb-cw" />
-                <div className="absolute inset-[8px] rounded-md border border-[#C5E898]/10 nb-ccw" />
-                <span className="nb-ping w-[5px] h-[5px] rounded-full bg-[#C5E898] text-[#C5E898]" />
+              <div className="relative w-9 h-9 rounded-xl bg-black border border-white/10 flex items-center justify-center transition-colors">
+                <div className="absolute  rounded-lg border border-dashed nb-cw" />
+                <div className="absolute  rounded-md border  nb-ccw" />
+                <span className="nb-ping rounded-full" />
                 <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 36 36">
                   <circle cx="18" cy="18" r="15.5" stroke="#C5E898" strokeWidth="0.5" fill="none"
                     strokeDasharray="3 10" className="opacity-20 group-hover:opacity-55 transition-opacity" />
                 </svg>
               </div>
               {/* wordmark */}
-              <div className="text-left flex-shrink-0">
+              <div className="text-left ">
                 <div className="nb-syne font-black text-[13px] tracking-[.2em] text-white uppercase flex items-center gap-2">
                   Zor-Lix
-                  <span className="nb-mono text-[7px] text-[#C5E898] px-1.5 py-0.5 rounded-md bg-[#C5E898]/10 border border-[#C5E898]/22 tracking-widest">v3.9</span>
+                  <span className="nb-mono text-[7px] px-1.5 py-0.5 rounded-md border tracking-widest">v3.9</span>
                 </div>
                 <div className="nb-mono text-[6px] text-gray-600 uppercase tracking-[.28em] mt-0.5">COGNITIVE SYSTEMS</div>
               </div>
             </button>
 
             {/* ── ZONE 2 · STATUS (xl only) ──────────────────── */}
-            <div className="hidden xl:flex flex-col justify-center px-4 border-r border-white/[0.06] self-stretch flex-shrink-0 select-none gap-1">
+            <div className="hidden xl:flex flex-col justify-center px-4 border-r self-stretch select-none gap-1">
               <div className="nb-mono text-[6px] text-gray-600 uppercase tracking-[.18em]">MATRIX SEC_STATUS</div>
-              <div className="nb-mono text-[8px] text-[#C5E898] font-bold tracking-widest flex items-center gap-1.5">
-                <span className="nb-ping w-[5px] h-[5px] rounded-full bg-[#C5E898] text-[#C5E898]" />
+              <div className="nb-mono text-[8px] font-bold tracking-widest flex items-center gap-1.5">
+                <span className="nb-ping rounded-full" />
                 SSL_SECURE
               </div>
             </div>

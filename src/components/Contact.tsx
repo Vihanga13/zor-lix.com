@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { 
   Send, 
   Terminal as TermIcon, 
@@ -39,9 +38,7 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const hcaptchaRef = useRef<HCaptcha>(null);
-  
+
   // Real-time terminal diagnostic simulator
   const [terminalFeed, setTerminalFeed] = useState<string[]>([
     "SECURE_GATEWAY: Ingress control panel initialized.",
@@ -118,15 +115,6 @@ export default function Contact() {
       return;
     }
 
-    if (!captchaToken) {
-      setSubmissionError("Please complete the captcha verification");
-      setTerminalFeed((prev) => [
-        ...prev.slice(-3),
-        "SYS_ERR: Captcha verification required for security protocol."
-      ]);
-      return;
-    }
-
     setIsSubmitting(true);
     setSubmissionError(null);
     setTerminalFeed((prev) => [
@@ -147,7 +135,6 @@ export default function Contact() {
           channel: activeChannel,
           urgency: urgency,
           message: message,
-          "h-captcha-response": captchaToken,
         }),
       });
 
@@ -180,10 +167,6 @@ export default function Contact() {
     setMessage("");
     setIsSubmitted(false);
     setSubmissionError(null);
-    setCaptchaToken(null);
-    if (hcaptchaRef.current) {
-      hcaptchaRef.current.resetCaptcha();
-    }
     setTerminalFeed([
       "SECURE_GATEWAY: Ingress control panel re-initialized.",
       "BOND_STATUS: Clean AES-256 session established on fresh virtual node."
@@ -447,21 +430,6 @@ export default function Contact() {
                       onChange={(e) => setMessage(e.target.value)}
                       className="w-full px-4.5 py-3.5 bg-black border border-white/8 rounded-xl outline-none focus:border-peach/60 text-white font-sans text-xs transition-all placeholder:text-gray-600 focus:shadow-[0_0_15px_rgba(255,175,135,0.04)] resize-none"
                     />
-                  </div>
-
-                  {/* hCaptcha Verification */}
-                  <div className="flex flex-col gap-2">
-                    <label className="font-mono text-[9px] text-gray-500 uppercase tracking-widest block select-none">
-                      SECURITY VERIFICATION
-                    </label>
-                    <div className="p-4 bg-black border border-white/8 rounded-xl flex items-center justify-center">
-                      <HCaptcha
-                        ref={hcaptchaRef}
-                        sitekey="0x4AAAAAADerCTa7APLUSgQU"
-                        onVerify={(token) => setCaptchaToken(token)}
-                        theme="dark"
-                      />
-                    </div>
                   </div>
 
                   {/* Submit tunnel trigger button */}
