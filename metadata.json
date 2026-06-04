@@ -1,0 +1,6 @@
+{
+  "name": "Zor-Lix Intelligence",
+  "description": "An elite AI-powered Business Intelligence platform delivering real-time predictive analytics, automated cleaning, and custom AI agents for enterprise growth under zor-lix.com.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
