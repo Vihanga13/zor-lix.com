@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Check, ArrowRight, ShieldCheck, HelpCircle, Terminal as TermIcon, Sparkles, RefreshCw } from "lucide-react";
+import { loadPayPalScript, createPayPalOrder, capturePayPalOrder } from "../utils/paypalConfig";
 
 interface PricingProps {
   onNavigate: (sectionId: string) => void;
@@ -11,6 +12,8 @@ export default function Pricing({ onNavigate }: PricingProps) {
   const [activePlanIdx, setActivePlanIdx] = useState<number>(1);
   const [selectedCheckoutPlan, setSelectedCheckoutPlan] = useState<string | null>(null);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
+  const [paypalReady, setPaypalReady] = useState(false);
+  const [paypalError, setPaypalError] = useState<string | null>(null);
   
   const plans = [
     {
@@ -71,6 +74,65 @@ export default function Pricing({ onNavigate }: PricingProps) {
     setTimeout(() => {
       setIsProcessingCheckout(false);
     }, 1800);
+  };
+
+  // Load PayPal SDK when checkout is triggered
+  useEffect(() => {
+    if (selectedCheckoutPlan && !isProcessingCheckout) {
+      loadPayPalScript()
+        .then(() => {
+          setPaypalReady(true);
+          renderPayPalButtons();
+        })
+        .catch((err) => {
+          setPaypalError("Failed to load PayPal SDK");
+          console.error("PayPal SDK loading error:", err);
+        });
+    }
+  }, [selectedCheckoutPlan, isProcessingCheckout]);
+
+  const renderPayPalButtons = () => {
+    const paypalButtonContainer = document.getElementById("paypal-button-container");
+    if (!paypalButtonContainer || !(window as any).paypal) return;
+
+    // Clear previous buttons
+    paypalButtonContainer.innerHTML = "";
+
+    (window as any).paypal
+      .Buttons({
+        createOrder: async () => {
+          try {
+            const orderID = await createPayPalOrder(selectedCheckoutPlan!);
+            return orderID;
+          } catch (error) {
+            console.error("Error creating order:", error);
+            setPaypalError("Failed to create order");
+            throw error;
+          }
+        },
+        onApprove: async (data: any) => {
+          try {
+            const result = await capturePayPalOrder(data.orderID);
+            console.log("Payment captured successfully:", result);
+            // Show success message
+            setPaypalError(null);
+            alert(`Payment successful! Order ID: ${result.id}`);
+            setSelectedCheckoutPlan(null);
+          } catch (error) {
+            console.error("Error capturing order:", error);
+            setPaypalError("Failed to capture payment");
+          }
+        },
+        onError: (err: any) => {
+          console.error("PayPal error:", err);
+          setPaypalError("Payment failed. Please try again.");
+        },
+      })
+      .render("#paypal-button-container")
+      .catch((err: any) => {
+        console.error("Error rendering PayPal buttons:", err);
+        setPaypalError("Failed to render PayPal buttons");
+      });
   };
 
   return (
@@ -306,12 +368,22 @@ export default function Pricing({ onNavigate }: PricingProps) {
                       <span>{"}"}</span>
                     </div>
 
-                    <button
-                      onClick={() => setSelectedCheckoutPlan(null)}
-                      className="w-full py-4 bg-white text-black font-sans font-extrabold text-xs uppercase tracking-wider rounded-xl cursor-pointer hover:bg-neutral-200 transition-all active:scale-[0.98]"
-                    >
-                      Enter Operating Sandbox
-                    </button>
+                    {paypalError && (
+                      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono">
+                        {paypalError}
+                      </div>
+                    )}
+
+                    {paypalReady ? (
+                      <div id="paypal-button-container" className="w-full" />
+                    ) : (
+                      <button
+                        onClick={() => setSelectedCheckoutPlan(null)}
+                        className="w-full py-4 bg-white text-black font-sans font-extrabold text-xs uppercase tracking-wider rounded-xl cursor-pointer hover:bg-neutral-200 transition-all active:scale-[0.98]"
+                      >
+                        Enter Operating Sandbox
+                      </button>
+                    )}
                   </div>
                 )}
               </motion.div>
