@@ -252,7 +252,7 @@ export default function Hero({ onNavigate }: HeroProps) {
     >
       {/* Ambient glows */}
       <div
-        className="absolute top-[5%] left-[10%] w-[600px] h-[300px] rounded-full pointer-events-none transition-transform duration-1000"
+        className="absolute top-[5%] left-[10%] rounded-full pointer-events-none transition-transform duration-1000"
         style={{
           background: "rgba(255,175,135,0.08)",
           filter: "blur(120px)",
@@ -260,7 +260,7 @@ export default function Hero({ onNavigate }: HeroProps) {
         }}
       />
       <div
-        className="absolute bottom-[10%] right-[5%] w-[500px] h-[250px] rounded-full pointer-events-none"
+        className="absolute bottom-[10%] right-[5%] rounded-full pointer-events-none"
         style={{ background: "rgba(197,232,152,0.05)", filter: "blur(100px)" }}
       />
 
@@ -276,12 +276,12 @@ export default function Hero({ onNavigate }: HeroProps) {
         }}
       />
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+      <div className=" mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-stretch">
 
           {/* ===================== SECTOR 1 ===================== */}
           <div
-            className="lg:col-span-5 flex flex-col gap-6 relative overflow-hidden rounded-[32px] p-6 sm:p-8"
+            className="lg:col-span-5 flex flex-col gap-6 relative overflow-hidden p-6 sm:p-8"
             style={{
               background: "rgba(0,0,0,0.45)",
               border: "1px solid rgba(255,255,255,0.06)",
@@ -290,7 +290,7 @@ export default function Hero({ onNavigate }: HeroProps) {
           >
             {/* Top glow line */}
             <div
-              className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none"
+              className="absolute top-0 left-0 right-0 pointer-events-none"
               style={{
                 background:
                   "linear-gradient(to right,transparent,rgba(255,175,135,0.4),transparent)",
@@ -598,7 +598,7 @@ export default function Hero({ onNavigate }: HeroProps) {
 
           {/* ===================== SECTOR 2 — RADAR ===================== */}
           <div
-            className="lg:col-span-4 flex flex-col justify-between relative overflow-hidden rounded-[32px] p-6"
+            className="lg:col-span-4 flex flex-col justify-between relative overflow-hidden p-6"
             style={{
               background: "rgba(0,0,0,0.6)",
               border: "1px solid rgba(255,255,255,0.08)",
@@ -794,7 +794,7 @@ export default function Hero({ onNavigate }: HeroProps) {
 
           {/* ===================== SECTOR 3 — RIGHT PANEL ===================== */}
           <div
-            className="lg:col-span-3 flex flex-col gap-4 relative overflow-hidden rounded-[32px] p-6"
+            className="lg:col-span-3 flex flex-col gap-4 relative overflow-hidden p-6"
             style={{
               background: "rgba(0,0,0,0.4)",
               border: "1px solid rgba(255,255,255,0.05)",
@@ -802,7 +802,7 @@ export default function Hero({ onNavigate }: HeroProps) {
             }}
           >
             <div
-              className="absolute bottom-0 left-0 right-0 h-[2px] pointer-events-none"
+              className="absolute bottom-0 left-0 right-0 pointer-events-none"
               style={{ background: "linear-gradient(to right,transparent,rgba(197,232,152,0.3),transparent)" }}
             />
 

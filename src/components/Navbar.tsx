@@ -207,23 +207,23 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
       <header className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center pointer-events-none px-3 sm:px-4">
 
         {/* ══ TICKER TAPE ══════════════════════════════════════ */}
-        <div className="pointer-events-auto w-full max-w-[1480px] mt-2.5 h-[22px] rounded-lg overflow-hidden bg-black/65 border border-white/[0.05] relative flex items-center flex-shrink-0">
-          <div className="absolute left-0 inset-y-0 w-10 bg-gradient-to-r from-black to-transparent z-10 flex items-center justify-center flex-shrink-0">
-            <Zap className="w-2.5 h-2.5 text-[#FFAF87]" />
+        <div className="pointer-events-auto w-full mt-2.5 rounded-lg overflow-hidden bg-black/65 border relative flex items-center">
+          <div className="absolute left-0 inset-y-0 w-10 from-black to-transparent z-10 flex items-center justify-center">
+            <Zap className="w-2.5 h-2.5" />
           </div>
           <div className="nb-ticker pl-10">
             {[...telemetry, ...telemetry].map((t, i) => (
-              <span key={i} className="nb-mono text-[6.5px] tracking-[.16em] text-[#C5E898]/40 mx-6">◈ {t}</span>
+              <span key={i} className="nb-mono text-[6.5px] tracking-[.16em] mx-6">◈ {t}</span>
             ))}
           </div>
-          <div className="absolute right-0 inset-y-0 w-10 bg-gradient-to-l from-black to-transparent z-10" />
+          <div className="absolute right-0 inset-y-0 w-10 from-black to-transparent z-10" />
         </div>
 
         {/* ══ MAIN NAVBAR ══════════════════════════════════════ */}
-        <div className={`pointer-events-auto w-full mt-1.5 transition-all duration-300 ${scrolled ? "max-w-[1440px]" : "max-w-[1480px]"}`}>
+        <div className={`pointer-events-auto w-full mt-1.5 transition-all duration-300 ${scrolled ? "" : ""}`}>
           <div className={`relative flex items-center rounded-2xl border overflow-hidden transition-all duration-300 ${
             scrolled
-              ? "bg-[#020202]/97 backdrop-blur-2xl border-[#FFAF87]/18 shadow-[0_16px_48px_-8px_rgba(255,175,135,.14)]"
+              ? "bg-[#020202]/97 backdrop-blur-2xl shadow-[0_16px_48px_-8px_rgba(255,175,135,.14)]"
               : "bg-[#050505]/82 backdrop-blur-xl border-white/[0.07]"
           }`}>
 
@@ -232,7 +232,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             {/* Scroll progress — top edge */}
             <div className="absolute top-0 left-0 right-0 h-[1.5px] z-20 overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-[#FFAF87] via-white/70 to-[#C5E898]"
+                className="h-full  via-white/70"
                 style={{ width: `${scrollPercent}%` }}
               />
             </div>
@@ -240,7 +240,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             {/* ── ZONE 1 · LOGO ──────────────────────────────── */}
             <button
               onClick={() => { onNavigate("home"); setIsOpen(false); }}
-              className={`flex items-center gap-3 px-5 py-3.5 cursor-pointer focus:outline-none group hover:bg-white/[0.025] transition-colors border-r border-white/[0.06] flex-shrink-0 ${glitchActive ? "nb-glitch" : ""}`}
+              className={`flex items-center gap-3 px-5 py-3.5 cursor-pointer focus:outline-none group transition-colors border-r border-white/[0.06] flex-shrink-0 ${glitchActive ? "nb-glitch" : ""}`}
             >
               {/* reactor */}
               <div className="relative w-9 h-9 rounded-xl bg-black border border-white/10 flex items-center justify-center group-hover:border-[#FFAF87]/45 transition-colors flex-shrink-0">
