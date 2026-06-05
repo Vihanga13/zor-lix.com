@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Link2, Bot, Cpu, Compass, CheckCircle2, Terminal as TermIcon, ChevronRight, Layers, ArrowRight, RotateCw, RefreshCw } from "lucide-react";
+import { CheckCircle2, Terminal as TermIcon, ChevronRight, Layers, ArrowRight, RotateCw, RefreshCw } from "lucide-react";
 
 export default function HowItWorks() {
   const [activeStep, setActiveStep] = useState(0);
@@ -10,7 +10,7 @@ export default function HowItWorks() {
       title: "One-Click Sync",
       subtitle: "Ingest any DB",
       desc: "Connect your SQL schemas, SaaS keys, or analytics feeds. Our zero-config connectors discover your tables, metrics, and relationships automatically in under 60 seconds.",
-      icon: Link2,
+      icon: "/Interactive Orbit Dial_result.webp",
       accent: "peach",
       dataView: {
         action: "CONNECTIVITY STATUS",
@@ -24,7 +24,7 @@ export default function HowItWorks() {
       title: "Contextual Cleanse",
       subtitle: "Neutralizing anomalies",
       desc: "Our pre-processing agent scans records for schema drift, null values, and timing anomalies. It repairs tables instantly, creating high-fidelity pristine streams.",
-      icon: Cpu,
+      icon: "/Interactive Orbit Dial (2)_result.webp",
       accent: "mint",
       dataView: {
         action: "MODEL SANITIZER",
@@ -38,7 +38,7 @@ export default function HowItWorks() {
       title: "Neural Engine",
       subtitle: "Dynamic forecasting",
       desc: "Pre-trained proprietary transformer models construct predictions for user acquisition, churn, inventory bottlenecks, and sales cycles without manual coding.",
-      icon: Bot,
+      icon: "/Interactive Orbit Dial (3)_result.webp",
       accent: "peach",
       dataView: {
         action: "FORECASTING ENGINE",
@@ -52,7 +52,7 @@ export default function HowItWorks() {
       title: "Autonomous Actions",
       subtitle: "Trigger automation",
       desc: "Build live webhook triggers or direct our specialized AI Agents to execute workflows. Seamlessly alert your team on Slack or update sheets when anomalies are detected.",
-      icon: Compass,
+      icon: "/Interactive Orbit Dial (4)_result.webp",
       accent: "mint",
       dataView: {
         action: "DISPATCH DISPATCHER",
@@ -112,7 +112,6 @@ export default function HowItWorks() {
 
             {/* Satellites positioned polar-coordinates style dynamically based on step index */}
             {stepsList.map((step, idx) => {
-              const StepIcon = step.icon;
               // Polar angle coordinates offsets
               const angle = (idx / stepsList.length) * 2 * Math.PI - Math.PI / 2;
               const radiusPix = 135;
@@ -150,7 +149,11 @@ export default function HowItWorks() {
                         : "bg-[#050505] border-white/5 text-gray-500 hover:border-white/10 hover:text-white"
                     }`}
                   >
-                    <StepIcon className="w-5 h-5 mb-0.5" />
+                    <img 
+                      src={step.icon} 
+                      alt="" 
+                      className="w-8 h-8 mb-1 object-contain"
+                    />
                     <span className="font-mono text-[8px] leading-none">0{idx + 1}</span>
                   </motion.button>
                 </div>

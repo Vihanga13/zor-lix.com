@@ -114,27 +114,13 @@ export default function Footer({ onNavigate }: FooterProps) {
               {/* Animated Logo */}
               <button
                 onClick={() => onNavigate("home")}
-                className="flex items-center gap-2.5 group/logo cursor-pointer text-left focus:outline-none mb-4"
+                className="flex items-center cursor-pointer text-left focus:outline-none mb-4 group transition-opacity hover:opacity-90"
               >
-                <div className="relative w-9 h-9 rounded-full flex items-center justify-center overflow-hidden">
-                  <svg className="absolute inset-0 w-full h-full animate-spin [animation-duration:10s] group-hover/logo:[animation-duration:4s] transition-all" viewBox="0 0 40 40">
-                    <circle cx="20" cy="20" r="18" stroke="url(#footer-logo-gradient)" strokeWidth="1" fill="none" strokeDasharray="8 12" />
-                  </svg>
-                  <div className="absolute inset-1 rounded-full bg-black flex items-center justify-center">
-                    <Cpu className="w-4 h-4 text-peach group-hover/logo:text-mint transition-colors" />
-                  </div>
-                  <svg className="absolute hidden">
-                    <defs>
-                      <linearGradient id="footer-logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#FFAF87" />
-                        <stop offset="100%" stopColor="#C5E898" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </div>
-                <span className="font-sans font-black text-xl tracking-tight text-white group-hover/logo:text-peach transition-colors">
-                  Zor-Lix<span className="text-mint font-light">.AI</span>
-                </span>
+                <img
+                  src="/logo.svg"
+                  alt="Zor-Lix"
+                  className="h-10 sm:h-12 w-auto object-contain object-left"
+                />
               </button>
 
               <p className="text-xs text-gray-400 font-light leading-relaxed max-w-sm mt-3">

@@ -242,13 +242,61 @@ export default function Hero({ onNavigate }: HeroProps) {
     setTimeout(() => setIsCalibrating(false), 1200);
   };
 
+  const renderDbIcon = (dbId: string, isActive: boolean) => {
+    const iconStyle = {
+      width: 14,
+      height: 14,
+      animation: isSyncing && isActive ? "heroSpin 0.6s linear infinite" : "none",
+    };
+
+    if (dbId === "snowflake") {
+      return (
+        <svg viewBox="0 0 24 24" style={iconStyle} fill="#29B5E8">
+          <path d="M12 2.25a.75.75 0 0 1 .75.75v3.19l2.25-1.3a.75.75 0 1 1 .75 1.3l-2.25 1.3 2.25 1.3a.75.75 0 0 1-.75 1.3l-2.25-1.3V12h3.19l-1.3-2.25a.75.75 0 1 1 1.3-.75l1.3 2.25 1.3-2.25a.75.75 0 1 1 1.3.75l-1.3 2.25H21a.75.75 0 0 1 0 1.5h-3.19l1.3 2.25a.75.75 0 1 1-1.3.75l-1.3-2.25-1.3 2.25a.75.75 0 1 1-1.3-.75l-1.3-2.25H12.75v3.19l2.25-1.3a.75.75 0 1 1 .75 1.3l-2.25 1.3 2.25 1.3a.75.75 0 0 1-.75 1.3l-2.25-1.3v3.19a.75.75 0 0 1-1.5 0v-3.19l-2.25 1.3a.75.75 0 1 1-.75-1.3l2.25-1.3-2.25-1.3a.75.75 0 1 1 .75-1.3l2.25 1.3V12H8.81l1.3 2.25a.75.75 0 1 1-1.3.75l-1.3-2.25-1.3 2.25a.75.75 0 1 1-1.3-.75l-1.3-2.25H3a.75.75 0 0 1 0-1.5h3.19l-1.3-2.25a.75.75 0 1 1 1.3-.75l1.3 2.25 1.3-2.25a.75.75 0 1 1 1.3.75l-1.3 2.25H11.25V5.44l-2.25 1.3a.75.75 0 1 1-.75-1.3l2.25-1.3-2.25-1.3a.75.75 0 0 1 .75-1.3l2.25 1.3V3a.75.75 0 0 1 .75-.75z"/>
+        </svg>
+      );
+    }
+    if (dbId === "google") {
+      return (
+        <svg viewBox="0 0 24 24" style={iconStyle}>
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335" />
+        </svg>
+      );
+    }
+    if (dbId === "aws") {
+      return (
+        <svg viewBox="0 0 24 24" style={iconStyle} fill="none">
+          <path d="M2 17c5 4.5 15 4.5 20 0M17.5 16.2l4.5.8-2.2-4" stroke="#FF9900" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M6.2 7.5h-1.5l-2.2 6h1.4l.5-1.5h2.1l.5 1.5h1.4l-2.2-6zm-.8 3.5l.7-2.1.7 2.1H5.4z" fill="#FFF" />
+          <path d="M14.5 7.5l-1.5 4.5-1.5-4.5h-1.3l2.2 6.1h1.2l2.2-6.1h-1.3z" fill="#FFF" />
+          <path d="M18.5 11c-.5-.3-.9-.4-1.3-.4-.5 0-.8.2-.8.5 0 .3.2.4.7.6 1 .3 1.8.6 1.8 1.6 0 1-.9 1.6-2.1 1.6-.7 0-1.4-.2-1.8-.5l.4-1c.4.3.8.4 1.3.4.5 0 .8-.2.8-.5 0-.3-.3-.5-.8-.6-.9-.3-1.7-.6-1.7-1.6 0-1 .9-1.5 2-1.5.6 0 1.2.2 1.6.4l-.4 1z" fill="#FFF" />
+        </svg>
+      );
+    }
+    if (dbId === "stripe") {
+      return (
+        <svg viewBox="0 0 24 24" style={iconStyle} fill="#635BFF">
+          <path d="M13.962 2.17c-2.43 0-4.324 1.222-4.324 3.738 0 3.754 5.12 3.123 5.12 5.093 0 .614-.547.962-1.437.962-1.71 0-3.325-.712-4.46-1.385L7.8 13.064c1.478.962 3.753 1.57 5.753 1.57 2.593 0 4.675-1.258 4.675-3.83 0-3.896-5.12-3.14-5.12-5.074 0-.547.464-.871 1.293-.871 1.34 0 2.766.496 3.79 1.077l1.018-2.396a9.58 9.58 0 0 0-5.447-1.37z" />
+        </svg>
+      );
+    }
+    return null;
+  };
+
   const signalSpan = (streamFrequency * 18.5 + 23.4).toFixed(1);
 
   return (
     <section
       id="home"
       className="relative min-h-screen pt-20 pb-12 lg:py-24 overflow-hidden flex flex-col justify-center border-b border-white/5"
-      style={{ background: "#020202" }}
+      style={{
+        backgroundImage: "linear-gradient(to bottom, rgba(2, 2, 2, 0.2), rgba(2, 2, 2, 0.5)), url('/hero.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center"
+      }}
     >
       {/* Ambient glows */}
       <div
@@ -600,10 +648,9 @@ export default function Hero({ onNavigate }: HeroProps) {
           <div
             className="lg:col-span-4 flex flex-col justify-between relative overflow-hidden p-6"
             style={{
-              background: "rgba(0,0,0,0.6)",
+              
               border: "1px solid rgba(255,255,255,0.08)",
-              backdropFilter: "blur(16px)",
-              boxShadow: "0 20px 80px rgba(0,0,0,0.5)",
+             
             }}
           >
             {/* Scope header */}
@@ -888,14 +935,11 @@ export default function Hero({ onNavigate }: HeroProps) {
                           className="flex items-center justify-center rounded-lg transition-all"
                           style={{
                             padding: 5,
-                            background: isActive ? "#FFAF87" : "rgba(255,255,255,0.05)",
-                            color: isActive ? "#000" : "#888",
+                            background: isActive ? "rgba(255,175,135,0.15)" : "rgba(255,255,255,0.05)",
+                            border: isActive ? "1px solid rgba(255,175,135,0.3)" : "1px solid transparent",
                           }}
                         >
-                          {/* DB icon (reuse gear path as placeholder, or swap per-db) */}
-                          <svg viewBox="0 0 24 24" style={{ width: 14, height: 14, animation: isSyncing && isActive ? "heroSpin 0.6s linear infinite" : "none" }} fill="currentColor">
-                            <path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4zM4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4S4 11.21 4 9zm0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4z" />
-                          </svg>
+                          {renderDbIcon(db.id, isActive)}
                         </div>
                         <span style={{ fontFamily: "monospace", fontSize: "10px", fontWeight: 900, color: "#fff", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                           {db.id}
