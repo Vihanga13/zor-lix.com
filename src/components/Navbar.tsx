@@ -276,7 +276,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             {/* ── ZONE 1 · LOGO (SIGNIFICANTLY INCREASED - NAVBAR SAME SIZE) ── */}
             <button
               onClick={() => { onNavigate("home"); setIsOpen(false); }}
-              className={`flex items-center px-3 sm:px-4 py-2.5 sm:py-3 lg:py-3.5 cursor-pointer focus:outline-none group transition-opacity hover:opacity-90 border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
+              className={`flex items-center px-3 sm:px-4 py-0.5 sm:py-1 lg:py-1.5 cursor-pointer focus:outline-none group transition-opacity hover:opacity-90 border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
             >
               <img
                 src="/logo.svg"
