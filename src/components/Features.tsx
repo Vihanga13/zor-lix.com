@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
-  Database, 
-  Filter, 
-  TrendingUp, 
-  Sliders, 
-  FileText, 
-  Bot, 
   Cpu, 
   Activity, 
   Sparkles, 
@@ -93,7 +87,7 @@ export default function Features() {
       tag: "ESTABLISH CONNECTORS",
       title: "Automated Pipeline Collection",
       desc: "Establish permanent secure feeds into Snowflake database clusters, PostgreSQL instances, and transaction brokers. All schema shapes are auto-analyzed and stabilized instantly.",
-      icon: Database,
+      icon: "/Deep-Stack Systems_result.webp",
       accent: "peach",
       stats: "45k streams sync",
       extra: "Uptime authenticated: 99.98%"
@@ -103,7 +97,7 @@ export default function Features() {
       tag: "REFINE METRIC QUALITY",
       title: "Context-Aware AI Cleaning",
       desc: "Autonomously detects duplicate identifiers, standard deviation drift, and timing errors before writing metrics. Drops extreme outliers while preserving real transactional values.",
-      icon: Filter,
+      icon: "/Deep-Stack Systems (2)_result.webp",
       accent: "mint",
       stats: "Zero-latency repair",
       extra: "Sigma boundary trigger: 3.5x"
@@ -113,7 +107,7 @@ export default function Features() {
       tag: "FORECAST OPPORTUNITIES",
       title: "Predictive Neural Horizons",
       desc: "Leverages proprietary Transformer modeling trained specifically on high-frequency enterprise telemetry. Lock in confidence prediction bounds down to ±1.5% in minutes.",
-      icon: TrendingUp,
+      icon: "/Deep-Stack Systems (3)_result.webp",
       accent: "peach",
       stats: "98.4% Confidence",
       extra: "Transformer Model V2 Armed"
@@ -123,7 +117,7 @@ export default function Features() {
       tag: "REDUCE RE-POLLING",
       title: "Fluid WebSocket Stream",
       desc: "Say goodbye to traditional heavy database querying. Continuous updates are piped securely over active TLS socket networks directly to browser screens without thread locking.",
-      icon: Sliders,
+      icon: "/Deep-Stack Systems (4)_result.webp",
       accent: "mint",
       stats: "120 FPS render output",
       extra: "Zero background cycles"
@@ -133,7 +127,7 @@ export default function Features() {
       tag: "DISTRIBUTE DIGESTS",
       title: "Automated Operational Reports",
       desc: "Formulate beautiful executive briefs and trend sheets that publish themselves. Autonomously dispatches rich status alerts straight to standard Slack, Notion, or Cloud storage pools.",
-      icon: FileText,
+      icon: "/Deep-Stack Systems (5)_result.webp",
       accent: "peach",
       stats: "1 Click Dispatch",
       extra: "S3, Slack & GSheet Ready"
@@ -143,7 +137,7 @@ export default function Features() {
       tag: "AUTONOMOUS OPERATIONS",
       title: "Language-to-Query SQL Agents",
       desc: "Instruct Zor-Lix using direct conversational strings. Our autonomous SQL agent compiles dynamic complex queries, checks integrity thresholds, and alerts you to spikes.",
-      icon: Bot,
+      icon: "/Deep-Stack Systems (6)_result.webp",
       accent: "mint",
       stats: "Natural query parsed",
       extra: "AI Agent active parameters"
@@ -265,7 +259,6 @@ export default function Features() {
             {/* Circuit rack node slots */}
             <div className="flex flex-col gap-3.5 relative z-10 w-full">
               {listItems.map((item, idx) => {
-                const IconComp = item.icon;
                 const isSelected = selectedIdx === idx;
                 const isHovered = hoveredIdx === idx;
                 const accentHex = item.accent === "peach" ? "text-peach" : "text-mint";
@@ -301,15 +294,15 @@ export default function Features() {
 
                     {/* Left node content block */}
                     <div className="flex items-center gap-4 pl-2">
-                      <div className={`p-2.5 rounded-xl border transition-all duration-300 z-10 ${
+                      <div className={`p-2 rounded-xl border transition-all duration-300 z-10 ${
                         isSelected 
                           ? "bg-white/5 border-white/10" 
                           : "bg-[#0b0b0b] border-white/5 group-hover:border-white/10"
                       }`}>
-                        <IconComp 
-                          className={`w-5 h-5 transition-transform duration-500 group-hover:scale-110 ${
-                            isSelected || isHovered ? (item.accent === "peach" ? "text-peach" : "text-mint") : "text-gray-500"
-                          }`}
+                        <img 
+                          src={item.icon} 
+                          alt="" 
+                          className="w-10 h-10 transition-transform duration-500 group-hover:scale-110 object-contain"
                         />
                       </div>
 
