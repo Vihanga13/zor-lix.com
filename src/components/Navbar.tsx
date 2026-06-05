@@ -199,13 +199,10 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           background:linear-gradient(90deg,#FFAF87,#C5E898);
         }
 
-        /* mobile horizontal nav strip */
+        /* mobile horizontal nav strip (layout via Tailwind — no display here, or lg:hidden breaks) */
         .nb-mob-strip {
-          display:flex; align-items:center; gap:6px;
-          overflow-x:auto; overflow-y:hidden;
           -webkit-overflow-scrolling:touch;
           scrollbar-width:none;
-          padding:10px 14px;
         }
         .nb-mob-strip::-webkit-scrollbar { display:none; }
         .nb-mob-link {
@@ -279,26 +276,13 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             {/* ── ZONE 1 · LOGO ──────────────────────────────── */}
             <button
               onClick={() => { onNavigate("home"); setIsOpen(false); }}
-              className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-3.5 cursor-pointer focus:outline-none group transition-colors border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
+              className={`flex items-center px-3 sm:px-5 py-2.5 sm:py-3 cursor-pointer focus:outline-none group transition-opacity hover:opacity-90 border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
             >
-              {/* reactor */}
-              <div className="relative w-9 h-9 rounded-xl bg-black border border-white/10 flex items-center justify-center transition-colors">
-                <div className="absolute  rounded-lg border border-dashed nb-cw" />
-                <div className="absolute  rounded-md border  nb-ccw" />
-                <span className="nb-ping rounded-full" />
-                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15.5" stroke="#C5E898" strokeWidth="0.5" fill="none"
-                    strokeDasharray="3 10" className="opacity-20 group-hover:opacity-55 transition-opacity" />
-                </svg>
-              </div>
-              {/* wordmark */}
-              <div className="text-left min-w-0">
-                <div className="nb-syne font-black text-[11px] sm:text-[13px] tracking-[.16em] sm:tracking-[.2em] text-white uppercase flex items-center gap-1.5 sm:gap-2">
-                  Zor-Lix
-                  <span className="nb-mono text-[7px] px-1.5 py-0.5 rounded-md border border-white/15 tracking-widest hidden min-[400px]:inline">v3.9</span>
-                </div>
-                <div className="nb-mono text-[6px] text-gray-500 uppercase tracking-[.22em] sm:tracking-[.28em] mt-0.5 hidden sm:block">COGNITIVE SYSTEMS</div>
-              </div>
+              <img
+                src="/logo.svg"
+                alt="Zor-Lix"
+                className="h-7 sm:h-8 w-auto max-w-[120px] sm:max-w-[148px] object-contain object-left"
+              />
             </button>
 
             {/* ── ZONE 2 · STATUS (xl only) ──────────────────── */}
@@ -384,9 +368,9 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             </div>
             </div>
 
-            {/* Mobile nav strip — always visible, horizontally scrollable */}
+            {/* Mobile nav strip — below lg only */}
             <nav
-              className="lg:hidden nb-mob-strip border-t border-white/[0.08] w-full"
+              className="flex lg:hidden items-center gap-1.5 overflow-x-auto overflow-y-hidden border-t border-white/[0.08] w-full px-3.5 py-2.5 nb-mob-strip"
               aria-label="Mobile navigation"
             >
               {navLinks.map(({ name, id, code, Icon }) => {
@@ -435,29 +419,9 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                   </div>
                 </div>
 
-                {/* Nav list — full-width, easy to tap */}
-                <div className="flex flex-col gap-1.5">
-                  {navLinks.map(({ name, id, code, Icon }) => {
-                    const isActive = activeSection === id;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() => { onNavigate(id); setIsOpen(false); }}
-                        className={`flex items-center gap-3 w-full px-4 py-3.5 rounded-xl border text-left transition-all focus:outline-none ${
-                          isActive
-                            ? "border-[#FFAF87]/50 bg-[#FFAF87]/10 text-white"
-                            : "border-white/[0.08] bg-white/[0.03] text-gray-200 hover:border-white/20 hover:bg-white/[0.06]"
-                        }`}
-                      >
-                        <span className={`nb-mono text-[10px] font-bold ${isActive ? "text-[#FFAF87]" : "text-gray-500"}`}>{code}</span>
-                        <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-[#FFAF87]" : "text-gray-400"}`} />
-                        <span className="nb-syne font-bold text-sm uppercase tracking-wide flex-1">{name}</span>
-                        {isActive && <span className="nb-mono text-[9px] text-[#C5E898] uppercase">Active</span>}
-                      </button>
-                    );
-                  })}
-                </div>
+                <p className="text-xs text-gray-400 font-light leading-relaxed">
+                  Use the navigation strip above for section links, or jump to contact below.
+                </p>
 
                 {/* Status bar */}
                 <div className="flex items-center justify-between bg-black/50 px-4 py-2.5 rounded-xl border border-white/[0.05]">
@@ -478,13 +442,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                 </button>
 
                 {/* Dispatch Signal gradient CTA */}
-                <button
-                  onClick={() => { onNavigate("contact"); setIsOpen(false); }}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FFAF87] via-white/85 to-[#C5E898] text-black flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-[.99] transition-transform focus:outline-none"
-                >
-                  <span className="nb-syne text-[11px] font-black tracking-widest uppercase">Dispatch Signal</span>
-                  <ArrowUpRight className="w-4 h-4 stroke-[2.5px]" />
-                </button>
+               
 
               </div>
             </motion.div>
