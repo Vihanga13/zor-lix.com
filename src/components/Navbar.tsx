@@ -199,19 +199,57 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           background:linear-gradient(90deg,#FFAF87,#C5E898);
         }
 
+        /* mobile horizontal nav strip */
+        .nb-mob-strip {
+          display:flex; align-items:center; gap:6px;
+          overflow-x:auto; overflow-y:hidden;
+          -webkit-overflow-scrolling:touch;
+          scrollbar-width:none;
+          padding:10px 14px;
+        }
+        .nb-mob-strip::-webkit-scrollbar { display:none; }
+        .nb-mob-link {
+          flex-shrink:0;
+          display:inline-flex; align-items:center; gap:6px;
+          padding:9px 14px;
+          border-radius:999px;
+          border:1px solid rgba(255,255,255,.1);
+          background:rgba(255,255,255,.04);
+          color:#d1d5db;
+          font-family:'Syne',sans-serif;
+          font-size:12px; font-weight:700;
+          letter-spacing:.06em; text-transform:uppercase;
+          white-space:nowrap;
+          cursor:pointer;
+          transition:background .15s,border-color .15s,color .15s;
+        }
+        .nb-mob-link:hover { color:#fff; border-color:rgba(255,175,135,.35); }
+        .nb-mob-link.nb-active {
+          color:#fff;
+          border-color:rgba(255,175,135,.55);
+          background:linear-gradient(135deg,rgba(255,175,135,.2),rgba(197,232,152,.1));
+          box-shadow:0 0 16px rgba(255,175,135,.15);
+        }
+        .nb-mob-link .nb-code {
+          font-family:'DM Mono',monospace;
+          font-size:9px;
+          color:#9ca3af;
+        }
+        .nb-mob-link.nb-active .nb-code { color:#FFAF87; }
+
         /* font utils */
         .nb-mono { font-family:'DM Mono',monospace; }
         .nb-syne { font-family:'Syne',sans-serif; }
       `}</style>
 
-      <header className="fixed top-0 left-0 right-0 z-50 flex flex-col items-center pointer-events-none px-3 sm:px-4">
+      <header className="fixed top-0 left-0 right-0 z-[100] flex flex-col items-center pointer-events-none px-3 sm:px-4">
 
         {/* ══ TICKER TAPE ══════════════════════════════════════ */}
         <div className="pointer-events-auto w-full mt-2.5 rounded-lg overflow-hidden bg-black/65 border relative flex items-center">
           <div className="absolute left-0 inset-y-0 w-10 from-black to-transparent z-10 flex items-center justify-center">
             <Zap className="w-2.5 h-2.5" />
           </div>
-          <div className="nb-ticker pl-10">
+          <div className="nb-ticker pl-10 text-gray-400">
             {[...telemetry, ...telemetry].map((t, i) => (
               <span key={i} className="nb-mono text-[6.5px] tracking-[.16em] mx-6">◈ {t}</span>
             ))}
@@ -221,7 +259,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
 
         {/* ══ MAIN NAVBAR ══════════════════════════════════════ */}
         <div className={`pointer-events-auto w-full mt-1.5 transition-all duration-300 ${scrolled ? "" : ""}`}>
-          <div className={`relative flex items-center rounded-2xl border overflow-hidden transition-all duration-300 ${
+          <div className={`relative flex flex-col rounded-2xl border overflow-hidden transition-all duration-300 ${
             scrolled
               ? "bg-[#020202]/97 backdrop-blur-2xl shadow-[0_16px_48px_-8px_rgba(255,175,135,.14)]"
               : "bg-[#050505]/82 backdrop-blur-xl border-white/[0.07]"
@@ -232,15 +270,16 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             {/* Scroll progress — top edge */}
             <div className="absolute top-0 left-0 right-0 h-[1.5px] z-20 overflow-hidden">
               <motion.div
-                className="h-full  via-white/70"
+                className="h-full bg-gradient-to-r from-[#FFAF87] via-white/70 to-[#C5E898]"
                 style={{ width: `${scrollPercent}%` }}
               />
             </div>
 
+            <div className="flex items-center w-full min-w-0">
             {/* ── ZONE 1 · LOGO ──────────────────────────────── */}
             <button
               onClick={() => { onNavigate("home"); setIsOpen(false); }}
-              className={`flex items-center gap-3 px-5 py-3.5 cursor-pointer focus:outline-none group transition-colors border-r ${glitchActive ? "nb-glitch" : ""}`}
+              className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-3.5 cursor-pointer focus:outline-none group transition-colors border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
             >
               {/* reactor */}
               <div className="relative w-9 h-9 rounded-xl bg-black border border-white/10 flex items-center justify-center transition-colors">
@@ -253,12 +292,12 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                 </svg>
               </div>
               {/* wordmark */}
-              <div className="text-left ">
-                <div className="nb-syne font-black text-[13px] tracking-[.2em] text-white uppercase flex items-center gap-2">
+              <div className="text-left min-w-0">
+                <div className="nb-syne font-black text-[11px] sm:text-[13px] tracking-[.16em] sm:tracking-[.2em] text-white uppercase flex items-center gap-1.5 sm:gap-2">
                   Zor-Lix
-                  <span className="nb-mono text-[7px] px-1.5 py-0.5 rounded-md border tracking-widest">v3.9</span>
+                  <span className="nb-mono text-[7px] px-1.5 py-0.5 rounded-md border border-white/15 tracking-widest hidden min-[400px]:inline">v3.9</span>
                 </div>
-                <div className="nb-mono text-[6px] text-gray-600 uppercase tracking-[.28em] mt-0.5">COGNITIVE SYSTEMS</div>
+                <div className="nb-mono text-[6px] text-gray-500 uppercase tracking-[.22em] sm:tracking-[.28em] mt-0.5 hidden sm:block">COGNITIVE SYSTEMS</div>
               </div>
             </button>
 
@@ -321,9 +360,8 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                 <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#FFAF87] ring-[3px] ring-black nb-ping text-[#FFAF87]" />
               </button>
 
-              {/* ── HANDSHAKE BUTTON — always visible ─────────
-                  Visible on ALL screen sizes. No hidden class. */}
-              <div className="px-3 py-2.5 flex items-center self-stretch">
+              {/* Handshake — hidden on smallest screens (in mobile strip + drawer) */}
+              <div className="hidden sm:flex px-2 sm:px-3 py-2.5 items-center self-stretch">
                 <button
                   onClick={() => onNavigate("contact")}
                   className="nb-hs-btn focus:outline-none"
@@ -334,27 +372,51 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                 </button>
               </div>
 
-              {/* Hamburger — only on mobile (lg:hidden) */}
+              {/* Hamburger — expands full nav drawer on mobile */}
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label="Toggle Menu"
-                className="lg:hidden flex self-stretch items-center justify-center px-4 border-l border-white/[0.06] text-gray-400 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer focus:outline-none"
+                aria-expanded={isOpen}
+                className="lg:hidden flex self-stretch items-center justify-center px-4 border-l border-white/[0.06] text-gray-300 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer focus:outline-none"
               >
-                {isOpen ? <X className="w-4.5 h-4.5" /> : <Menu className="w-4.5 h-4.5" />}
+                {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
+            </div>
+
+            {/* Mobile nav strip — always visible, horizontally scrollable */}
+            <nav
+              className="lg:hidden nb-mob-strip border-t border-white/[0.08] w-full"
+              aria-label="Mobile navigation"
+            >
+              {navLinks.map(({ name, id, code, Icon }) => {
+                const isActive = activeSection === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => { onNavigate(id); setIsOpen(false); }}
+                    className={`nb-mob-link focus:outline-none ${isActive ? "nb-active" : ""}`}
+                  >
+                    <span className="nb-code">{code}</span>
+                    <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${isActive ? "text-[#FFAF87]" : "text-gray-400"}`} />
+                    <span>{name}</span>
+                  </button>
+                );
+              })}
+            </nav>
           </div>
         </div>
 
-        {/* ══ MOBILE DRAWER ════════════════════════════════════ */}
+        {/* ══ MOBILE DRAWER (expanded menu) ═══════════════════ */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.97 }}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
               transition={{ type: "spring", stiffness: 380, damping: 28 }}
-              className="pointer-events-auto absolute top-[5.2rem] left-3 right-3 bg-[#040404]/98 backdrop-blur-2xl border border-white/[0.09] rounded-[20px] shadow-[0_24px_60px_rgba(0,0,0,.95)] lg:hidden z-50 overflow-hidden nb-grid-bg"
+              className="pointer-events-auto w-full mt-2 bg-[#040404]/98 backdrop-blur-2xl border border-white/[0.12] rounded-[20px] shadow-[0_24px_60px_rgba(0,0,0,.95)] lg:hidden z-[110] overflow-hidden nb-grid-bg max-h-[min(70vh,520px)] overflow-y-auto"
             >
               {/* ambient glows */}
               <div className="absolute top-0 right-0 w-48 h-36 bg-[#FFAF87]/5 blur-3xl pointer-events-none" />
@@ -373,20 +435,25 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                   </div>
                 </div>
 
-                {/* Nav 2-col grid */}
-                <div className="grid grid-cols-2 gap-2">
+                {/* Nav list — full-width, easy to tap */}
+                <div className="flex flex-col gap-1.5">
                   {navLinks.map(({ name, id, code, Icon }) => {
                     const isActive = activeSection === id;
                     return (
-                      <button key={id}
+                      <button
+                        key={id}
+                        type="button"
                         onClick={() => { onNavigate(id); setIsOpen(false); }}
-                        className={`nb-mob-card focus:outline-none ${isActive ? "nb-active" : ""}`}
+                        className={`flex items-center gap-3 w-full px-4 py-3.5 rounded-xl border text-left transition-all focus:outline-none ${
+                          isActive
+                            ? "border-[#FFAF87]/50 bg-[#FFAF87]/10 text-white"
+                            : "border-white/[0.08] bg-white/[0.03] text-gray-200 hover:border-white/20 hover:bg-white/[0.06]"
+                        }`}
                       >
-                        <div className="flex items-center justify-between">
-                          <span className="nb-mono text-[6.5px] font-bold tracking-widest text-gray-600">{code}/</span>
-                          <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#FFAF87]" : "text-gray-600"}`} />
-                        </div>
-                        <span className="nb-syne font-black text-[11px] uppercase tracking-widest text-white">{name}</span>
+                        <span className={`nb-mono text-[10px] font-bold ${isActive ? "text-[#FFAF87]" : "text-gray-500"}`}>{code}</span>
+                        <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-[#FFAF87]" : "text-gray-400"}`} />
+                        <span className="nb-syne font-bold text-sm uppercase tracking-wide flex-1">{name}</span>
+                        {isActive && <span className="nb-mono text-[9px] text-[#C5E898] uppercase">Active</span>}
                       </button>
                     );
                   })}
