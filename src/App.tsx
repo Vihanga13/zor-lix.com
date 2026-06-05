@@ -14,7 +14,7 @@ import FAQ from "./components/FAQ";
 import Contact from "./components/Contact";
 import ComplianceVault from "./components/ComplianceVault";
 import Footer from "./components/Footer";
-import AIChatWidget from "./components/AIChatWidget";
+import ChatwootWidget from "./components/ChatwootWidget";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("home");
@@ -132,8 +132,7 @@ export default function App() {
       {/* Platform Footer Information */}
       <Footer onNavigate={handleNavigation} />
 
-      {/* Floating AI Chat Telemetry Companion Help widget */}
-      <AIChatWidget />
+      <ChatwootWidget />
     </div>
   );
 }
