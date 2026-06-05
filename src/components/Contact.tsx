@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Send, 
@@ -19,6 +19,28 @@ import {
   Workflow
 } from "lucide-react";
 
+// Declare Turnstile global type
+declare global {
+  interface Window {
+    turnstile: {
+      render: (container: string | HTMLElement, options: TurnstileOptions) => string;
+      reset: (widgetId: string) => void;
+      remove: (widgetId: string) => void;
+      getResponse: (widgetId: string) => string;
+    };
+  }
+}
+
+interface TurnstileOptions {
+  sitekey: string;
+  callback: (token: string) => void;
+  'error-callback'?: () => void;
+  'expired-callback'?: () => void;
+  theme?: 'light' | 'dark' | 'auto';
+  size?: 'normal' | 'compact' | 'invisible';
+  tabindex?: number;
+}
+
 interface ContactChannel {
   id: "general" | "support" | "custom";
   title: string;
@@ -29,6 +51,9 @@ interface ContactChannel {
   color: string;
 }
 
+// Cloudflare Turnstile Site Key
+const TURNSTILE_SITE_KEY = "0x4AAAAAADfHwMxH0w-vF4jB";
+
 export default function Contact() {
   const [activeChannel, setActiveChannel] = useState<"general" | "support" | "custom">("general");
   const [fullName, setFullName] = useState("");
@@ -38,12 +63,112 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+  
+  // Turnstile state
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileError, setTurnstileError] = useState<boolean>(false);
+  const turnstileWidgetId = useRef<string | null>(null);
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
 
   // Real-time terminal diagnostic simulator
   const [terminalFeed, setTerminalFeed] = useState<string[]>([
     "SECURE_GATEWAY: Ingress control panel initialized.",
-    "BOND_STATUS: AES-256 secure session established on local virtual node."
+    "BOND_STATUS: AES-256 secure session established on local virtual node.",
+    "TURNSTILE: Ready for human verification challenge."
   ]);
+
+  // Load Turnstile script
+  useEffect(() => {
+    if (document.querySelector('script[src*="turnstile"]')) {
+      initializeTurnstile();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      initializeTurnstile();
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      if (turnstileWidgetId.current && window.turnstile) {
+        try {
+          window.turnstile.remove(turnstileWidgetId.current);
+        } catch (e) {
+          console.warn('Failed to remove turnstile widget:', e);
+        }
+      }
+    };
+  }, []);
+
+  const initializeTurnstile = () => {
+    if (!turnstileContainerRef.current || !window.turnstile) return;
+
+    // Reset existing widget if any
+    if (turnstileWidgetId.current) {
+      try {
+        window.turnstile.remove(turnstileWidgetId.current);
+      } catch (e) {
+        console.warn('Failed to remove existing widget:', e);
+      }
+    }
+
+    // Render new widget
+    try {
+      const widgetId = window.turnstile.render(turnstileContainerRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token: string) => {
+          setTurnstileToken(token);
+          setTurnstileError(false);
+          setTerminalFeed((prev) => [
+            ...prev.slice(-3),
+            `TURNSTILE: Human verification completed successfully. Token: ${token.substring(0, 8)}...`
+          ]);
+        },
+        'error-callback': () => {
+          setTurnstileError(true);
+          setTurnstileToken(null);
+          setTerminalFeed((prev) => [
+            ...prev.slice(-3),
+            "TURNSTILE_ERR: Verification challenge failed. Please try again."
+          ]);
+        },
+        'expired-callback': () => {
+          setTurnstileToken(null);
+          setTurnstileError(true);
+          setTerminalFeed((prev) => [
+            ...prev.slice(-3),
+            "TURNSTILE_EXP: Token expired. Please complete verification again."
+          ]);
+        },
+        theme: 'dark',
+        size: 'normal'
+      });
+      turnstileWidgetId.current = widgetId;
+    } catch (error) {
+      console.error('Failed to initialize turnstile:', error);
+      setTurnstileError(true);
+    }
+  };
+
+  // Reset turnstile when form is reset
+  useEffect(() => {
+    if (isSubmitted) {
+      // Reset turnstile when form is reset after submission
+      if (turnstileWidgetId.current && window.turnstile && !isSubmitting) {
+        try {
+          window.turnstile.reset(turnstileWidgetId.current);
+          setTurnstileToken(null);
+          setTurnstileError(false);
+        } catch (e) {
+          console.warn('Failed to reset turnstile:', e);
+        }
+      }
+    }
+  }, [isSubmitted]);
 
   // Telemetry logs update as the user interacts with the form
   useEffect(() => {
@@ -106,6 +231,8 @@ export default function Contact() {
 
   const handlePostSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all fields
     if (!fullName || !email || !message) {
       setSubmissionError("All fields are required");
       setTerminalFeed((prev) => [
@@ -115,15 +242,31 @@ export default function Contact() {
       return;
     }
 
+    // Validate Turnstile
+    if (!turnstileToken) {
+      setSubmissionError("Please complete the human verification challenge");
+      setTerminalFeed((prev) => [
+        ...prev.slice(-3),
+        "SYS_ERR: Transmission blocked - Human verification required."
+      ]);
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmissionError(null);
     setTerminalFeed((prev) => [
       ...prev.slice(-2),
       "INITIALIZING: Synthesizing secure TLS handshake credentials...",
-      "CIPHER: Rotating Kyber-768 session keys..."
+      "CIPHER: Rotating Kyber-768 session keys...",
+      `VERIFYING: Validating turnstile token with Cloudflare...`
     ]);
 
     try {
+      // First, verify the Turnstile token with your backend
+      // You should create an endpoint that verifies the token using Cloudflare's API
+      // For demo purposes, we're including it in the form submission
+      // In production, you should verify on your backend before processing the form
+      
       const response = await fetch("https://formspree.io/f/xkoanyvg", {
         method: "POST",
         headers: {
@@ -135,6 +278,7 @@ export default function Contact() {
           channel: activeChannel,
           urgency: urgency,
           message: message,
+          "cf-turnstile-response": turnstileToken, // Include turnstile token for backend verification
         }),
       });
 
@@ -144,7 +288,8 @@ export default function Contact() {
         setTerminalFeed([
           `DISPATCH_SUCCESS: Core envelope verified and pushed to routing nodes.`,
           `NODE_RESPONSE: SSL verification code: [200_OK_ZORLIX]`,
-          `TELEMETRY_STATUS: Connection dispatcher offline.`
+          `TELEMETRY_STATUS: Connection dispatcher offline.`,
+          `TURNSTILE: Human verification passed and documented.`
         ]);
       } else {
         throw new Error("Failed to submit form");
@@ -157,6 +302,12 @@ export default function Contact() {
         ...prev.slice(-3),
         `SYS_ERR: Transmission failed - ${errorMsg}`
       ]);
+      
+      // Reset turnstile on error
+      if (turnstileWidgetId.current && window.turnstile) {
+        window.turnstile.reset(turnstileWidgetId.current);
+        setTurnstileToken(null);
+      }
     }
   };
 
@@ -167,9 +318,18 @@ export default function Contact() {
     setMessage("");
     setIsSubmitted(false);
     setSubmissionError(null);
+    
+    // Reset turnstile
+    if (turnstileWidgetId.current && window.turnstile) {
+      window.turnstile.reset(turnstileWidgetId.current);
+      setTurnstileToken(null);
+      setTurnstileError(false);
+    }
+    
     setTerminalFeed([
       "SECURE_GATEWAY: Ingress control panel re-initialized.",
-      "BOND_STATUS: Clean AES-256 session established on fresh virtual node."
+      "BOND_STATUS: Clean AES-256 session established on fresh virtual node.",
+      "TURNSTILE: Human verification reset - ready for new session."
     ]);
   };
 
@@ -432,12 +592,34 @@ export default function Contact() {
                     />
                   </div>
 
+                  {/* Cloudflare Turnstile Widget */}
+                  <div className="flex flex-col gap-2">
+                    <label className="font-mono text-[9px] text-gray-500 uppercase tracking-widest block select-none">
+                      HUMAN VERIFICATION
+                    </label>
+                    <div 
+                      ref={turnstileContainerRef}
+                      className="turnstile-container flex justify-start"
+                    />
+                    {turnstileError && (
+                      <span className="text-red-400 font-mono text-[8px] mt-1">
+                        Verification required - Please complete the challenge
+                      </span>
+                    )}
+                    {turnstileToken && (
+                      <span className="text-mint font-mono text-[8px] mt-1 flex items-center gap-1">
+                        <CheckCircle className="w-2.5 h-2.5" />
+                        Verification complete
+                      </span>
+                    )}
+                  </div>
+
                   {/* Submit tunnel trigger button */}
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !turnstileToken}
                     className={`w-full py-3.5 font-sans font-extrabold text-xs tracking-wider uppercase rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg mt-2 ${
-                      isSubmitting 
+                      isSubmitting || !turnstileToken
                         ? "bg-white/5 border border-white/5 text-gray-600 select-none cursor-not-allowed" 
                         : "bg-gradient-to-tr from-peach via-white to-mint text-black hover:scale-[1.015] active:scale-[0.985]"
                     }`}

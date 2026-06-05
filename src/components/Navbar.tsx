@@ -273,15 +273,15 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             </div>
 
             <div className="flex items-center w-full min-w-0">
-            {/* ── ZONE 1 · LOGO ──────────────────────────────── */}
+            {/* ── ZONE 1 · LOGO (SIGNIFICANTLY INCREASED - NAVBAR SAME SIZE) ── */}
             <button
               onClick={() => { onNavigate("home"); setIsOpen(false); }}
-              className={`flex items-center px-3 sm:px-5 py-2.5 sm:py-3 cursor-pointer focus:outline-none group transition-opacity hover:opacity-90 border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
+              className={`flex items-center px-3 sm:px-4 py-2.5 sm:py-3 lg:py-3.5 cursor-pointer focus:outline-none group transition-opacity hover:opacity-90 border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
             >
               <img
                 src="/logo.svg"
                 alt="Zor-Lix"
-                className="h-7 sm:h-8 w-auto max-w-[120px] sm:max-w-[148px] object-contain object-left"
+                className="h-14 sm:h-16 md:h-[70px] lg:h-[76px] w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[380px] object-contain object-left"
               />
             </button>
 
@@ -295,7 +295,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             </div>
 
             {/* ── ZONE 3 · NAV LINKS (lg+, hidden on mobile) ─── */}
-            <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center px-3 py-2.5 overflow-hidden">
+            <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center px-3 py-2 overflow-hidden">
               {navLinks.map(({ name, id, code, Icon }) => {
                 const isActive = activeSection === id;
                 return (
@@ -328,14 +328,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             </nav>
 
             {/* ── ZONE 4 · RIGHT CLUSTER ─────────────────────── */}
-            {/* This is a flex row. On mobile: only hs-btn + hamburger show.
-                On lg+: signal bars + latency/calibrate + hs-btn (no hamburger). */}
             <div className="flex items-center flex-shrink-0 ml-auto border-l border-white/[0.06]">
-
-              {/* Signal bars (xl+) */}
-             
-
-              
 
               {/* Calibrate (lg+) */}
               <button onClick={calibrate} title="Recalibrate"
@@ -440,9 +433,6 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                   <span className="relative z-10">Handshake</span>
                   <ArrowUpRight className="nb-arrow w-4 h-4 flex-shrink-0 relative z-10" />
                 </button>
-
-                {/* Dispatch Signal gradient CTA */}
-               
 
               </div>
             </motion.div>
