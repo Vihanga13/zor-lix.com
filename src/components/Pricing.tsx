@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Check, ArrowRight, HelpCircle, Terminal as TermIcon, Sparkles, RefreshCw } from "lucide-react";
+import { Check, HelpCircle } from "lucide-react";
+import PayPalButtons from "./PayPalButtons";
+import type { BillingCycle } from "../utils/planPricing";
 
 interface PricingProps {
   onNavigate: (sectionId: string) => void;
 }
 
 export default function Pricing({ onNavigate }: PricingProps) {
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual" | "quarterly">("annual");
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>("annual");
   const [activePlanIdx, setActivePlanIdx] = useState<number>(1);
-  const [selectedCheckoutPlan, setSelectedCheckoutPlan] = useState<string | null>(null);
-  const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
 
   const plans = [
     {
@@ -26,7 +26,7 @@ export default function Pricing({ onNavigate }: PricingProps) {
         "Daily Slack status digests",
         "Standard AES-256 vault encryption",
       ],
-      cta: "Activate Trial",
+      
       accent: "peach",
     },
     {
@@ -43,7 +43,7 @@ export default function Pricing({ onNavigate }: PricingProps) {
         "Custom operational PDF reports",
         "Shared service levels SLAs support",
       ],
-      cta: "Secure License",
+     
       accent: "mint",
     },
     {
@@ -60,27 +60,22 @@ export default function Pricing({ onNavigate }: PricingProps) {
         "Private tenant whiteglove deployments",
         "Custom service parameters & legal EAs",
       ],
-      cta: "Contact Operations",
+     
       accent: "peach",
     },
   ];
 
-  const handleTriggerCheckout = (planName: string) => {
-    setSelectedCheckoutPlan(planName);
-    setIsProcessingCheckout(true);
-    setTimeout(() => {
-      setIsProcessingCheckout(false);
-    }, 1800);
-  };
+  const activePlan = plans[activePlanIdx];
+
+  const handlePaymentSuccess = useCallback((orderId: string) => {
+    alert(`Payment successful! Order ID: ${orderId}`);
+  }, []);
 
   return (
     <section id="pricing" className="py-24 relative bg-black overflow-hidden border-t border-white/5">
-      {/* Absolute Ambient lights */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-peach/5 blur-[160px] pointer-events-none" />
 
       <div className="max-w-[1560px] mx-auto px-4 sm:px-8 relative z-10 w-full animate-fade-in">
-        
-        {/* Section Heading */}
         <div className="max-w-3xl mb-16 text-left">
           <span className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-peach bg-white/5 border border-white/5 px-3.5 py-1.5 rounded-full select-none">
             INTELLIGENCE LICENSING // METRIC_PROVISION
@@ -92,7 +87,6 @@ export default function Pricing({ onNavigate }: PricingProps) {
             Specify your integration scaling volume below to automatically center and highlight the appropriate operational tier.
           </p>
 
-          {/* Billing Switcher Toggle */}
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/5 p-1 rounded-xl mt-8">
             <button
               onClick={() => setBillingCycle("monthly")}
@@ -120,13 +114,12 @@ export default function Pricing({ onNavigate }: PricingProps) {
           </div>
         </div>
 
-        {/* CUSTOM INTERACTIVE ELEMENT: Horizontal Scale Configurator Slider */}
         <div className="max-w-4xl mx-auto bg-black border border-white/10 p-6 sm:p-8 rounded-3xl mb-12 text-left relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-mint/5 blur-2xl pointer-events-none" />
-          
+
           <div className="flex justify-between items-center text-xs font-mono text-gray-500 mb-4 select-none">
             <span>SPECIFY SOURCE INTEGRATION VOLUME:</span>
-            <span className="text-peach font-bold uppercase tracking-wider">{plans[activePlanIdx].connectorRange}</span>
+            <span className="text-peach font-bold uppercase tracking-wider">{activePlan.connectorRange}</span>
           </div>
 
           <input
@@ -145,10 +138,7 @@ export default function Pricing({ onNavigate }: PricingProps) {
           </div>
         </div>
 
-        {/* The New Layout Layout: Staggered Spotlight Grid (12 Columns) */}
         <div className="grid lg:grid-cols-12 gap-8 items-stretch max-w-6xl mx-auto text-left">
-          
-          {/* Main Selected Plan Module (8 Columns of grid) */}
           <div className="lg:col-span-8">
             <AnimatePresence mode="wait">
               <motion.div
@@ -157,34 +147,32 @@ export default function Pricing({ onNavigate }: PricingProps) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.25 }}
-                className="p-6 sm:p-10 rounded-3xl bg-[#090909] border border-peach/50 flex flex-col justify-between h-full relative overflow-hidden shadow-[0_20px_45px_rgba(255,175,135,0.12)]"
+                className="p-6 sm:p-10 rounded-3xl bg-[#090909] border border-peach/50 flex flex-col justify-between h-full relative shadow-[0_20px_45px_rgba(255,175,135,0.12)]"
               >
                 <div className="absolute top-0 right-0 w-44 h-44 bg-peach/5 blur-3xl pointer-events-none" />
 
-                {/* Spotlight Header */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-white/5 pb-6 mb-6">
                   <div>
                     <span className="font-mono text-[9px] text-peach uppercase font-bold tracking-widest bg-peach/10 px-2.5 py-0.5 rounded-lg">
-                      {plans[activePlanIdx].scaleName}
+                      {activePlan.scaleName}
                     </span>
                     <h3 className="text-3xl font-sans font-black text-white mt-3 tracking-tight">
-                      {plans[activePlanIdx].name}
+                      {activePlan.name}
                     </h3>
                     <p className="text-gray-400 font-light text-xs sm:text-sm mt-1.5 max-w-lg leading-relaxed">
-                      {plans[activePlanIdx].desc}
+                      {activePlan.desc}
                     </p>
                   </div>
 
                   <div className="flex items-baseline gap-1 shrink-0 bg-black/90 p-4 rounded-2xl border border-white/5">
                     <span className="text-4xl font-sans font-black text-white">$</span>
-                    <span className="text-4xl font-sans font-black text-white">{plans[activePlanIdx].price}</span>
+                    <span className="text-4xl font-sans font-black text-white">{activePlan.price}</span>
                     <span className="text-[10px] font-mono text-gray-500 uppercase tracking-wider ml-1">/ mo</span>
                   </div>
                 </div>
 
-                {/* Features Columns */}
                 <div className="grid sm:grid-cols-2 gap-6 my-4">
-                  {plans[activePlanIdx].features.map((feat) => (
+                  {activePlan.features.map((feat) => (
                     <div key={feat} className="flex items-start gap-3 text-xs sm:text-sm text-gray-300 font-light">
                       <div className="w-4 h-4 rounded-full bg-mint/10 border border-mint/20 text-mint shrink-0 mt-0.5 flex items-center justify-center">
                         <Check className="w-3 h-3" />
@@ -194,26 +182,28 @@ export default function Pricing({ onNavigate }: PricingProps) {
                   ))}
                 </div>
 
-                {/* CTA operations row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-8 border-t border-white/5 mt-8">
+                <div className="flex flex-col gap-6 pt-8 border-t border-white/5 mt-8">
                   <div className="flex items-center gap-2 text-2xs font-mono text-gray-500">
                     <HelpCircle className="w-4.5 h-4.5" />
                     <span>All prices billed on checkpoint boundaries.</span>
                   </div>
 
-                  <button
-                    onClick={() => handleTriggerCheckout(plans[activePlanIdx].name)}
-                    className="px-8 py-4 bg-gradient-to-tr from-peach via-white to-mint text-black font-sans font-black text-xs uppercase tracking-wider rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center gap-2 shadow-md"
-                  >
-                    {plans[activePlanIdx].cta}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                  <div className="rounded-2xl border border-white/10 bg-black/60 p-4 sm:p-5">
+                    <p className="font-mono text-[9px] text-gray-500 uppercase tracking-widest mb-3">
+                      Pay with PayPal — ${activePlan.price}/mo ({billingCycle})
+                    </p>
+                    <PayPalButtons
+                      key={`${activePlan.name}-${activePlan.price}-${billingCycle}`}
+                      planName={activePlan.name}
+                      amount={activePlan.price}
+                      onSuccess={handlePaymentSuccess}
+                    />
+                  </div>
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Quick Select Panel list of other layers (4 Columns of grid) */}
           <div className="lg:col-span-4 flex flex-col gap-4 justify-between">
             <span className="font-mono text-[9px] text-gray-500 uppercase tracking-widest block border-b border-white/5 pb-2">
               FALLBACK LICENSING LAYERS
@@ -236,7 +226,7 @@ export default function Pricing({ onNavigate }: PricingProps) {
                     <h4 className="font-sans font-extrabold text-sm text-white">{p.name}</h4>
                     <span className="font-mono text-[10px] text-peach font-bold">${p.price}/mo</span>
                   </div>
-                  
+
                   <span className="font-mono text-[9px] text-gray-500 uppercase tracking-wider block">
                     {p.connectorRange} LIMIT
                   </span>
@@ -244,81 +234,7 @@ export default function Pricing({ onNavigate }: PricingProps) {
               );
             })}
           </div>
-
         </div>
-
-        {/* Tactical Checkout Sandbox Drawer Overlay */}
-        <AnimatePresence>
-          {selectedCheckoutPlan && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/85 backdrop-blur-sm">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="w-full max-w-lg bg-[#0a0a0a] border border-white/10 rounded-3xl p-6 sm:p-8 relative shadow-2xl overflow-hidden text-left"
-              >
-                <button
-                  onClick={() => setSelectedCheckoutPlan(null)}
-                  className="absolute top-4 right-4 text-gray-400 hover:text-white font-mono text-xs bg-white/5 px-2.5 py-1 rounded-lg border border-white/5 cursor-pointer"
-                >
-                  ESC [✖]
-                </button>
-
-                <div className="flex items-center gap-2 mb-6 border-b border-white/5 pb-4">
-                  <TermIcon className="w-4 h-4 text-peach animate-pulse" />
-                  <span className="font-mono text-[10px] text-gray-400 uppercase">LUMINA_LICENSING_SANDBOX</span>
-                </div>
-
-                {isProcessingCheckout ? (
-                  <div className="flex flex-col items-center justify-center py-12 gap-4 select-none">
-                    <RefreshCw className="w-10 h-10 text-peach animate-spin" />
-                    <p className="font-mono text-xs text-gray-400">CONNECTING CLIENT DATA LEDGER INSTANCE...</p>
-                    <div className="w-48 bg-white/5 h-1 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: "0%" }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 1.6 }}
-                        className="bg-peach h-full"
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-6">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-mint/10 text-mint rounded-2xl">
-                        <Sparkles className="w-6 h-6 animate-pulse" />
-                      </div>
-                      <div>
-                        <h4 className="text-xl font-sans font-black text-white">License Sandbox Provisioned</h4>
-                        <p className="text-xs font-mono text-mint uppercase mt-0.5">Status: Staging Standby active</p>
-                      </div>
-                    </div>
-
-                    <p className="text-gray-400 text-xs sm:text-sm font-light leading-relaxed">
-                      We have compiled a secure sandbox instance for <strong className="text-white font-bold">{selectedCheckoutPlan}</strong> permissions. All connected Snowflake instances or MySQL nodes established in the active console will authenticate fully.
-                    </p>
-
-                    <div className="p-4 rounded-xl bg-black border border-white/5 font-mono text-xs text-peach flex flex-col gap-1.5 select-all">
-                      <span>{"{"}</span>
-                      <span>  "nodeId": "alpha_config_{Date.now().toString().slice(-4)}",</span>
-                      <span>  "planModuleCode": "{selectedCheckoutPlan}",</span>
-                      <span>  "securityWarp": "AES_256_E2EE"</span>
-                      <span>{"}"}</span>
-                    </div>
-
-                    <button
-                      onClick={() => setSelectedCheckoutPlan(null)}
-                      className="w-full py-4 bg-white text-black font-sans font-extrabold text-xs uppercase tracking-wider rounded-xl cursor-pointer hover:bg-neutral-200 transition-all active:scale-[0.98]"
-                    >
-                      Enter Operating Sandbox
-                    </button>
-                  </div>
-                )}
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
-
       </div>
     </section>
   );
