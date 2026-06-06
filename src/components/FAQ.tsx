@@ -39,8 +39,8 @@ export default function FAQ() {
         a: "Yes. Zor-Lix is designed for enterprise environments and supports scalable data processing, large-volume analytics workloads, multi-source integrations, and customizable intelligence dashboards to meet evolving business requirements.",
       },
       {
-        q: "Are warning webhooks and automated status outputs persistent?",
-        a: "Yes. When pipeline streams breach defined sigma standard deviation limits, our dispatcher autonomously delivers rich alerts straight to your team's Slack feeds, backup databases, or storage lakes.",
+        q: "How does Zor-Lix improve business decision-making?",
+        a: "Zor-Lix continuously analyzes enterprise data to identify trends, risks, and opportunities in real time. By transforming complex datasets into clear insights, predictive forecasts, and actionable recommendations, the platform enables teams to make faster, more informed decisions with greater confidence.",
       },
     ],
   };
