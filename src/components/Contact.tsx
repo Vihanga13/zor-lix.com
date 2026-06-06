@@ -4,10 +4,8 @@ import {
   Send, 
   Terminal as TermIcon, 
   Radio, 
-  Cpu, 
   Mail, 
   Clock, 
-  Server, 
   Globe, 
   Network, 
   Sparkles, 
@@ -425,8 +423,8 @@ export default function Contact() {
             {/* Simulated Server Integrity Status */}
             <div className="bg-[#050505] border border-white/5 p-5 rounded-2.5xl flex items-center justify-between gap-4 mt-6">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-mint/10 rounded-xl text-mint animate-pulse">
-                  <Server className="w-4 h-4" />
+                <div className="p-2.5 bg-mint/10 rounded-xl text-mint animate-pulse flex items-center justify-center">
+                  <img src="/Initialize Tunnel Handshake (4).webp" alt="" className="w-5 h-5 object-contain" />
                 </div>
                 <div>
                   <span className="font-mono text-[8.5px] text-gray-500 block">DESTINATION HOST</span>
@@ -453,8 +451,8 @@ export default function Contact() {
             {/* Terminal Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/5 pb-4 mb-6 gap-3 select-none">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-peach/10 rounded-xl text-peach">
-                  <Cpu className="w-4 h-4 animate-pulse" />
+                <div className="p-2 bg-peach/10 rounded-xl text-peach flex items-center justify-center">
+                  <img src="/Initialize Tunnel Handshake (5).webp" alt="" className="w-5 h-5 object-contain animate-pulse" />
                 </div>
                 <div>
                   <h3 className="font-sans font-black text-xs text-white uppercase tracking-widest leading-none">
