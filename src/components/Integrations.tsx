@@ -198,8 +198,8 @@ export default function Integrations() {
                 <div className="absolute inset-1 rounded-full border border-dashed border-white/5 animate-spin duration-10000" />
                 
                 {/* Active encryption status icon */}
-                <div className="p-2.5 rounded-full bg-peach/10 text-peach mb-1 relative z-10 w-14 h-14 flex items-center justify-center">
-                  <img src={currentSelectedNode.icon} alt="" className={`w-8 h-8 object-contain ${isRotating ? "animate-spin" : ""}`} />
+                <div className="p-2.5 rounded-full bg-peach/10 text-peach mb-1 relative z-10 w-16 h-16 flex items-center justify-center">
+                  <img src={currentSelectedNode.icon} alt="" className={`w-10 h-10 object-contain ${isRotating ? "animate-spin" : ""}`} />
                 </div>
                 
                 <span className="font-mono text-[8px] text-gray-400 block tracking-tight uppercase leading-none text-center max-w-[90px] truncate">
@@ -245,7 +245,7 @@ export default function Integrations() {
 
                     <div className="relative">
                       {/* Satellite Node Core button */}
-                      <div className={`p-4 rounded-full border text-center transition-all duration-300 flex items-center justify-center w-16 h-16 ${
+                      <div className={`p-4 rounded-full border text-center transition-all duration-300 flex items-center justify-center w-20 h-20 ${
                         isSelected 
                           ? "bg-black border-peach text-peach scale-110 shadow-[0_4px_16px_rgba(255,175,135,0.2)]" 
                           : "bg-[#0b0b0b] border-white/5 text-gray-400 hover:border-white/10 hover:text-white"
@@ -253,7 +253,7 @@ export default function Integrations() {
                         <img 
                           src={node.icon} 
                           alt="" 
-                          className={`w-7 h-7 object-contain transition-all duration-300 ${
+                          className={`w-10 h-10 object-contain transition-all duration-300 ${
                             isSelected ? "opacity-100 scale-110 brightness-110" : "opacity-60 grayscale hover:opacity-90 hover:grayscale-0"
                           }`} 
                         />

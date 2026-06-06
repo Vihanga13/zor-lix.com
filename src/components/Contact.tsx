@@ -384,13 +384,13 @@ export default function Contact() {
                       )}
 
                       <div className="flex items-start gap-4 mb-3">
-                        <div className={`p-3.5 rounded-2xl bg-white/5 border border-white/8 transition-all duration-300 flex items-center justify-center w-14 h-14 shrink-0 ${
+                        <div className={`p-3.5 rounded-2xl bg-white/5 border border-white/8 transition-all duration-300 flex items-center justify-center w-20 h-20 shrink-0 ${
                           isSelected ? "text-peach border-peach/30" : "text-gray-400"
                         }`}>
                           <img 
                             src={chan.icon} 
                             alt="" 
-                            className={`w-8 h-8 object-contain transition-all duration-300 ${
+                            className={`w-12 h-12 object-contain transition-all duration-300 ${
                               isSelected ? "opacity-100 scale-110 brightness-110" : "opacity-60 grayscale hover:opacity-90 hover:grayscale-0"
                             }`} 
                           />
