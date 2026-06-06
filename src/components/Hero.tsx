@@ -648,9 +648,10 @@ export default function Hero({ onNavigate }: HeroProps) {
           <div
             className="lg:col-span-4 flex flex-col justify-between relative overflow-hidden p-6"
             style={{
-              
+              backgroundImage: 'url("/herobox_result.webp")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
               border: "1px solid rgba(255,255,255,0.08)",
-             
             }}
           >
             {/* Scope header */}
