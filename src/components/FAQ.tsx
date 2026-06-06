@@ -15,28 +15,28 @@ export default function FAQ() {
   const faqs = {
     security: [
       {
-        q: "How does Zor-Lix secure our database network credentials?",
-        a: "Enterprise metadata and database routes are secured under strict AES-256 vault encryption encryption. Zor-Lix never stores or reads raw database tables; we process structural telemetry schema shapes anonymously without writing access permissions.",
+        q: "What is Zor-Lix?",
+        a: "Zor-Lix is an AI-powered business intelligence platform that helps organizations unify data from multiple sources, automate data preparation, perform advanced analytics, and generate actionable insights for faster and more informed decision-making.",
       },
       {
-        q: "What data actually leaves our local secure servers?",
-        a: "Only aggregate metadata schemas and calculated forecast parameters are communicated out to dashboard previews. Your raw user database, billing records, and tables reside securely behind your private enterprise firewall.",
+        q: "Which data sources can Zor-Lix connect to?",
+        a: "Zor-Lix supports integration with enterprise databases, data warehouses, CRM systems, ERP platforms, cloud applications, APIs, SaaS tools, and other business systems, creating a centralized intelligence layer across the organization.",
       },
     ],
     model: [
       {
-        q: "What forecasting algorithms are executed in the console?",
-        a: "We deploy fine-tuned proprietary time-series transformer models trained specifically to isolate seasonal waves, product transaction velocities, user churn ratios, and extreme anomalies in high frequency streams.",
+        q: "How does the AI data processing engine work?",
+        a: "The platform automatically ingests, cleans, validates, and structures incoming data before applying AI-driven analytics. This process helps eliminate data inconsistencies, improve quality, and ensure reliable insights across business operations.",
       },
       {
-        q: "Can team members operate forecasting without SQL expertise?",
-        a: "Absolutely! Zor-Lix is built to simplify analytics. Our unified conversational SQL agents compile complex relational queries and forecast indicators automatically based on sentence keywords.",
+        q: "What types of insights does Zor-Lix provide?",
+        a: "Zor-Lix delivers real-time business intelligence, trend analysis, anomaly detection, predictive forecasting, performance monitoring, and decision-support recommendations that help organizations identify opportunities and optimize operations.",
       },
     ],
     general: [
       {
-        q: "How fast do external database streams synchronize?",
-        a: "Almost instantly. Average Snowflake clusters or MySQL tables inherit connections in under 60 seconds. Continuous pipeline updates are then piped securely over active sub-millisecond WebSockets.",
+        q: "Is Zor-Lix suitable for enterprise-scale deployments?",
+        a: "Yes. Zor-Lix is designed for enterprise environments and supports scalable data processing, large-volume analytics workloads, multi-source integrations, and customizable intelligence dashboards to meet evolving business requirements.",
       },
       {
         q: "Are warning webhooks and automated status outputs persistent?",

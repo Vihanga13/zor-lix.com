@@ -2,11 +2,6 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   ShieldCheck, 
-  Cpu, 
-  Database, 
-  Server, 
-  CloudLightning, 
-  Link2, 
   RefreshCw, 
   Lock, 
   Unlock, 
@@ -23,7 +18,7 @@ interface IntegrationNode {
   id: string;
   name: string;
   category: string;
-  icon: React.ComponentType<any>;
+  icon: string;
   latency: string;
   throughput: string;
   cipher: string;
@@ -48,7 +43,7 @@ export default function Integrations() {
       id: "snowflake", 
       name: "Snowflake Cluster", 
       category: "Data Warehouse", 
-      icon: Database, 
+      icon: "/Cryptographic Ring Buffer (3).webp", 
       latency: "0.08ms", 
       throughput: "4.8 GB/s",
       cipher: "Kyber-1024 Post-Quantum",
@@ -58,7 +53,7 @@ export default function Integrations() {
       id: "bigquery", 
       name: "Google BigQuery", 
       category: "Analytics Engine", 
-      icon: Cpu, 
+      icon: "/Cryptographic Ring Buffer (2).webp", 
       latency: "0.12ms", 
       throughput: "8.2 GB/s",
       cipher: "AES-GCM-256 Ephemeral",
@@ -68,7 +63,7 @@ export default function Integrations() {
       id: "s3_bucket", 
       name: "Amazon S3 Lake", 
       category: "Parquet Store", 
-      icon: Server, 
+      icon: "/Cryptographic Ring Buffer (4).webp", 
       latency: "0.15ms", 
       throughput: "3.1 GB/s",
       cipher: "ChaCha20-Poly1305 Strict",
@@ -78,7 +73,7 @@ export default function Integrations() {
       id: "stripe", 
       name: "Stripe Transaction", 
       category: "Ledger Channel", 
-      icon: CloudLightning, 
+      icon: "/Cryptographic Ring Buffer (5).webp", 
       latency: "0.04ms", 
       throughput: "1.4 GB/s",
       cipher: "AES-GCM-256 Hardware",
@@ -88,7 +83,7 @@ export default function Integrations() {
       id: "postgres", 
       name: "PostgreSQL Replica", 
       category: "Relational DB", 
-      icon: Link2, 
+      icon: "/Cryptographic Ring Buffer.webp", 
       latency: "0.02ms", 
       throughput: "9.5 GB/s",
       cipher: "Kyber-768 Ephemeral",
@@ -143,7 +138,6 @@ export default function Integrations() {
   };
 
   const currentSelectedNode = nodesList[selectedIdx];
-  const SelectedIcon = currentSelectedNode.icon;
 
   return (
     <section 
@@ -204,8 +198,8 @@ export default function Integrations() {
                 <div className="absolute inset-1 rounded-full border border-dashed border-white/5 animate-spin duration-10000" />
                 
                 {/* Active encryption status icon */}
-                <div className="p-2.5 rounded-full bg-peach/10 text-peach mb-1 relative z-10">
-                  <SelectedIcon className={`w-5 h-5 ${isRotating ? "animate-spin" : ""}`} />
+                <div className="p-2.5 rounded-full bg-peach/10 text-peach mb-1 relative z-10 w-14 h-14 flex items-center justify-center">
+                  <img src={currentSelectedNode.icon} alt="" className={`w-8 h-8 object-contain ${isRotating ? "animate-spin" : ""}`} />
                 </div>
                 
                 <span className="font-mono text-[8px] text-gray-400 block tracking-tight uppercase leading-none text-center max-w-[90px] truncate">
@@ -219,7 +213,6 @@ export default function Integrations() {
 
               {/* SATELLITES DRIPPED RADIALLY: Interactive Orbital Keys */}
               {nodesList.map((node, idx) => {
-                const NodeIcon = node.icon;
                 const isSelected = selectedIdx === idx;
                 
                 // Calculate physical coordinates for circular arrangements
@@ -252,12 +245,18 @@ export default function Integrations() {
 
                     <div className="relative">
                       {/* Satellite Node Core button */}
-                      <div className={`p-4 rounded-full border text-center transition-all duration-300 ${
+                      <div className={`p-4 rounded-full border text-center transition-all duration-300 flex items-center justify-center w-16 h-16 ${
                         isSelected 
                           ? "bg-black border-peach text-peach scale-110 shadow-[0_4px_16px_rgba(255,175,135,0.2)]" 
                           : "bg-[#0b0b0b] border-white/5 text-gray-400 hover:border-white/10 hover:text-white"
                       }`}>
-                        <NodeIcon className="w-4 h-4" />
+                        <img 
+                          src={node.icon} 
+                          alt="" 
+                          className={`w-7 h-7 object-contain transition-all duration-300 ${
+                            isSelected ? "opacity-100 scale-110 brightness-110" : "opacity-60 grayscale hover:opacity-90 hover:grayscale-0"
+                          }`} 
+                        />
                       </div>
 
                       {/* Display pill tag floating next to satellites, visible on hover or when Selected */}

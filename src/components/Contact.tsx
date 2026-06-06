@@ -5,17 +5,14 @@ import {
   Terminal as TermIcon, 
   Radio, 
   Cpu, 
-  ShieldAlert, 
   Mail, 
   Clock, 
   Server, 
   Globe, 
   Network, 
-  MessageSquare, 
   Sparkles, 
   CheckCircle, 
   CheckCircle2, 
-  Database, 
   Workflow
 } from "lucide-react";
 
@@ -45,7 +42,7 @@ interface ContactChannel {
   id: "general" | "support" | "custom";
   title: string;
   badge: string;
-  icon: React.ComponentType<any>;
+  icon: string;
   latency: string;
   sub: string;
   color: string;
@@ -194,7 +191,7 @@ export default function Contact() {
       id: "general",
       title: "Direct Transmission",
       badge: "GENERAL ENQUIRY",
-      icon: MessageSquare,
+      icon: "/Initialize Tunnel Handshake.webp",
       latency: "Avg. response: <2.4hrs",
       sub: "General project scoping, brand partnerships, or operational questions.",
       color: "text-mint"
@@ -203,7 +200,7 @@ export default function Contact() {
       id: "support",
       title: "Severe Overload Audit",
       badge: "EMERGENCY TIER",
-      icon: ShieldAlert,
+      icon: "/Initialize Tunnel Handshake (2).webp",
       latency: "Avg. response: 15 mins",
       sub: "For existing cluster failures, database handshake timeouts, or standard deviation drift.",
       color: "text-peach"
@@ -212,7 +209,7 @@ export default function Contact() {
       id: "custom",
       title: "Enterprise Sandbox Sync",
       badge: "SALES & ARCHITECTURE",
-      icon: Database,
+      icon: "/Initialize Tunnel Handshake (3).webp",
       latency: "Avg. response: <1.2hrs",
       sub: "Request custom multi-tenant hardware clusters or private secure database models.",
       color: "text-indigo-400"
@@ -370,7 +367,6 @@ export default function Contact() {
 
               <div className="flex flex-col gap-4">
                 {channels.map((chan) => {
-                  const Icon = chan.icon;
                   const isSelected = activeChannel === chan.id;
                   return (
                     <button
@@ -388,8 +384,16 @@ export default function Contact() {
                       )}
 
                       <div className="flex items-start gap-4 mb-3">
-                        <div className={`p-3.5 rounded-2xl bg-white/5 border border-white/8 ${isSelected ? "text-peach" : "text-gray-400"}`}>
-                          <Icon className="w-5 h-5" />
+                        <div className={`p-3.5 rounded-2xl bg-white/5 border border-white/8 transition-all duration-300 flex items-center justify-center w-14 h-14 shrink-0 ${
+                          isSelected ? "text-peach border-peach/30" : "text-gray-400"
+                        }`}>
+                          <img 
+                            src={chan.icon} 
+                            alt="" 
+                            className={`w-8 h-8 object-contain transition-all duration-300 ${
+                              isSelected ? "opacity-100 scale-110 brightness-110" : "opacity-60 grayscale hover:opacity-90 hover:grayscale-0"
+                            }`} 
+                          />
                         </div>
                         <div>
                           <span className="font-mono text-[8.5px] text-gray-500 uppercase tracking-widest block mb-1">

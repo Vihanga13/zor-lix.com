@@ -398,7 +398,7 @@ export default function Hero({ onNavigate }: HeroProps) {
                   color: "#fff",
                 }}
               >
-                Unify Stream{" "}
+                Intelligence Beyond Traditional{" "}
                 <span
                   style={{
                     fontStyle: "italic",
@@ -409,7 +409,8 @@ export default function Hero({ onNavigate }: HeroProps) {
                     letterSpacing: "0.01em",
                   }}
                 >
-                  noise
+                  Analytics
+
                 </span>
                 .
                 <span
@@ -420,7 +421,7 @@ export default function Hero({ onNavigate }: HeroProps) {
                     marginTop: 4,
                   }}
                 >
-                  Discover latent
+                  AI-Powered Data Analytics &
                 </span>
                 <span
                   style={{
@@ -437,7 +438,8 @@ export default function Hero({ onNavigate }: HeroProps) {
                     marginTop: 6,
                   }}
                 >
-                  forecasting feeds.
+                  Decision Intelligence
+
                 </span>
               </h1>
               <p
@@ -451,10 +453,8 @@ export default function Hero({ onNavigate }: HeroProps) {
                   marginTop: 10,
                 }}
               >
-                Consolidate high-frequency records, remote database queries, and
-                volatile transaction ledgers directly into a beautiful circular
-                cockpit map. Calibrate phase-modulators live to isolate signals
-                cleanly.
+                Zor-Lix enables organizations to integrate data from multiple systems, automate data quality management, and generate actionable business intelligence through advanced AI analytics.
+
               </p>
             </div>
 
