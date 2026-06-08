@@ -248,9 +248,7 @@ export default function ComplianceVault({ activeTab, onTabChange, onBackToLandin
                       <span className="font-mono text-[8px] text-peach uppercase tracking-widest block mb-1">ZOR_LIX_TERMS // SECURE_AGREEMENT</span>
                       <h3 className="text-xl sm:text-2xl font-sans font-black text-white">Terms of Compliance</h3>
                     </div>
-                    <button className="p-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-peach text-gray-400 hover:text-peach transition-all">
-                      <Download className="w-4 h-4" />
-                    </button>
+                    
                   </div>
 
                   <div className="prose prose-invert max-w-none text-xs sm:text-sm text-gray-400 font-light leading-relaxed flex flex-col gap-6">
@@ -308,9 +306,7 @@ export default function ComplianceVault({ activeTab, onTabChange, onBackToLandin
                       <span className="font-mono text-[8px] text-mint uppercase tracking-widest block mb-1">DATA_PROTECTION // AIS_LEAN_VAULT</span>
                       <h3 className="text-xl sm:text-2xl font-sans font-black text-white">Privacy Ledger</h3>
                     </div>
-                    <button className="p-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-mint text-gray-400 hover:text-mint transition-all">
-                      <Download className="w-4 h-4" />
-                    </button>
+                    
                   </div>
 
                   <div className="prose prose-invert max-w-none text-xs sm:text-sm text-gray-400 font-light leading-relaxed flex flex-col gap-6">
