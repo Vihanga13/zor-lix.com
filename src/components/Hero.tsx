@@ -614,33 +614,7 @@ export default function Hero({ onNavigate }: HeroProps) {
                   <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <button
-                onClick={() => onNavigate("dashboard")}
-                className="flex-1 flex items-center justify-center gap-2 rounded-xl select-none transition-all hover:scale-[1.01] active:scale-[0.98]"
-                style={{
-                  padding: "12px 18px",
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  color: "#fff",
-                  fontWeight: 700,
-                  fontSize: "10.5px",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  cursor: "pointer",
-                }}
-              >
-                Launch Console
-                <span
-                  className="rounded-full"
-                  style={{
-                    width: 6,
-                    height: 6,
-                    background: "#C5E898",
-                    animation: "heroPing 1.5s ease-in-out infinite",
-                    display: "inline-block",
-                  }}
-                />
-              </button>
+              
             </div>
           </div>
 
