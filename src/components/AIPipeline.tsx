@@ -26,7 +26,7 @@ interface PipelineNode {
   name: string;
   subtitle: string;
   desc: string;
-  icon: React.ComponentType<any>;
+  icon: string;
   stepNum: string;
   latency: string;
   throughput: string;
@@ -70,7 +70,7 @@ export default function AIPipeline() {
       name: "Collect",
       subtitle: "Unified Ingest",
       desc: "Connect Snowflake database clusters, local PostgreSQL tables, or API event streams dynamically. Our zero-trust secure pipeline discovers your custom datasets and maps relationships without database access permissions.",
-      icon: Database,
+      icon: "/Holographic Constellation.webp",
       stepNum: "01",
       latency: "0.01ms",
       throughput: "45k streams/m",
@@ -83,7 +83,7 @@ export default function AIPipeline() {
       name: "Clean",
       subtitle: "Outlier Harmonization",
       desc: "Autonomously detects standard deviation drift, timestamp corruption, and missing attributes. Cleans and processes telemetry values into standardized rows without introducing delay overhead.",
-      icon: Filter,
+      icon: "/Holographic Constellation (2).webp",
       stepNum: "02",
       latency: "0.08ms",
       throughput: "120k blocks/m",
@@ -96,7 +96,7 @@ export default function AIPipeline() {
       name: "Analyze",
       subtitle: "Neural Modeling",
       desc: "Leverages proprietary Transformer time-series models trained specifically for transaction telemetry. Detect acquisition anomalies, future inventory spikes, and churn lifecycle patterns in minutes.",
-      icon: Binary,
+      icon: "/Holographic Constellation (3).webp",
       stepNum: "03",
       latency: "1.12ms",
       throughput: "88k records/m",
@@ -109,7 +109,7 @@ export default function AIPipeline() {
       name: "Decide",
       subtitle: "Autonomous Action",
       desc: "Configures active alert dispatchers and servers. Pipes rich JSON operational digests straight to Slack webhooks, database lakes, or custom Cloud storage channels automatically.",
-      icon: Disc,
+      icon: "/Holographic Constellation (4).webp",
       stepNum: "04",
       latency: "0.24ms",
       throughput: "15k acts/m",
@@ -121,7 +121,6 @@ export default function AIPipeline() {
 
   // Active step info helper
   const currentNode = nodes.find((n) => n.id === activeNode) || nodes[0];
-  const CurrentIcon = currentNode.icon;
 
   // Fire transaction packet flow animation along SVG bridges
   const firePacket = () => {
@@ -298,12 +297,12 @@ export default function AIPipeline() {
 
                     <div className="relative">
                       {/* Physical star block button */}
-                      <div className={`p-4 rounded-full border transition-all duration-300 ${
+                      <div className={`p-3.5 rounded-full border transition-all duration-300 flex items-center justify-center ${
                         isSelected 
                           ? "bg-black border-peach text-peach scale-110 shadow-[0_0_20px_rgba(255,175,135,0.25)]" 
                           : "bg-[#0b0b0b]/90 border-white/5 text-gray-400 group-hover:border-white/10 group-hover:text-white"
                       }`}>
-                        <NodeIcon className="w-4 h-4" />
+                        <img src={node.icon} alt={node.name} className="w-5 h-5 object-contain" />
                       </div>
 
                       {/* Display Star Index name label */}
