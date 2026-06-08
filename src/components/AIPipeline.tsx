@@ -297,12 +297,12 @@ export default function AIPipeline() {
 
                     <div className="relative">
                       {/* Physical star block button */}
-                      <div className={`p-3.5 rounded-full border transition-all duration-300 flex items-center justify-center ${
+                      <div className={`p-2.5 rounded-full border transition-all duration-300 flex items-center justify-center ${
                         isSelected 
                           ? "bg-black border-peach text-peach scale-110 shadow-[0_0_20px_rgba(255,175,135,0.25)]" 
                           : "bg-[#0b0b0b]/90 border-white/5 text-gray-400 group-hover:border-white/10 group-hover:text-white"
                       }`}>
-                        <img src={node.icon} alt={node.name} className="w-5 h-5 object-contain" />
+                        <img src={node.icon} alt={node.name} className="w-8 h-8 object-contain" />
                       </div>
 
                       {/* Display Star Index name label */}
