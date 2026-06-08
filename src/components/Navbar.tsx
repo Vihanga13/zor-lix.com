@@ -353,7 +353,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                 {/* Handshake CTA */}
                 <div className="hidden sm:flex px-2 sm:px-3 py-2.5 items-center self-stretch">
                   <button
-                    onClick={() => onNavigate("contact")}
+                    onClick={() => onNavigate("zorlixa")}
                     className="nb-hs-btn focus:outline-none"
                   >
                     <div className="nb-shim" />
@@ -439,7 +439,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
 
                 {/* Handshake CTA — full width in drawer */}
                 <button
-                  onClick={() => { onNavigate("contact"); setIsOpen(false); }}
+                  onClick={() => { onNavigate("zorlixa"); setIsOpen(false); }}
                   className="nb-hs-btn focus:outline-none w-full justify-center"
                 >
                   <div className="nb-shim" />

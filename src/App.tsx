@@ -13,12 +13,13 @@ import Pricing from "./components/Pricing";
 import FAQ from "./components/FAQ";
 import Contact from "./components/Contact";
 import ComplianceVault from "./components/ComplianceVault";
+import ZorlixaProduct from "./components/ZorlixaProduct";
 import Footer from "./components/Footer";
 import ChatwootWidget from "./components/ChatwootWidget";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("home");
-  const [view, setView] = useState<"landing" | "terms" | "privacy" | "audits">("landing");
+  const [view, setView] = useState<"landing" | "terms" | "privacy" | "audits" | "zorlixa">("landing");
 
   // Track scroll position to update active nav section matching visible anchors
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function App() {
   }, [view]);
 
   const handleNavigation = (sectionId: string) => {
-    if (sectionId === "terms" || sectionId === "privacy" || sectionId === "audits") {
+    if (sectionId === "terms" || sectionId === "privacy" || sectionId === "audits" || sectionId === "zorlixa") {
       setView(sectionId);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -118,6 +119,14 @@ export default function App() {
           {/* Section 12: Ingress Contact Terminal Form */}
           <Contact />
         </main>
+      ) : view === "zorlixa" ? (
+        <ZorlixaProduct
+          onBackToLanding={() => {
+            setView("landing");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          onNavigate={handleNavigation}
+        />
       ) : (
         <ComplianceVault
           activeTab={view}

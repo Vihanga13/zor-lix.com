@@ -594,7 +594,7 @@ export default function Hero({ onNavigate }: HeroProps) {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                onClick={() => onNavigate("pipeline")}
+                onClick={() => onNavigate("zorlixa")}
                 className="flex-1 flex items-center justify-center gap-2 rounded-xl select-none transition-all hover:scale-[1.01] active:scale-[0.98]"
                 style={{
                   padding: "12px 18px",
