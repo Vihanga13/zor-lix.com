@@ -12,14 +12,14 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
-  const [isOpen, setIsOpen]                   = useState(false);
-  const [scrolled, setScrolled]               = useState(false);
-  const [scrollPercent, setScrollPercent]     = useState(0);
-  const [sysOverhead, setSysOverhead]         = useState("0.038ms");
-  const [hoveredLink, setHoveredLink]         = useState<string | null>(null);
-  const [isCalibrating, setIsCalibrating]     = useState(false);
-  const [glitchActive, setGlitchActive]       = useState(false);
-  const [bars, setBars]                       = useState<number[]>(
+  const [isOpen, setIsOpen]               = useState(false);
+  const [scrolled, setScrolled]           = useState(false);
+  const [scrollPercent, setScrollPercent] = useState(0);
+  const [sysOverhead, setSysOverhead]     = useState("0.038ms");
+  const [hoveredLink, setHoveredLink]     = useState<string | null>(null);
+  const [isCalibrating, setIsCalibrating] = useState(false);
+  const [glitchActive, setGlitchActive]   = useState(false);
+  const [bars, setBars]                   = useState<number[]>(
     Array.from({ length: 7 }, () => Math.floor(Math.random() * 12) + 3)
   );
 
@@ -62,7 +62,6 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
     "VAULT · SECURE",
   ];
 
-  /* ─────────────────────────────────────────────── */
   return (
     <>
       <style>{`
@@ -131,9 +130,9 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           color: #FFAF87;
           cursor: pointer;
           font-family: 'Syne', sans-serif;
-          font-size: 11px;
+          font-size: 13px;
           font-weight: 800;
-          letter-spacing: .15em;
+          letter-spacing: .12em;
           text-transform: uppercase;
           white-space: nowrap;
           transition: all .22s ease;
@@ -150,17 +149,19 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
         .nb-hs-btn .nb-arrow { transition: transform .18s ease; }
         .nb-hs-btn:hover .nb-arrow { transform: translate(2px,-2px); }
 
-        /* nav pill */
+        /* ── NAV PILL — FONT SIZE INCREASED ── */
         .nb-nav-item {
           position: relative;
-          display: flex; align-items: center; gap: 5px;
-          padding: 7px 13px;
+          display: flex; align-items: center; gap: 6px;
+          padding: 8px 15px;
           border-radius: 999px;
           cursor: pointer;
           font-family: 'Syne', sans-serif;
-          font-size: 10px; font-weight: 700;
-          letter-spacing: .09em; text-transform: uppercase;
-          color: #6b7280;
+          font-size: 13px;
+          font-weight: 800;
+          letter-spacing: .08em;
+          text-transform: uppercase;
+          color: #9ca3af;
           border: 1px solid transparent;
           transition: color .15s, border-color .15s, background .15s;
           white-space: nowrap;
@@ -169,20 +170,22 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
         .nb-nav-item:hover { color: #e5e7eb; border-color: rgba(255,255,255,.07); background: rgba(255,255,255,.03); }
         .nb-nav-item.nb-active { color: #fff; }
         .nb-nav-item .nb-code {
-          font-family:'DM Mono',monospace; font-size:7px; color:#374151;
+          font-family:'DM Mono',monospace;
+          font-size: 9px;
+          color:#4b5563;
           transition:color .15s;
         }
         .nb-nav-item:hover .nb-code,
         .nb-nav-item.nb-active .nb-code { color: #FFAF87; }
 
-        /* active pill bg (rendered via motion div) */
+        /* active pill bg */
         .nb-active-bg {
           position:absolute; inset:0; border-radius:999px;
           background:linear-gradient(135deg,rgba(255,175,135,.13),rgba(197,232,152,.07));
           border:1px solid rgba(255,175,135,.28);
         }
 
-        /* mobile card */
+        /* ── MOBILE CARD ── */
         .nb-mob-card {
           display:flex; flex-direction:column; justify-content:space-between;
           padding:13px; border-radius:14px; height:70px;
@@ -199,7 +202,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           background:linear-gradient(90deg,#FFAF87,#C5E898);
         }
 
-        /* mobile horizontal nav strip (layout via Tailwind — no display here, or lg:hidden breaks) */
+        /* ── MOBILE STRIP — FONT SIZE INCREASED ── */
         .nb-mob-strip {
           -webkit-overflow-scrolling:touch;
           scrollbar-width:none;
@@ -208,14 +211,15 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
         .nb-mob-link {
           flex-shrink:0;
           display:inline-flex; align-items:center; gap:6px;
-          padding:9px 14px;
+          padding:9px 16px;
           border-radius:999px;
           border:1px solid rgba(255,255,255,.1);
           background:rgba(255,255,255,.04);
           color:#d1d5db;
           font-family:'Syne',sans-serif;
-          font-size:12px; font-weight:700;
-          letter-spacing:.06em; text-transform:uppercase;
+          font-size: 13px;
+          font-weight: 800;
+          letter-spacing:.05em; text-transform:uppercase;
           white-space:nowrap;
           cursor:pointer;
           transition:background .15s,border-color .15s,color .15s;
@@ -229,7 +233,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
         }
         .nb-mob-link .nb-code {
           font-family:'DM Mono',monospace;
-          font-size:9px;
+          font-size:10px;
           color:#9ca3af;
         }
         .nb-mob-link.nb-active .nb-code { color:#FFAF87; }
@@ -248,14 +252,14 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           </div>
           <div className="nb-ticker pl-10 text-gray-400">
             {[...telemetry, ...telemetry].map((t, i) => (
-              <span key={i} className="nb-mono text-[6.5px] tracking-[.16em] mx-6">◈ {t}</span>
+              <span key={i} className="nb-mono text-[7px] tracking-[.16em] mx-6">◈ {t}</span>
             ))}
           </div>
           <div className="absolute right-0 inset-y-0 w-10 from-black to-transparent z-10" />
         </div>
 
         {/* ══ MAIN NAVBAR ══════════════════════════════════════ */}
-        <div className={`pointer-events-auto w-full mt-1.5 transition-all duration-300 ${scrolled ? "" : ""}`}>
+        <div className={`pointer-events-auto w-full mt-1.5 transition-all duration-300`}>
           <div className={`relative flex flex-col rounded-2xl border overflow-hidden transition-all duration-300 ${
             scrolled
               ? "bg-[#020202]/97 backdrop-blur-2xl shadow-[0_16px_48px_-8px_rgba(255,175,135,.14)]"
@@ -264,7 +268,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
 
             <div className="nb-scan-wrap" />
 
-            {/* Scroll progress — top edge */}
+            {/* Scroll progress bar — top edge */}
             <div className="absolute top-0 left-0 right-0 h-[1.5px] z-20 overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-[#FFAF87] via-white/70 to-[#C5E898]"
@@ -273,95 +277,104 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
             </div>
 
             <div className="flex items-center w-full min-w-0">
-            {/* ── ZONE 1 · LOGO (SIGNIFICANTLY INCREASED - NAVBAR SAME SIZE) ── */}
-            <button
-              onClick={() => { onNavigate("home"); setIsOpen(false); }}
-              className={`flex items-center px-3 sm:px-4 py-0.5 sm:py-1 lg:py-1.5 cursor-pointer focus:outline-none group transition-opacity hover:opacity-90 border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
-            >
-              <img
-                src="/logo.svg"
-                alt="Zor-Lix"
-                className="h-14 sm:h-16 md:h-[70px] lg:h-[76px] w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[380px] object-contain object-left"
-              />
-            </button>
 
-            {/* ── ZONE 2 · STATUS (xl only) ──────────────────── */}
-            <div className="hidden xl:flex flex-col justify-center px-4 border-r self-stretch select-none gap-1">
-              <div className="nb-mono text-[6px] text-gray-600 uppercase tracking-[.18em]">MATRIX SEC_STATUS</div>
-              <div className="nb-mono text-[8px] font-bold tracking-widest flex items-center gap-1.5">
-                <span className="nb-ping rounded-full" />
-                SSL_SECURE
+              {/* ── ZONE 1 · LOGO ── */}
+              <button
+                onClick={() => { onNavigate("home"); setIsOpen(false); }}
+                className={`flex items-center px-3 sm:px-4 py-0.5 sm:py-1 lg:py-1.5 cursor-pointer focus:outline-none group transition-opacity hover:opacity-90 border-r border-white/[0.06] min-w-0 ${glitchActive ? "nb-glitch" : ""}`}
+              >
+                <img
+                  src="/logo.svg"
+                  alt="Zor-Lix"
+                  className="h-14 sm:h-16 md:h-[70px] lg:h-[76px] w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[380px] object-contain object-left"
+                />
+              </button>
+
+              {/* ── ZONE 2 · STATUS (xl only) ── */}
+              <div className="hidden xl:flex flex-col justify-center px-4 border-r self-stretch select-none gap-1">
+                <div className="nb-mono text-[7px] text-gray-600 uppercase tracking-[.18em]">MATRIX SEC_STATUS</div>
+                <div className="nb-mono text-[9px] font-bold tracking-widest flex items-center gap-1.5">
+                  <span className="nb-ping rounded-full" />
+                  SSL_SECURE
+                </div>
               </div>
-            </div>
 
-            {/* ── ZONE 3 · NAV LINKS (lg+, hidden on mobile) ─── */}
-            <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center px-3 py-2 overflow-hidden">
-              {navLinks.map(({ name, id, code, Icon }) => {
-                const isActive = activeSection === id;
-                return (
-                  <button
-                    key={id}
-                    onClick={() => onNavigate(id)}
-                    onMouseEnter={() => setHoveredLink(id)}
-                    onMouseLeave={() => setHoveredLink(null)}
-                    className={`nb-nav-item focus:outline-none ${isActive ? "nb-active" : ""}`}
-                  >
-                    {isActive && (
-                      <motion.div layoutId="nb-active-pill" className="nb-active-bg"
-                        transition={{ type: "spring", stiffness: 420, damping: 32 }} />
-                    )}
-                    <span className="nb-code relative z-10">{code}</span>
-                    <Icon className={`w-3 h-3 relative z-10 flex-shrink-0 transition-colors ${isActive ? "text-[#FFAF87]" : "text-gray-600"}`} />
-                    <span className="relative z-10">{name}</span>
-                    <AnimatePresence>
-                      {hoveredLink === id && !isActive && (
-                        <motion.span
-                          initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: 1, opacity: 1 }}
-                          exit={{ scaleX: 0, opacity: 0 }} transition={{ duration: 0.13 }}
-                          className="absolute bottom-[5px] left-3 right-3 h-[1.5px] rounded-full bg-[#FFAF87]/38 origin-left"
+              {/* ── ZONE 3 · NAV LINKS (lg+) ── */}
+              <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center px-3 py-2 overflow-hidden">
+                {navLinks.map(({ name, id, code, Icon }) => {
+                  const isActive = activeSection === id;
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => onNavigate(id)}
+                      onMouseEnter={() => setHoveredLink(id)}
+                      onMouseLeave={() => setHoveredLink(null)}
+                      className={`nb-nav-item focus:outline-none ${isActive ? "nb-active" : ""}`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="nb-active-pill"
+                          className="nb-active-bg"
+                          transition={{ type: "spring", stiffness: 420, damping: 32 }}
                         />
                       )}
-                    </AnimatePresence>
-                  </button>
-                );
-              })}
-            </nav>
+                      <span className="nb-code relative z-10">{code}</span>
+                      <Icon className={`w-3.5 h-3.5 relative z-10 flex-shrink-0 transition-colors ${isActive ? "text-[#FFAF87]" : "text-gray-600"}`} />
+                      <span className="relative z-10">{name}</span>
+                      <AnimatePresence>
+                        {hoveredLink === id && !isActive && (
+                          <motion.span
+                            initial={{ scaleX: 0, opacity: 0 }}
+                            animate={{ scaleX: 1, opacity: 1 }}
+                            exit={{ scaleX: 0, opacity: 0 }}
+                            transition={{ duration: 0.13 }}
+                            className="absolute bottom-[5px] left-3 right-3 h-[1.5px] rounded-full bg-[#FFAF87]/38 origin-left"
+                          />
+                        )}
+                      </AnimatePresence>
+                    </button>
+                  );
+                })}
+              </nav>
 
-            {/* ── ZONE 4 · RIGHT CLUSTER ─────────────────────── */}
-            <div className="flex items-center flex-shrink-0 ml-auto border-l border-white/[0.06]">
+              {/* ── ZONE 4 · RIGHT CLUSTER ── */}
+              <div className="flex items-center flex-shrink-0 ml-auto border-l border-white/[0.06]">
 
-              {/* Calibrate (lg+) */}
-              <button onClick={calibrate} title="Recalibrate"
-                className="hidden lg:flex self-stretch px-3 items-center justify-center text-gray-600 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer focus:outline-none relative border-r border-white/[0.06]">
-                <RefreshCw className={`w-3.5 h-3.5 ${isCalibrating ? "animate-spin text-[#C5E898]" : ""}`} />
-                <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#FFAF87] ring-[3px] ring-black nb-ping text-[#FFAF87]" />
-              </button>
-
-              {/* Handshake — hidden on smallest screens (in mobile strip + drawer) */}
-              <div className="hidden sm:flex px-2 sm:px-3 py-2.5 items-center self-stretch">
+                {/* Calibrate (lg+) */}
                 <button
-                  onClick={() => onNavigate("contact")}
-                  className="nb-hs-btn focus:outline-none"
+                  onClick={calibrate}
+                  title="Recalibrate"
+                  className="hidden lg:flex self-stretch px-3 items-center justify-center text-gray-600 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer focus:outline-none relative border-r border-white/[0.06]"
                 >
-                  <div className="nb-shim" />
-                  <span className="relative z-10">Handshake</span>
-                  <ArrowUpRight className="nb-arrow w-3.5 h-3.5 flex-shrink-0 relative z-10" />
+                  <RefreshCw className={`w-3.5 h-3.5 ${isCalibrating ? "animate-spin text-[#C5E898]" : ""}`} />
+                  <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#FFAF87] ring-[3px] ring-black nb-ping text-[#FFAF87]" />
+                </button>
+
+                {/* Handshake CTA */}
+                <div className="hidden sm:flex px-2 sm:px-3 py-2.5 items-center self-stretch">
+                  <button
+                    onClick={() => onNavigate("contact")}
+                    className="nb-hs-btn focus:outline-none"
+                  >
+                    <div className="nb-shim" />
+                    <span className="relative z-10">Zorlixa</span>
+                    <ArrowUpRight className="nb-arrow w-3.5 h-3.5 flex-shrink-0 relative z-10" />
+                  </button>
+                </div>
+
+                {/* Hamburger — mobile only */}
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  aria-label="Toggle Menu"
+                  aria-expanded={isOpen}
+                  className="lg:hidden flex self-stretch items-center justify-center px-4 border-l border-white/[0.06] text-gray-300 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer focus:outline-none"
+                >
+                  {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
               </div>
-
-              {/* Hamburger — expands full nav drawer on mobile */}
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                aria-label="Toggle Menu"
-                aria-expanded={isOpen}
-                className="lg:hidden flex self-stretch items-center justify-center px-4 border-l border-white/[0.06] text-gray-300 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer focus:outline-none"
-              >
-                {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
             </div>
 
-            {/* Mobile nav strip — below lg only */}
+            {/* ── MOBILE NAV STRIP (below lg) ── */}
             <nav
               className="flex lg:hidden items-center gap-1.5 overflow-x-auto overflow-y-hidden border-t border-white/[0.08] w-full px-3.5 py-2.5 nb-mob-strip"
               aria-label="Mobile navigation"
@@ -385,7 +398,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           </div>
         </div>
 
-        {/* ══ MOBILE DRAWER (expanded menu) ═══════════════════ */}
+        {/* ══ MOBILE DRAWER ═══════════════════════════════════ */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -403,12 +416,12 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
 
                 {/* Drawer header */}
                 <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
-                  <span className="nb-mono text-[7px] text-[#FFAF87] uppercase tracking-[.2em] font-bold">
+                  <span className="nb-mono text-[8px] text-[#FFAF87] uppercase tracking-[.2em] font-bold">
                     CONSTELLATION NETWORK DRAWER
                   </span>
                   <div className="flex items-center gap-1.5">
                     <span className="nb-ping w-[5px] h-[5px] rounded-full bg-[#C5E898] text-[#C5E898]" />
-                    <span className="nb-mono text-[6.5px] text-[#C5E898] uppercase tracking-widest">LIVE</span>
+                    <span className="nb-mono text-[7px] text-[#C5E898] uppercase tracking-widest">LIVE</span>
                   </div>
                 </div>
 
@@ -418,10 +431,10 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
 
                 {/* Status bar */}
                 <div className="flex items-center justify-between bg-black/50 px-4 py-2.5 rounded-xl border border-white/[0.05]">
-                  <span className="nb-mono text-[7px] text-[#C5E898] font-bold uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="nb-mono text-[8px] text-[#C5E898] font-bold uppercase tracking-widest flex items-center gap-1.5">
                     <Network className="w-3 h-3 animate-pulse" />MOBILE_FEED: ACTIVE
                   </span>
-                  <span className="nb-mono text-[7px] text-gray-500 tracking-widest">LATENCY: {sysOverhead}</span>
+                  <span className="nb-mono text-[8px] text-gray-500 tracking-widest">LATENCY: {sysOverhead}</span>
                 </div>
 
                 {/* Handshake CTA — full width in drawer */}
@@ -430,7 +443,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                   className="nb-hs-btn focus:outline-none w-full justify-center"
                 >
                   <div className="nb-shim" />
-                  <span className="relative z-10">Handshake</span>
+                  <span className="relative z-10">Zorlixa</span>
                   <ArrowUpRight className="nb-arrow w-4 h-4 flex-shrink-0 relative z-10" />
                 </button>
 
