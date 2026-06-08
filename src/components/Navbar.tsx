@@ -286,7 +286,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                 <img
                   src="/logo.svg"
                   alt="Zor-Lix"
-                  className="h-14 sm:h-16 md:h-[70px] lg:h-[76px] w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[380px] object-contain object-left"
+                  className="h-18 sm:h-22 md:h-[92px] lg:h-[100px] w-auto max-w-[260px] sm:max-w-[340px] md:max-w-[420px] lg:max-w-[480px] object-contain object-left"
                 />
               </button>
 

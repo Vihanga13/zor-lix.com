@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import * as THREE from "three";
 import { 
   ShieldCheck, 
   Lock, 
@@ -20,7 +21,10 @@ import {
   Wrench,
   Flame,
   CheckCircle,
-  HelpCircle
+  HelpCircle,
+  Dribbble,
+  Inbox,
+  Workflow
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -30,17 +34,11 @@ interface ZorlixaProductProps {
 }
 
 export default function ZorlixaProduct({ onBackToLanding, onNavigate }: ZorlixaProductProps) {
-  // Telemetry Controls State
-  const [compressionRatio, setCompressionRatio] = useState<number>(4.2);
-  const [threadCount, setThreadCount] = useState<number>(64);
-  const [targetCluster, setTargetCluster] = useState<"snowflake" | "bigquery" | "postgres" | "s3">("snowflake");
-  const [engineStability, setEngineStability] = useState<number>(99.98);
-  const [consensusHash, setConsensusHash] = useState<string>("ZOR_ECDSA_12A9");
-
-  // Performance Comparison State
-  const [activeMetric, setActiveMetric] = useState<"latency" | "overhead" | "egress">("latency");
-
-  // Deploy Configurator State
+  // 3D Engine Sliders State
+  const [waveFreq, setWaveFreq] = useState<number>(5);
+  const [waveAmp, setWaveAmp] = useState<number>(32);
+  
+  // Cost Configurator State
   const [selectedTier, setSelectedTier] = useState<"developer" | "scale" | "enterprise">("scale");
   const [securityLevel, setSecurityLevel] = useState<"aes" | "e2ee" | "quantum">("e2ee");
   const [selectedAddons, setSelectedAddons] = useState({
@@ -49,43 +47,274 @@ export default function ZorlixaProduct({ onBackToLanding, onNavigate }: ZorlixaP
     sqlAgent: true
   });
 
-  // Ticker telemetry
-  const [sysTick, setSysTick] = useState<string>("0.024ms");
+  const mountRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  
+  // Mesh References for Real-Time Manipulation
+  const coreMeshRef = useRef<THREE.Mesh | null>(null);
+  const outerShellRef = useRef<THREE.Mesh | null>(null);
+  const scanningRingRef = useRef<THREE.Mesh | null>(null);
+  const matrixParticlesRef = useRef<THREE.Points | null>(null);
+  const animationIdRef = useRef<number | null>(null);
+  
+  // Thread-safe mutable refs to handle real-time slider syncing without resetting WebGL Context
+  const freqRef = useRef<number>(waveFreq);
+  const ampRef = useRef<number>(waveAmp);
+
+  // Sync sliders directly to ref targets
+  useEffect(() => {
+    freqRef.current = waveFreq;
+    ampRef.current = waveAmp;
+  }, [waveFreq, waveAmp]);
+
+  // Telemetry Log Updates
+  const [sysTick, setSysTick] = useState<string>("0.012ms");
+  const [consensusHash, setConsensusHash] = useState<string>("ZOR_ECDSA_12A9");
+  const [logs, setLogs] = useState<string[]>([
+    "3D_ENGINE: WebGL2 context verified, running hard iron layers.",
+    "VOLUMETRIC: Core matrices responding flawlessly to input constants.",
+    "SECURITY: Nvidia Triton multi-instance clusters validated, safe execution loops."
+  ]);
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setSysTick(`${(0.021 + Math.random() * 0.015).toFixed(3)}ms`);
-      // Update a slice of signature hash
+      const ms = (0.010 + Math.random() * 0.008).toFixed(3);
+      setSysTick(`${ms}ms`);
       setConsensusHash(`ZOR_ECDSA_${Math.floor(Math.random() * 9000 + 1000).toString(16).toUpperCase()}`);
-    }, 1800);
+      
+      const newLogsList = [
+        "TELEMETRY: Packets sync loop running at 120 FPS.",
+        `REACTOR: Concurrency scaling adjusted to ${waveFreq * 16} active nodes.`,
+        `COMPILER: Squeezing density bounds at ${(waveAmp * 0.4).toFixed(1)}% limit.`,
+        "INGRESS_OK: Zero packet drift recorded in ledger.",
+        "MATRIX: Volumetric point-cloud aligned smoothly."
+      ];
+      const randomLog = newLogsList[Math.floor(Math.random() * newLogsList.length)];
+      setLogs(prev => [randomLog, ...prev.slice(0, 4)]);
+    }, 2500);
     return () => clearInterval(timer);
+  }, [waveFreq, waveAmp]);
+
+  // Three.js Scene Setup & Render Loop
+  useEffect(() => {
+    if (!mountRef.current) return;
+    
+    // --- SCENE & WORLD SETUP ---
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050506); // Pure dark industrial void
+    scene.fog = new THREE.FogExp2(0x050506, 0.015);
+    sceneRef.current = scene;
+    
+    // --- CAMERA ENGINE ---
+    const camera = new THREE.PerspectiveCamera(
+      45, 
+      mountRef.current.clientWidth / mountRef.current.clientHeight, 
+      0.1, 
+      1000
+    );
+    camera.position.set(0, 2.0, 6.0);
+    camera.lookAt(0, 0, 0);
+    cameraRef.current = camera;
+    
+    // --- RENDER ENGINE ---
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    mountRef.current.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
+    
+    // --- HIGH-CONTRAST MONOCHROMATIC LIGHTING ---
+    const ambientLight = new THREE.AmbientLight(0x0a0a0f); // Dark low-level ambient
+    scene.add(ambientLight);
+    
+    const primaryAccentLight = new THREE.PointLight(0xffaf87, 2.0, 40); // Targeted Accent Color (#ffaf87)
+    primaryAccentLight.position.set(-4, 3, 4);
+    scene.add(primaryAccentLight);
+    
+    const fillAccentLight = new THREE.PointLight(0xffaf87, 0.8, 30); // Balanced Back Light
+    fillAccentLight.position.set(4, -2, 3);
+    scene.add(fillAccentLight);
+    
+    const structuralLight = new THREE.DirectionalLight(0xffffff, 0.4); // Clean white geometric highlights
+    structuralLight.position.set(0, 5, -2);
+    scene.add(structuralLight);
+    
+    // --- CORE GEOMETRY 01: SOLID TACTICAL OCTAHEDRON ---
+    const coreGeo = new THREE.OctahedronGeometry(1.0, 0);
+    const coreMat = new THREE.MeshStandardMaterial({
+      color: 0x111317,
+      emissive: 0x2b1c14, // Very muted warm metallic baseline
+      metalness: 0.95,
+      roughness: 0.15,
+      flatShading: true
+    });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    scene.add(coreMesh);
+    coreMeshRef.current = coreMesh;
+    
+    // --- CORE GEOMETRY 02: WIREFRAME ICOSAHEDRON SHELL ---
+    const shellGeo = new THREE.IcosahedronGeometry(1.4, 1);
+    const shellMat = new THREE.MeshBasicMaterial({
+      color: 0xffaf87, // Accent wireframe
+      wireframe: true,
+      transparent: true,
+      opacity: 0.35
+    });
+    const outerShell = new THREE.Mesh(shellGeo, shellMat);
+    scene.add(outerShell);
+    outerShellRef.current = outerShell;
+    
+    // --- SCANNING DATA PLANE (HORIZONTAL TRACKING RING) ---
+    const ringGeo = new THREE.TorusGeometry(1.8, 0.02, 6, 100);
+    const ringMat = new THREE.MeshStandardMaterial({
+      color: 0xffaf87,
+      emissive: 0xffaf87,
+      emissiveIntensity: 0.5,
+      metalness: 0.8,
+      roughness: 0.2
+    });
+    const scanningRing = new THREE.Mesh(ringGeo, ringMat);
+    scanningRing.rotation.x = Math.PI / 2;
+    scene.add(scanningRing);
+    scanningRingRef.current = scanningRing;
+    
+    // --- DATA GRID VOLUMETRIC PARTICLES ---
+    const particleCount = 1200;
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const radius = 2.0 + Math.random() * 1.5;
+      particlePositions[i * 3] = radius * Math.cos(theta);
+      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 4.0;
+      particlePositions[i * 3 + 2] = radius * Math.sin(theta);
+    }
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    
+    const particleMat = new THREE.PointsMaterial({
+      color: 0xffaf87,
+      size: 0.04,
+      transparent: true,
+      opacity: 0.5,
+      blending: THREE.AdditiveBlending
+    });
+    const matrixParticles = new THREE.Points(particleGeo, particleMat);
+    scene.add(matrixParticles);
+    matrixParticlesRef.current = matrixParticles;
+    
+    // --- BACKGROUND STRUCTURAL STARFIELD ---
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 400;
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      starPositions[i * 3] = (Math.random() - 0.5) * 150;
+      starPositions[i * 3 + 1] = (Math.random() - 0.5) * 150;
+      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 80 - 20;
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starMat = new THREE.PointsMaterial({ color: 0x334155, size: 0.07 });
+    const starField = new THREE.Points(starGeo, starMat);
+    scene.add(starField);
+    
+    let runtime = 0;
+    
+    // --- TICK ANIMATION LOOP ---
+    const animate = () => {
+      animationIdRef.current = requestAnimationFrame(animate);
+      runtime += 0.016;
+      
+      const normFreq = (freqRef.current - 1) / 11;
+      const normAmp = (ampRef.current - 10) / 110;
+      
+      const dynamicRotSpeed = 0.5 * (0.3 + normFreq * 2.0);
+      const rhythmicPulse = Math.sin(runtime * (2.0 + normFreq * 4.0)) * (normAmp * 0.4);
+      
+      // Update Core Mechanics
+      if (coreMeshRef.current) {
+        coreMeshRef.current.rotation.y += 0.01 * dynamicRotSpeed;
+        coreMeshRef.current.rotation.x += 0.007 * dynamicRotSpeed;
+        
+        const coreScale = 1.0 + rhythmicPulse;
+        coreMeshRef.current.scale.set(coreScale, coreScale, coreScale);
+        
+        const mat = coreMeshRef.current.material as THREE.MeshStandardMaterial;
+        if (mat) {
+          mat.emissiveIntensity = 0.1 + normAmp * 1.8;
+        }
+      }
+      
+      // Update Counter-Rotating Shell Frame
+      if (outerShellRef.current) {
+        outerShellRef.current.rotation.y -= 0.005 * dynamicRotSpeed;
+        outerShellRef.current.rotation.z += 0.003 * dynamicRotSpeed;
+        
+        const shellScale = 1.0 - rhythmicPulse * 0.5;
+        outerShellRef.current.scale.set(shellScale, shellScale, shellScale);
+      }
+      
+      // Translate Scanning Ring along Y axis
+      if (scanningRingRef.current) {
+        scanningRingRef.current.position.y = Math.sin(runtime * 1.5) * 1.8;
+        scanningRingRef.current.rotation.z += 0.005;
+      }
+      
+      // Manipulate Data Particles 
+      if (matrixParticlesRef.current) {
+        matrixParticlesRef.current.rotation.y += 0.002 * dynamicRotSpeed;
+        const pMat = matrixParticlesRef.current.material as THREE.PointsMaterial;
+        if (pMat) {
+          pMat.size = 0.03 + (normAmp * 0.06);
+          pMat.opacity = 0.3 + (normAmp * 0.4);
+        }
+      }
+      
+      starField.rotation.y += 0.0001;
+      
+      if (rendererRef.current && sceneRef.current && cameraRef.current) {
+        rendererRef.current.render(sceneRef.current, cameraRef.current);
+      }
+    };
+    
+    animate();
+    
+    const handleResize = () => {
+      if (!mountRef.current || !cameraRef.current || !rendererRef.current) return;
+      const w = mountRef.current.clientWidth;
+      const h = mountRef.current.clientHeight;
+      
+      cameraRef.current.aspect = w / h;
+      cameraRef.current.updateProjectionMatrix();
+      rendererRef.current.setSize(w, h);
+    };
+    window.addEventListener('resize', handleResize);
+    
+    // --- RESOURCE TEARDOWN PIPELINE ---
+    return () => {
+      if (animationIdRef.current) cancelAnimationFrame(animationIdRef.current);
+      window.removeEventListener('resize', handleResize);
+      
+      if (mountRef.current && rendererRef.current) {
+        mountRef.current.removeChild(rendererRef.current.domElement);
+      }
+      
+      coreGeo.dispose();
+      coreMat.dispose();
+      shellGeo.dispose();
+      shellMat.dispose();
+      ringGeo.dispose();
+      ringMat.dispose();
+      particleGeo.dispose();
+      particleMat.dispose();
+      starGeo.dispose();
+      starMat.dispose();
+      rendererRef.current?.dispose();
+    };
   }, []);
 
-  // Performance metric values
-  const metricsData = {
-    latency: {
-      title: "Query Latency (ms)",
-      desc: "Time taken to compile and execute complex SQL mutations over 10M rows.",
-      zorlixa: 0.034,
-      competitorA: 4.82,
-      competitorB: 12.45
-    },
-    overhead: {
-      title: "Scrubbing Overhead (%)",
-      desc: "CPU cycle utilization penalty during contextual AI denoising and duplicate scrubbing.",
-      zorlixa: 1.2,
-      competitorA: 8.5,
-      competitorB: 16.4
-    },
-    egress: {
-      title: "API Egress Penalty",
-      desc: "Normalized payload footprint in bytes per transaction pipeline dispatch.",
-      zorlixa: 0.18,
-      competitorA: 1.24,
-      competitorB: 2.89
-    }
-  };
-
-  // Estimator Calculations
+  // Cost calculations
   const calculateCost = () => {
     let base = 0;
     if (selectedTier === "developer") base = 49;
@@ -104,652 +333,473 @@ export default function ZorlixaProduct({ onBackToLanding, onNavigate }: ZorlixaP
     return Math.round(base * secMultiplier + addonsCost);
   };
 
-  const calculateThroughput = () => {
-    // throughput depends on compression & threads
-    const baseThroughput = 4.2; // k rows/sec
-    return (baseThroughput * (compressionRatio * 0.7) * (threadCount / 16)).toFixed(1);
-  };
-
-  const calculateNodeTemp = () => {
-    return (32 + (threadCount * 0.18) + (compressionRatio * 1.1)).toFixed(1);
-  };
-
   return (
-    <div id="zorlixa-product-root" className="min-h-screen bg-[#010101] text-gray-200 pt-28 pb-20 relative overflow-hidden">
-      {/* Immersive background decoration */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff01_1px,transparent_1px),linear-gradient(to_bottom,#ffffff01_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
-      <div className="absolute top-[15%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#FFAF87]/6 blur-[150px] pointer-events-none animated-glow-1" />
-      <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#C5E898]/5 blur-[150px] pointer-events-none animated-glow-2" />
-
-      {/* Coordinate Telemetry lines */}
-      <div className="absolute top-4 left-6 font-mono text-[8px] text-gray-600 uppercase tracking-[0.25em] hidden sm:flex items-center gap-1.5 select-none">
-        <Radio className="w-3.5 h-3.5 text-peach animate-pulse" />
-        <span>ZORLIXA_ENVELOPE // DEPLOYED_STAGE: PRODUCT_NODE // PORT_80</span>
-      </div>
-
-      <div className="max-w-[1560px] mx-auto px-4 sm:px-8 relative z-10 w-full">
-        
-        {/* ===================== SECTION HEADER (NAVIGATION BAR) ===================== */}
-        <div id="zorlixa-header-action" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-12 border-b border-white/5 pb-8">
-          <button
-            onClick={onBackToLanding}
-            className="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-white/8 hover:border-peach bg-black text-xs font-sans font-extrabold uppercase tracking-wider text-gray-300 hover:text-peach cursor-pointer transition-all w-fit shadow-md hover:shadow-peach/10"
-          >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span>Return to Core Platform</span>
-          </button>
-
-          <div className="flex items-center gap-4 bg-[#090909] border border-white/5 px-5 py-2.5 rounded-2xl select-none">
-            <span className="font-mono text-[9px] text-gray-500 uppercase tracking-widest">CALIB_LATENCY:</span>
-            <span className="font-mono text-[10px] font-bold text-mint">{sysTick}</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-mint animate-ping" />
-          </div>
+    <div id="zorlixa-product-root" className="min-h-screen bg-[#050506] text-[#D1D5DB] font-mono p-4 antialiased selection:bg-[#ffaf87]/30 selection:text-white relative overflow-x-hidden">
+      
+      {/* Telemetry Ticker */}
+      <div className="w-full border-b border-white/10 pb-2.5 mb-4 flex items-center justify-between text-[9px] text-slate-500 tracking-tight overflow-x-auto whitespace-nowrap gap-6 select-none">
+        <div className="flex items-center gap-4">
+          <span>[ CORE TELEMETRY SYNC: ONLINE ]</span>
+          <span>LATENCY: <span className="text-white">{sysTick}</span></span>
+          <span>GRAPH INTERNALS: VECTORS VALIDATED</span>
+          <span>ANOMALY DETECTOR: 0 FLAGS</span>
         </div>
-
-        {/* ===================== HERO SECTION ===================== */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16 items-center">
-          <div className="lg:col-span-7 text-left">
-            <span className="font-mono text-[9px] font-extrabold uppercase tracking-[0.25em] text-[#FFAF87] bg-[#141414] border border-white/10 px-4 py-2 rounded-full select-none inline-flex items-center gap-2 mb-6">
-              <Sparkles className="w-3.5 h-3.5 text-[#FFAF87]" />
-              ZORLIXA DECISION ENGINE
-            </span>
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-sans font-black tracking-tight text-white mb-6 leading-none uppercase">
-              Intelligence At <br />
-              <span className="bg-gradient-to-r from-peach via-white to-mint WebkitBackgroundClip:text WebkitTextFillColor:transparent background-clip:text text-transparent">
-                Sub-Millisecond
-              </span> Speed
-            </h1>
-            <p className="text-gray-400 font-light text-base sm:text-lg leading-relaxed max-w-2xl mb-8">
-              Zorlixa is the premier autonomous engine within the Zor-Lix system. It continuously compresses high-throughput transactional telemetry, cleans metric noise via real-time statistical filters, and enables natural language AI agent interactions over multi-tenant database clusters instantly.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button 
-                onClick={() => {
-                  const element = document.getElementById("zorlixa-configurator");
-                  if (element) element.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-6 py-3.5 rounded-xl font-sans font-extrabold text-xs uppercase tracking-wider text-black bg-gradient-to-r from-peach to-mint hover:opacity-95 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg shadow-peach/20"
-              >
-                Configure Deployment
-              </button>
-              <button 
-                onClick={() => {
-                  const element = document.getElementById("zorlixa-telemetry");
-                  if (element) element.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-6 py-3.5 rounded-xl font-sans font-extrabold text-xs uppercase tracking-wider text-gray-300 border border-white/10 hover:border-white/20 bg-white/[0.01] hover:bg-white/[0.03] transition-all cursor-pointer"
-              >
-                Live Demo Sandbox
-              </button>
-            </div>
+        <div className="flex items-center gap-4 font-mono">
+          <span>COMPUTE_PIPELINE_ACTIVE</span>
+          <span>RENDER QUALITY: <span className="text-white">99.98%</span></span>
+          <span>3D RENDER: <span className="text-[#ffaf87]">VANILLA THREE.JS CORE</span></span>
+          <span>SYS_STATUS: OPTIMAL</span>
+        </div>
+      </div>
+      
+      {/* ===================== CONTROL BAR HEADER ===================== */}
+      <header className="w-full border border-white/10 bg-[#0b0c0e]/60 backdrop-blur-md rounded px-4 py-3 flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={onBackToLanding}
+            className="group flex items-center gap-2 border border-white/10 hover:border-[#ffaf87] bg-black text-[10px] font-bold uppercase tracking-wider text-slate-300 hover:text-[#ffaf87] px-3.5 py-1.5 rounded cursor-pointer transition-all"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Core Platform</span>
+          </button>
+          <span className="text-[9px] text-[#ffaf87] border border-[#ffaf87]/20 bg-[#ffaf87]/5 px-2 py-0.5 rounded uppercase tracking-wider font-bold hidden sm:inline-block">
+            SSL_SECURE | NVIDIA INCEPTION SHOWCASE
+          </span>
+        </div>
+        <nav className="flex flex-wrap items-center gap-1 sm:gap-4 text-[10px] uppercase font-bold tracking-wider text-slate-400 font-sans">
+          <button onClick={onBackToLanding} className="hover:text-white transition-colors px-2 py-1 cursor-pointer">01 // Home</button>
+          <button onClick={() => { onBackToLanding(); setTimeout(() => { document.getElementById("features")?.scrollIntoView({ behavior: "smooth" }); }, 100); }} className="hover:text-white transition-colors px-2 py-1 cursor-pointer">02 // Features</button>
+          <button onClick={() => { onBackToLanding(); setTimeout(() => { document.getElementById("pipeline")?.scrollIntoView({ behavior: "smooth" }); }, 100); }} className="hover:text-white transition-colors px-2 py-1 cursor-pointer">03 // Solution</button>
+          <button onClick={() => { onBackToLanding(); setTimeout(() => { document.getElementById("dashboard")?.scrollIntoView({ behavior: "smooth" }); }, 100); }} className="hover:text-white transition-colors px-2 py-1 cursor-pointer">04 // Dashboard</button>
+          <button onClick={() => { onBackToLanding(); setTimeout(() => { document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }); }, 100); }} className="hover:text-white transition-colors px-2 py-1 cursor-pointer">05 // Pricing</button>
+          <button onClick={() => { onBackToLanding(); setTimeout(() => { document.getElementById("faq")?.scrollIntoView({ behavior: "smooth" }); }, 100); }} className="hover:text-white transition-colors px-2 py-1 cursor-pointer">06 // FAQ</button>
+          <button onClick={() => { onBackToLanding(); setTimeout(() => { document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }); }, 100); }} className="hover:text-white transition-colors px-2 py-1 cursor-pointer">07 // Contact</button>
+        </nav>
+        <button 
+          onClick={() => onNavigate("contact")}
+          className="border border-[#ffaf87] text-[#ffaf87] hover:bg-[#ffaf87] hover:text-black transition-all font-bold uppercase tracking-widest px-4 py-2 rounded flex items-center gap-2 text-[10px] cursor-pointer"
+        >
+          <span>ESTABLISH HANDSHAKE</span>
+          <span>↗</span>
+        </button>
+      </header>
+      
+      {/* ===================== CORE GRID MATRIX ===================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        
+        {/* Column 1: Flightdeck Content + Sliders (4 cols) */}
+        <div className="lg:col-span-4 flex flex-col justify-between space-y-6 p-6 border border-white/5 bg-[#0b0c0e]/40 rounded relative text-left">
+          <div className="text-[9px] text-slate-500 font-mono flex items-center justify-between select-none">
+            <span>● CONTROL CONSOLE CORE V4.2</span>
+            <span>DATA ENGINE // STABLE</span>
           </div>
-
-          <div className="lg:col-span-5 relative flex items-center justify-center">
-            {/* Visual Abstract Sphere */}
-            <div className="w-[300px] h-[300px] sm:w-[380px] sm:h-[380px] rounded-full border border-white/5 relative bg-black/40 flex items-center justify-center overflow-hidden glassmorphism">
-              {/* Rotating inner rings */}
-              <div className="absolute inset-4 rounded-full border border-dashed border-[#FFAF87]/20 animate-spin-slow" />
-              <div className="absolute inset-10 rounded-full border border-dashed border-[#C5E898]/20 animate-spin-reverse" />
-              
-              {/* Central glowing core */}
-              <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-peach/30 to-mint/20 filter blur-xl animate-pulse" />
-              <Cpu className="w-16 h-16 text-white relative z-10 animate-pulse" />
-
-              {/* Orbital badges floating */}
-              <div className="absolute top-12 left-12 px-3 py-1 bg-black border border-white/10 rounded-lg font-mono text-[8px] text-gray-400">
-                THREAD_BUS: SECURE
+          
+          <div className="space-y-4 my-auto select-text">
+            <h1 className="text-2xl sm:text-4xl font-sans font-black uppercase text-white tracking-tight leading-none">
+              INTELLIGENCE BEYOND <br />
+              TRADITIONAL <span className="italic font-serif font-normal lowercase text-[#ffaf87]">analytics</span>.
+            </h1>
+            <h2 className="text-xl sm:text-3xl font-sans font-black uppercase tracking-wide text-slate-400 leading-tight">
+              AI-POWERED 3D DATA <br />
+              ANALYTICS &amp; <br />
+              <span className="text-white border-b-2 border-[#ffaf87]/40 pb-1">Decision Intelligence</span>
+            </h2>
+            <p className="text-[11px] leading-relaxed text-slate-400 font-sans tracking-wide">
+              ZorLix enables organizations to integrate data from multiple systems, automate data quality management, and generate actionable business intelligence through advanced AI analytics. Powered by NVIDIA Triton &amp; real-time 3D volumetric matrix engines.
+            </p>
+          </div>
+          
+          {/* Real-time Interactive Sliders */}
+          <div className="space-y-4 border-t border-white/10 pt-4 select-none">
+            <div className="text-[9px] text-[#ffaf87] font-bold uppercase tracking-wider font-mono">3D HARMONIZER VOLTAGE</div>
+            
+            <div className="space-y-1">
+              <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>🌀 CYBER CORE SPIN SPEED (FREQ)</span>
+                <span className="text-white font-bold">{waveFreq} Hz</span>
               </div>
-              <div className="absolute bottom-16 right-8 px-3 py-1 bg-black border border-white/10 rounded-lg font-mono text-[8px] text-gray-400">
-                AES-256-GCM
-              </div>
+              <input 
+                type="range" min="1" max="12" value={waveFreq} 
+                onChange={(e) => setWaveFreq(Number(e.target.value))}
+                className="w-full accent-[#ffaf87] bg-white/5 h-1 rounded cursor-pointer"
+              />
             </div>
             
-            {/* Glowing lines crossing back */}
-            <div className="absolute w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#FFAF87]/10 to-transparent rotate-[35deg] pointer-events-none" />
-            <div className="absolute w-[120%] h-[1px] bg-gradient-to-r from-transparent via-[#C5E898]/10 to-transparent rotate-[-35deg] pointer-events-none" />
+            <div className="space-y-1">
+              <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>⚡ RADIAL EXPANSION AMPLITUDE</span>
+                <span className="text-white font-bold">{waveAmp}%</span>
+              </div>
+              <input 
+                type="range" min="10" max="120" value={waveAmp} 
+                onChange={(e) => setWaveAmp(Number(e.target.value))}
+                className="w-full accent-[#ffaf87] bg-white/5 h-1 rounded cursor-pointer"
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3 pt-2 select-none">
+            <button 
+              onClick={() => {
+                const element = document.getElementById("blueprints-hub");
+                if (element) element.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="bg-white/5 border border-[#ffaf87]/30 text-white font-bold uppercase tracking-widest py-3 px-2 rounded hover:bg-[#ffaf87]/10 transition-all text-[10px] cursor-pointer text-center"
+            >
+              Explore Solutions ›
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById("deployment-scale");
+                if (element) element.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="bg-white/5 border border-white/10 text-slate-300 font-bold uppercase tracking-widest py-3 px-2 rounded hover:bg-white/10 transition-all text-[10px] cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>Deploy Scale</span>
+              <span className="w-1.5 h-1.5 bg-[#ffaf87] rounded-full inline-block animate-pulse"></span>
+            </button>
           </div>
         </div>
 
-        {/* ===================== SECTION 1: INTERACTIVE TELEMETRY SANDBOX ===================== */}
-        <div id="zorlixa-telemetry" className="mb-20">
-          <div className="max-w-3xl mb-12 text-left">
-            <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-mint">// SIMULATION TERMINAL</span>
-            <h2 className="text-3xl sm:text-5xl font-sans font-black tracking-tight text-white mt-2">
-              Live Telemetry Simulator
-            </h2>
-            <p className="text-gray-400 font-light text-sm sm:text-base leading-relaxed mt-4">
-              Directly manipulate the core parameters of the Zorlixa computational reactor. Adjust thread concurrency and dynamic data squeezing rates to see the immediate effect on overall node metrics.
-            </p>
+        {/* Column 2: 3D Canvas Mount Frame (5 cols) */}
+        <div className="lg:col-span-5 border border-white/5 bg-[#0b0c0e]/40 rounded p-4 flex flex-col min-h-[480px] relative text-left">
+          <div className="w-full text-[9px] text-[#ffaf87] font-bold flex justify-between items-center mb-2 select-none">
+            <span>● INDUSTRIAL CORE VIEW | REALTIME WEBGL ACTIVE</span>
+            <span className="text-slate-500 text-xs tracking-widest">● LIVE RUNNING</span>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left controls panel (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col justify-between bg-[#070707] border border-white/8 rounded-[28px] p-6 sm:p-8 relative overflow-hidden text-left glassmorphism">
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff01_1px,transparent_1px)] bg-[size:2rem] pointer-events-none" />
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 border-b border-white/5 pb-4 mb-6">
-                  <Wrench className="w-4 h-4 text-peach" />
-                  <span className="font-mono text-[9px] uppercase font-bold text-gray-500 tracking-widest">
-                    REACTOR_KNOBS // MATRIX_v3.9
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-6">
-                  {/* Slider 1: Compression Ratio */}
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between font-mono text-[10px] text-gray-400">
-                      <span className="flex items-center gap-1.5 font-bold">
-                        <Activity className="w-3.5 h-3.5 text-peach" /> DATA COMPRESSION RATE:
-                      </span>
-                      <span className="text-peach font-extrabold">{compressionRatio.toFixed(1)}x</span>
-                    </div>
-                    <input 
-                      type="range"
-                      min="1.0"
-                      max="16.0"
-                      step="0.2"
-                      value={compressionRatio}
-                      onChange={(e) => setCompressionRatio(Number(e.target.value))}
-                      className="w-full h-1 bg-white/10 accent-peach rounded-full cursor-pointer"
-                    />
-                    <div className="flex items-center justify-between text-[7px] text-gray-500 font-mono">
-                      <span>1.0x (RAW BYTES)</span>
-                      <span>8.0x (BALANCED)</span>
-                      <span>16.0x (ULTRA COMPRESSED)</span>
-                    </div>
-                  </div>
-
-                  {/* Slider 2: Thread Concurrency */}
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between font-mono text-[10px] text-gray-400">
-                      <span className="flex items-center gap-1.5 font-bold">
-                        <Cpu className="w-3.5 h-3.5 text-mint" /> THREAD CONCURRENCY:
-                      </span>
-                      <span className="text-mint font-extrabold">{threadCount} THREADS</span>
-                    </div>
-                    <input 
-                      type="range"
-                      min="8"
-                      max="256"
-                      step="8"
-                      value={threadCount}
-                      onChange={(e) => setThreadCount(Number(e.target.value))}
-                      className="w-full h-1 bg-white/10 accent-mint rounded-full cursor-pointer"
-                    />
-                    <div className="flex items-center justify-between text-[7px] text-gray-500 font-mono">
-                      <span>8 WORKERS</span>
-                      <span>128 BALANCED</span>
-                      <span>256 MAX LOAD</span>
-                    </div>
-                  </div>
-
-                  {/* Database targets selectors */}
-                  <div className="flex flex-col gap-2 mt-2">
-                    <span className="font-mono text-[9px] text-gray-500 uppercase tracking-widest block font-bold mb-1">
-                      TARGET DATABASE STAGING TARGET:
-                    </span>
-                    <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { id: "snowflake", name: "Snowflake", icon: Database },
-                        { id: "bigquery", name: "BigQuery", icon: Server },
-                        { id: "postgres", name: "PostgreSQL", icon: Network },
-                        { id: "s3", name: "Amazon S3", icon: Binary }
-                      ].map((db) => {
-                        const Icon = db.icon;
-                        const isSelected = targetCluster === db.id;
-                        return (
-                          <button
-                            key={db.id}
-                            onClick={() => setTargetCluster(db.id as any)}
-                            className={`flex items-center gap-2 p-3 rounded-xl border text-left cursor-pointer transition-all font-mono text-[10px] ${
-                              isSelected 
-                                ? "bg-peach border-peach text-black font-extrabold shadow-md" 
-                                : "bg-black/50 border-white/5 text-gray-400 hover:border-white/10"
-                            }`}
-                          >
-                            <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-black" : "text-gray-500"}`} />
-                            <span>{db.name}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-white/5 pt-4 mt-8 font-mono text-[8px] text-gray-500 text-center uppercase tracking-wider">
-                [ Sliders dynamically recalculate reactor output live ]
-              </div>
+          
+          {/* WebGL Canvas */}
+          <div ref={mountRef} className="flex-1 w-full min-h-[380px] bg-black/40 rounded border border-white/5 shadow-inner overflow-hidden" />
+          
+          {/* Canvas specs summary */}
+          <div className="w-full grid grid-cols-3 gap-2 border-t border-white/5 pt-3 mt-3 text-center text-[9px] font-mono select-none">
+            <div>
+              <div className="text-slate-500 uppercase">Target Velocity</div>
+              <div className="text-white font-bold mt-0.5">{((0.3 + ((waveFreq-1)/11)*2.0)).toFixed(2)} rad/s</div>
             </div>
-
-            {/* Right metrics panel (7 cols) */}
-            <div className="lg:col-span-7 flex flex-col justify-between bg-black border border-white/10 rounded-[28px] p-6 sm:p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-mint/5 blur-3xl pointer-events-none" />
-              
-              <div className="relative z-10 w-full text-left">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
-                  <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-mint animate-pulse" />
-                    <span className="font-mono text-[9px] uppercase font-bold text-gray-400 tracking-widest">
-                      REACTOR_OUTPUTS // CORE_METERS
-                    </span>
-                  </div>
-                  <div className="font-mono text-[8px] text-gray-500 uppercase">
-                    CONSENSUS_SEED: <span className="text-white font-extrabold">{consensusHash}</span>
-                  </div>
-                </div>
-
-                {/* Primary Metric: Throughput Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  
-                  {/* Metric Box 1 */}
-                  <div className="p-5 rounded-2xl bg-[#050505] border border-white/5 relative overflow-hidden flex flex-col justify-between h-[110px]">
-                    <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest">CALCULATED_THROUGHPUT</span>
-                    <div className="text-2xl sm:text-3xl font-mono font-black text-white glow-peach mt-1">
-                      {calculateThroughput()} <span className="text-xs text-[#FFAF87]">k/sec</span>
-                    </div>
-                    <div className="font-mono text-[7.5px] text-gray-500 uppercase tracking-widest flex items-center gap-1">
-                      <Zap className="w-3 h-3 text-[#FFAF87]" /> Ingestion frequency factor
-                    </div>
-                  </div>
-
-                  {/* Metric Box 2 */}
-                  <div className="p-5 rounded-2xl bg-[#050505] border border-white/5 relative overflow-hidden flex flex-col justify-between h-[110px]">
-                    <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest">CORE_TEMPERATURE</span>
-                    <div className="text-2xl sm:text-3xl font-mono font-black text-white glow-mint mt-1 flex items-center gap-1.5">
-                      {calculateNodeTemp()} <span className="text-xs text-[#C5E898]">°C</span>
-                      {Number(calculateNodeTemp()) > 65 && <Flame className="w-5 h-5 text-red-400 animate-pulse" />}
-                    </div>
-                    <div className="font-mono text-[7.5px] text-gray-500 uppercase tracking-widest">
-                      Node thermal index stability
-                    </div>
-                  </div>
-                </div>
-
-                {/* Second Row Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-                  
-                  <div className="p-4.5 rounded-2xl bg-[#050505] border border-white/5 text-left">
-                    <span className="font-mono text-[7px] text-gray-500 uppercase block">INTEGRITY_INDEX</span>
-                    <div className="text-sm font-sans font-black text-[#C5E898] mt-1.5">99.982%</div>
-                  </div>
-
-                  <div className="p-4.5 rounded-2xl bg-[#050505] border border-white/5 text-left">
-                    <span className="font-mono text-[7px] text-gray-500 uppercase block">PACKET_MUT_PENALTY</span>
-                    <div className="text-sm font-sans font-black text-white mt-1.5">
-                      {(threadCount > 120 ? (threadCount - 120) * 0.0024 : 0).toFixed(4)}%
-                    </div>
-                  </div>
-
-                  <div className="col-span-2 sm:col-span-1 p-4.5 rounded-2xl bg-[#050505] border border-white/5 text-left">
-                    <span className="font-mono text-[7px] text-gray-500 uppercase block">ISOLATION_CLASS</span>
-                    <div className="text-sm font-sans font-black text-white mt-1.5 uppercase">Level 4 Sandbox</div>
-                  </div>
-
-                </div>
-
-                {/* Progress bar simulation detailing memory density */}
-                <div className="p-4 rounded-2xl bg-[#050505] border border-white/5">
-                  <div className="flex justify-between font-mono text-[8px] text-gray-400 mb-1.5 uppercase">
-                    <span>SQUEEZE PACKET MEMORY INGEST DENSITY:</span>
-                    <span className="text-white font-extrabold">{(compressionRatio * 6.25).toFixed(1)}% Comp</span>
-                  </div>
-                  <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden border border-white/5">
-                    <motion.div 
-                      className="bg-gradient-to-r from-peach to-mint h-full"
-                      animate={{ width: `${compressionRatio * 6.25}%` }}
-                      transition={{ type: "spring", stiffness: 90 }}
-                    />
-                  </div>
-                </div>
-
-              </div>
+            <div>
+              <div className="text-slate-500 uppercase">Pulse Volatiles</div>
+              <div className="text-[#ffaf87] font-bold mt-0.5">{Math.floor(((waveAmp-10)/110)*100)}%</div>
+            </div>
+            <div>
+              <div className="text-slate-500 uppercase">Matrix Dense Grid</div>
+              <div className="text-white font-bold mt-0.5">1.2K NODE VECTORS</div>
             </div>
           </div>
         </div>
 
-        {/* ===================== SECTION 2: PERFORMANCE METRIC VIEWS ===================== */}
-        <div className="mb-20">
-          <div className="max-w-3xl mb-12 text-left">
-            <span className="font-mono text-[9px] text-[#FFAF87] font-bold uppercase tracking-widest">// HARDWARE BENCHMARKS</span>
-            <h2 className="text-3xl sm:text-5xl font-sans font-black tracking-tight text-white mt-2">
-              Performance Indicators
-            </h2>
-            <p className="text-gray-400 font-light text-sm sm:text-base leading-relaxed mt-4">
-              Select key latency, CPU overhead, or payload metrics to visually compare the optimized Zorlixa system engine against legacy architectures.
-            </p>
+        {/* Column 3: Tactical Pipeline Connectors & Ingestion Logs (3 cols) */}
+        <div className="lg:col-span-3 space-y-4 flex flex-col justify-between text-left">
+          <div className="border border-white/5 bg-[#0b0c0e]/40 rounded p-4 space-y-3 flex-1">
+            <div className="flex items-center justify-between text-[9px] pb-1 border-b border-white/5 select-none">
+              <span className="text-slate-400 uppercase tracking-wider font-bold">Ingestion Tunnel Gears</span>
+              <span className="text-[#ffaf87]">[DATA_ENGAGED]</span>
+            </div>
+            
+            <div className="space-y-2 pt-1 text-[10px]">
+              <div className="p-2 bg-black border border-white/10 rounded flex items-center justify-between group hover:border-[#ffaf87]/40 transition-colors cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <span className="text-[#ffaf87] font-bold">◆</span>
+                  <span className="font-bold text-white tracking-wider">SNOWFLAKE ENGINE</span>
+                </div>
+                <span className="text-slate-500 text-xs group-hover:text-[#ffaf87]">⚙</span>
+              </div>
+              <div className="p-2 bg-black/40 border border-white/5 rounded flex items-center justify-between text-slate-400 cursor-pointer hover:border-white/10 transition-colors">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600">◆</span>
+                  <span>GOOGLE BIGQUERY</span>
+                </div>
+                <span className="text-slate-700 text-xs">⚙</span>
+              </div>
+              <div className="p-2 bg-black/40 border border-white/5 rounded flex items-center justify-between text-slate-400 cursor-pointer hover:border-white/10 transition-colors">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600">◆</span>
+                  <span>AWS REDSHIFT PIPELINE</span>
+                </div>
+                <span className="text-slate-700 text-xs">⚙</span>
+              </div>
+              <div className="p-2 bg-black/40 border border-white/5 rounded flex items-center justify-between text-slate-400 cursor-pointer hover:border-white/10 transition-colors">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600">◆</span>
+                  <span>STRIPE COMPUTE TUNNEL</span>
+                </div>
+                <span className="text-slate-700 text-xs">⚙</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Scrollable Telemetry Terminal */}
+          <div className="border border-white/5 bg-[#0b0c0e]/60 rounded p-4 h-48 flex flex-col justify-between font-mono text-[10px]">
+            <div className="flex items-center justify-between text-[9px] text-slate-500 border-b border-white/5 pb-1 select-none">
+              <span>&gt;_ CONSOLE_TELEMETRY_LOGS</span>
+              <span className="text-[#ffaf87] bg-[#ffaf87]/5 px-1 border border-[#ffaf87]/20 text-[8px] rounded uppercase font-bold">3D_HARDWARE_DIRECT</span>
+            </div>
+            <div className="space-y-1.5 text-[10px] font-mono text-slate-400 my-auto overflow-y-auto max-h-32 pt-2 select-text">
+              {logs.map((log, idx) => (
+                <p key={idx} className={`${idx === 0 ? "text-white" : "text-slate-400"} flex items-start gap-1`}>
+                  <span>&gt;</span>
+                  <span>{log}</span>
+                </p>
+              ))}
+              <p className="text-slate-600 flex items-start gap-1"><span>&gt;</span> <span>CONSENSUS_STAMP: {consensusHash}</span></p>
+            </div>
+            <div className="flex justify-between items-center text-[8px] text-slate-600 border-t border-white/5 pt-1.5 select-none">
+              <span>🔒 AES_256 SHADER STREAM</span>
+              <span>GPU: DIRECT_HARDWARE_RENDER</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ===================== PERFORMANCE HUB SECTIONS ===================== */}
+      <section id="blueprints-hub" className="mt-10 space-y-6 text-left">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          
+          <div className="rounded-3xl border border-white/10 bg-[#0b0c0e]/40 p-6">
+            <div className="text-[9px] uppercase tracking-widest text-[#ffaf87] mb-3 font-mono">PERFORMANCE HUB</div>
+            <h3 className="text-xl font-sans font-black text-white mb-3">AI Throughput Intelligence</h3>
+            <p className="text-[11.5px] text-slate-400 leading-relaxed font-sans font-light">Monitor model serving latency, GPU utilization, and request pipelines within a cohesive command interface designed for inference-scale workloads.</p>
+            <ul className="mt-4 space-y-2 text-[10px] text-slate-400 font-mono">
+              <li>• Dynamic batch scheduling for real-time inference</li>
+              <li>• Multi-GPU resource balancing and caching</li>
+              <li>• Predictive load shaping with live telemetry</li>
+            </ul>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch" id="zorlixa-benchmarks">
-            {/* Left buttons selection list (4 cols) */}
-            <div className="lg:col-span-4 flex flex-col gap-3">
-              {[
-                { id: "latency", label: "Query Latency Speed", desc: "Compile and execute speeds under high mutations." },
-                { id: "overhead", label: "Scrubbing CPU Penalty", desc: "Core cycle utilization during AI cleaning." },
-                { id: "egress", label: "Payload Egress Size", desc: "Footprint of pipeline dispatches in bytes." }
-              ].map((m) => {
-                const isActive = activeMetric === m.id;
-                return (
+          <div className="rounded-3xl border border-white/10 bg-[#0b0c0e]/40 p-6">
+            <div className="text-[9px] uppercase tracking-widest text-[#ffaf87] mb-3 font-mono">INTEGRATION GRID</div>
+            <h3 className="text-xl font-sans font-black text-white mb-3">Enterprise Data Fusion</h3>
+            <p className="text-[11.5px] text-slate-400 leading-relaxed font-sans font-light">Connect AI inference to modern data infrastructure with connectors for cloud data lakes, operational stores, and analytics pipelines.</p>
+            <ul className="mt-4 space-y-2 text-[10px] text-slate-400 font-mono">
+              <li>• Snowflake / BigQuery / Redshift ingestion</li>
+              <li>• Real-time event stream orchestration</li>
+              <li>• Secure API endpoints and clustered gateway access</li>
+            </ul>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-[#0b0c0e]/40 p-6">
+            <div className="text-[9px] uppercase tracking-widest text-[#ffaf87] mb-3 font-mono">SECURE OPERATIONS</div>
+            <h3 className="text-xl font-sans font-black text-white mb-3">Trusted AI Deployment</h3>
+            <p className="text-[11.5px] text-slate-400 leading-relaxed font-sans font-light">Deliver enterprise-ready inference environments with hardened security, compliance-ready controls, and a transparent audit trail.</p>
+            <ul className="mt-4 space-y-2 text-[10px] text-slate-400 font-mono">
+              <li>• AES-256 encrypted compute streams</li>
+              <li>• Multi-tenant isolation and audit logging</li>
+              <li>• GPU workload throttling and failover guardrails</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          
+          <div className="rounded-3xl border border-white/10 bg-[#0b0c0e]/40 p-6">
+            <div className="text-[9px] uppercase tracking-widest text-[#ffaf87] mb-3 font-mono">SOLUTION BLUEPRINT</div>
+            <h3 className="text-xl font-sans font-black text-white mb-3">Adaptive Inference Pipeline</h3>
+            <p className="text-[11.5px] text-slate-400 leading-relaxed font-sans font-light">A single platform for model deployment, telemetry visualization, and automated scale management tuned for data-intensive AI workloads.</p>
+            <div className="mt-5 space-y-3 text-[10px] text-slate-400 font-mono">
+              <div className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-[#ffaf87] shrink-0"></span>
+                <span>Automated model refresh cycles with versioned deployments.</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-[#ffaf87] shrink-0"></span>
+                <span>Integrated cluster health analytics and workload forecasting.</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="mt-1 h-2 w-2 rounded-full bg-[#ffaf87] shrink-0"></span>
+                <span>Full stack observability from data ingress to inference output.</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-[#09090b]/90 p-6">
+            <div className="text-[9px] uppercase tracking-widest text-[#ffaf87] mb-3 font-mono">RESULTS DASHBOARD</div>
+            <h3 className="text-xl font-sans font-black text-white mb-3">Operational Metrics</h3>
+            <div className="grid grid-cols-2 gap-3 text-[10px] text-slate-400 font-mono">
+              <div className="rounded-2xl bg-white/5 p-4 border border-white/5">
+                <div className="text-[9px] uppercase tracking-widest text-slate-500">GPU EFFICIENCY</div>
+                <div className="text-2xl font-black text-white mt-2">94%</div>
+              </div>
+              <div className="rounded-2xl bg-white/5 p-4 border border-white/5">
+                <div className="text-[9px] uppercase tracking-widest text-slate-500">MODEL UPTIME</div>
+                <div className="text-2xl font-black text-white mt-2">99.97%</div>
+              </div>
+              <div className="rounded-2xl bg-white/5 p-4 border border-white/5">
+                <div className="text-[9px] uppercase tracking-widest text-slate-500">LATENCY</div>
+                <div className="text-2xl font-black text-white mt-2">0.58ms</div>
+              </div>
+              <div className="rounded-2xl bg-white/5 p-4 border border-white/5">
+                <div className="text-[9px] uppercase tracking-widest text-slate-500">THROUGHPUT</div>
+                <div className="text-2xl font-black text-white mt-2">4.2k inf/s</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ===================== SCALE DEPLOYMENT ESTIMATOR SECTION ===================== */}
+      <section id="deployment-scale" className="mt-10 bg-[#0b0c0e]/40 border border-white/10 rounded-3xl p-6 sm:p-8 md:p-10 text-left">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div className="lg:col-span-7 flex flex-col gap-6">
+            <div>
+              <span className="font-mono text-[9px] text-[#ffaf87] font-bold uppercase tracking-widest block mb-1">
+                SYS_DEPLOY_CALCULATOR // INTEGRITY BUILDER
+              </span>
+              <h3 className="text-3xl font-sans font-black text-white uppercase tracking-tight leading-none">
+                Calculate Deployment Scale
+              </h3>
+              <p className="text-slate-400 text-sm font-sans font-light mt-3 leading-relaxed max-w-xl">
+                Adjust target scaling limits, security structures, and active AI utility features to see a real-time deployment cost estimate.
+              </p>
+            </div>
+
+            {/* Selector 1: Tier scale */}
+            <div className="flex flex-col gap-2">
+              <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest block font-bold">
+                01 // NODE SCALE TIER:
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: "developer", label: "Developer", price: "$49/mo" },
+                  { id: "scale", label: "Scale Level", price: "$249/mo" },
+                  { id: "enterprise", label: "Enterprise", price: "$899/mo" }
+                ].map((t) => (
                   <button
-                    key={m.id}
-                    onClick={() => setActiveMetric(m.id as any)}
-                    className={`flex flex-col text-left p-5 rounded-2xl border transition-all cursor-pointer ${
-                      isActive 
-                        ? "bg-[#0a0a0a] border-peach shadow-[0_4px_20px_rgba(255,175,135,0.05)] scale-[1.01]" 
-                        : "bg-transparent border-white/5 hover:border-white/10 hover:bg-[#040404]"
+                    key={t.id}
+                    onClick={() => setSelectedTier(t.id as any)}
+                    className={`flex flex-col items-center p-3 rounded border cursor-pointer text-center transition-all ${
+                      selectedTier === t.id
+                        ? "bg-[#ffaf87] border-[#ffaf87] text-black font-extrabold shadow-md"
+                        : "bg-black/50 border-white/5 text-gray-400 hover:border-white/10"
                     }`}
                   >
-                    <span className={`font-sans font-black text-sm ${isActive ? "text-peach" : "text-gray-300"}`}>
-                      {m.label}
-                    </span>
-                    <span className="text-[11px] text-gray-500 font-light mt-1.5">
-                      {m.desc}
-                    </span>
+                    <span className="font-sans text-xs font-bold leading-none">{t.label}</span>
+                    <span className="font-mono text-[8px] mt-1.5 opacity-80">{t.price}</span>
                   </button>
-                );
-              })}
-            </div>
-
-            {/* Right chart visualizer (8 cols) */}
-            <div className="lg:col-span-8 bg-black border border-white/10 rounded-[28px] p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(#ffffff01_1px,transparent_1px)] bg-[size:10px_10px] pointer-events-none" />
-              
-              <div className="relative z-10 w-full text-left flex-1 flex flex-col justify-between">
-                <div className="mb-8">
-                  <span className="font-mono text-[7px] text-gray-500 uppercase tracking-widest block">BENCHMARK_VARIABLE:</span>
-                  <h4 className="text-lg font-sans font-black text-white mt-1 uppercase tracking-wide">
-                    {metricsData[activeMetric].title}
-                  </h4>
-                  <p className="text-xs text-gray-400 font-light mt-1 max-w-xl">
-                    {metricsData[activeMetric].desc}
-                  </p>
-                </div>
-
-                {/* Animated Bars */}
-                <div className="flex flex-col gap-6 w-full select-none mb-4">
-                  
-                  {/* Bar 1: Zorlixa */}
-                  <div className="flex flex-col gap-1.5 text-left">
-                    <div className="flex justify-between font-mono text-[9px] text-mint uppercase font-bold">
-                      <span>Zorlixa engine (Optimized)</span>
-                      <span>{metricsData[activeMetric].zorlixa} {activeMetric === "latency" ? "ms" : activeMetric === "overhead" ? "% CPU" : "MB"}</span>
-                    </div>
-                    <div className="h-5 w-full bg-white/5 rounded-lg overflow-hidden border border-white/5 p-0.5">
-                      <motion.div 
-                        className="bg-gradient-to-r from-mint to-[#C5E898]/40 h-full rounded-md"
-                        initial={{ width: 0 }}
-                        animate={{ width: "8%" }}
-                        transition={{ type: "spring", stiffness: 80 }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Bar 2: Competitor A */}
-                  <div className="flex flex-col gap-1.5 text-left">
-                    <div className="flex justify-between font-mono text-[9px] text-gray-400 uppercase">
-                      <span>Standard AI Pipeline</span>
-                      <span>{metricsData[activeMetric].competitorA} {activeMetric === "latency" ? "ms" : activeMetric === "overhead" ? "% CPU" : "MB"}</span>
-                    </div>
-                    <div className="h-5 w-full bg-white/5 rounded-lg overflow-hidden border border-white/5 p-0.5">
-                      <motion.div 
-                        className="bg-peach/60 h-full rounded-md"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(metricsData[activeMetric].competitorA / metricsData[activeMetric].competitorB) * 90}%` }}
-                        transition={{ type: "spring", stiffness: 80 }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Bar 3: Competitor B */}
-                  <div className="flex flex-col gap-1.5 text-left">
-                    <div className="flex justify-between font-mono text-[9px] text-gray-500">
-                      <span>Legacy ETL Architecture</span>
-                      <span>{metricsData[activeMetric].competitorB} {activeMetric === "latency" ? "ms" : activeMetric === "overhead" ? "% CPU" : "MB"}</span>
-                    </div>
-                    <div className="h-5 w-full bg-white/5 rounded-lg overflow-hidden border border-white/5 p-0.5">
-                      <motion.div 
-                        className="bg-gray-600/40 h-full rounded-md"
-                        initial={{ width: 0 }}
-                        animate={{ width: "95%" }}
-                        transition={{ type: "spring", stiffness: 80 }}
-                      />
-                    </div>
-                  </div>
-
-                </div>
-
-                <div className="border-t border-white/5 pt-4 font-mono text-[7.5px] text-gray-500 uppercase tracking-widest flex items-center justify-between">
-                  <span>TEST_CLUSTER: INTEL_XEON_8_CORES</span>
-                  <span>CONFIDENCE BOUNDS: ±0.005 ms</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ===================== SECTION 3: KEY PRODUCT FEATURES ===================== */}
-        <div className="mb-20">
-          <div className="max-w-3xl mb-12 text-left">
-            <span className="font-mono text-[9px] text-mint font-bold uppercase tracking-widest">// ARCHITECTURE CORE</span>
-            <h2 className="text-3xl sm:text-5xl font-sans font-black tracking-tight text-white mt-2">
-              Engine Specifications
-            </h2>
-            <p className="text-gray-400 font-light text-sm sm:text-base leading-relaxed mt-4">
-              Designed for extreme compliance benchmarks, fast execution boundaries, and zero-knowledge storage configurations.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            
-            {/* Feature 1 */}
-            <div className="p-6 rounded-[24px] bg-[#070707] border border-white/5 flex flex-col justify-between gap-4 group hover:border-[#FFAF87]/30 transition-all select-none">
-              <div className="flex items-center justify-between">
-                <div className="p-3 bg-peach/10 rounded-xl border border-peach/20 text-[#FFAF87]">
-                  <Lock className="w-5 h-5" />
-                </div>
-                <span className="font-mono text-[8px] text-gray-500 uppercase">CLASS_01</span>
-              </div>
-              <div>
-                <h4 className="font-sans font-extrabold text-white text-base tracking-tight mb-2">Zero-Knowledge Sandbox</h4>
-                <p className="text-gray-400 text-xs font-light leading-relaxed">
-                  All transactional memory matrices remain locally bound to user browser sessions. Payload configurations are isolated immediately.
-                </p>
+                ))}
               </div>
             </div>
 
-            {/* Feature 2 */}
-            <div className="p-6 rounded-[24px] bg-[#070707] border border-white/5 flex flex-col justify-between gap-4 group hover:border-mint/30 transition-all select-none">
-              <div className="flex items-center justify-between">
-                <div className="p-3 bg-mint/10 rounded-xl border border-mint/20 text-[#C5E898]">
-                  <TermIcon className="w-5 h-5" />
-                </div>
-                <span className="font-mono text-[8px] text-gray-500 uppercase">CLASS_02</span>
-              </div>
-              <div>
-                <h4 className="font-sans font-extrabold text-white text-base tracking-tight mb-2">Autonomous SQL Compiler</h4>
-                <p className="text-gray-400 text-xs font-light leading-relaxed">
-                  Translates standard conversational strings into highly complex SQL structures. Auto-analyzes query nodes to prevent vector loops.
-                </p>
-              </div>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="p-6 rounded-[24px] bg-[#070707] border border-white/5 flex flex-col justify-between gap-4 group hover:border-[#FFAF87]/30 transition-all select-none">
-              <div className="flex items-center justify-between">
-                <div className="p-3 bg-peach/10 rounded-xl border border-peach/20 text-[#FFAF87]">
-                  <Cpu className="w-5 h-5" />
-                </div>
-                <span className="font-mono text-[8px] text-gray-500 uppercase">CLASS_03</span>
-              </div>
-              <div>
-                <h4 className="font-sans font-extrabold text-white text-base tracking-tight mb-2">Stochastic Predictions</h4>
-                <p className="text-gray-400 text-xs font-light leading-relaxed">
-                  Built on high-density neural networks configured specifically for telemetry datasets. Provides predictions with confidence bounds down to ±1.5%.
-                </p>
+            {/* Selector 2: Security level */}
+            <div className="flex flex-col gap-2">
+              <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest block font-bold">
+                02 // TRANSPORT ENCRYPT SYSTEM:
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: "aes", label: "AES-256 GCM", sub: "Standard Encryption" },
+                  { id: "e2ee", label: "E2EE Consensus", sub: "Multi-party check" },
+                  { id: "quantum", label: "Kyber Quantum", sub: "Quantum-resistant" }
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setSecurityLevel(s.id as any)}
+                    className={`flex flex-col items-center p-3 rounded border cursor-pointer text-center transition-all ${
+                      securityLevel === s.id
+                        ? "bg-[#ffaf87] border-[#ffaf87] text-black font-extrabold shadow-md"
+                        : "bg-black/50 border-white/5 text-gray-400 hover:border-white/10"
+                    }`}
+                  >
+                    <span className="font-sans text-[11px] font-bold leading-none">{s.label}</span>
+                    <span className="font-mono text-[7px] mt-1.5 opacity-80">{s.sub}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
-          </div>
-        </div>
-
-        {/* ===================== SECTION 4: INTERACTIVE COST ESTIMATOR ===================== */}
-        <div id="zorlixa-configurator" className="bg-[#050505] border border-white/10 rounded-[32px] p-6 sm:p-8 md:p-10 relative overflow-hidden text-left">
-          <div className="absolute top-0 left-0 right-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#FFAF87]/20 to-transparent pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#C5E898]/5 blur-3xl pointer-events-none" />
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
-            {/* Estimator details (7 cols) */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
-              <div>
-                <span className="font-mono text-[9px] text-[#FFAF87] font-bold uppercase tracking-widest block mb-1">
-                  SYS_DEPLOY_CALCULATOR // INTEGRITY BUILDER
-                </span>
-                <h3 className="text-3xl sm:text-4xl font-sans font-black text-white uppercase tracking-tight leading-none">
-                  Calculate Deployment Scale
-                </h3>
-                <p className="text-gray-400 text-sm font-light mt-3 leading-relaxed max-w-xl">
-                  Adjust target scaling limits, security structures, and active AI utility features to see a real-time deployment cost estimate.
-                </p>
-              </div>
-
-              {/* Selector 1: Tier scale */}
-              <div className="flex flex-col gap-2">
-                <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest block font-bold">
-                  01 // NODE SCALE TIER:
-                </span>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { id: "developer", label: "Developer", price: "$49/mo" },
-                    { id: "scale", label: "Scale Level", price: "$249/mo" },
-                    { id: "enterprise", label: "Enterprise", price: "$899/mo" }
-                  ].map((t) => (
+            {/* Selector 3: Checkbox Add-ons */}
+            <div className="flex flex-col gap-2">
+              <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest block font-bold">
+                03 // COMPILER UTILITY UTILS:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {[
+                  { key: "slackFeeder", label: "Slack Feeder", desc: "+$29/mo" },
+                  { key: "pdfBriefing", label: "PDF Briefing", desc: "+$49/mo" },
+                  { key: "sqlAgent", label: "Autonomous SQL", desc: "+$119/mo" }
+                ].map((item) => {
+                  const isChecked = selectedAddons[item.key as keyof typeof selectedAddons];
+                  return (
                     <button
-                      key={t.id}
-                      onClick={() => setSelectedTier(t.id as any)}
-                      className={`flex flex-col items-center p-3 rounded-xl border cursor-pointer text-center transition-all ${
-                        selectedTier === t.id
-                          ? "bg-peach border-peach text-black font-extrabold shadow-md"
+                      key={item.key}
+                      onClick={() => setSelectedAddons({
+                        ...selectedAddons,
+                        [item.key]: !isChecked
+                      })}
+                      className={`flex items-center justify-between p-3 rounded border cursor-pointer text-left transition-all ${
+                        isChecked 
+                          ? "bg-white/10 border-[#ffaf87]/50 text-[#ffaf87]" 
                           : "bg-black/50 border-white/5 text-gray-400 hover:border-white/10"
                       }`}
                     >
-                      <span className="font-sans text-xs font-bold leading-none">{t.label}</span>
-                      <span className="font-mono text-[8px] mt-1.5 opacity-80">{t.price}</span>
+                      <span className="font-sans text-xs font-semibold">{item.label}</span>
+                      <span className="font-mono text-[9px] opacity-85">{item.desc}</span>
                     </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Selector 2: Security level */}
-              <div className="flex flex-col gap-2">
-                <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest block font-bold">
-                  02 // TRANSPORT ENCRYPT SYSTEM:
-                </span>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { id: "aes", label: "AES-256 GCM", sub: "Standard Encryption" },
-                    { id: "e2ee", label: "E2EE Consensus", sub: "Multi-party check" },
-                    { id: "quantum", label: "Kyber Quantum", sub: "Quantum-resistant" }
-                  ].map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => setSecurityLevel(s.id as any)}
-                      className={`flex flex-col items-center p-3 rounded-xl border cursor-pointer text-center transition-all ${
-                        securityLevel === s.id
-                          ? "bg-mint border-mint text-black font-extrabold shadow-md"
-                          : "bg-black/50 border-white/5 text-gray-400 hover:border-white/10"
-                      }`}
-                    >
-                      <span className="font-sans text-2xs font-bold leading-none">{s.label}</span>
-                      <span className="font-mono text-[7px] mt-1.5 opacity-80">{s.sub}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Selector 3: Checkbox Add-ons */}
-              <div className="flex flex-col gap-2">
-                <span className="font-mono text-[8px] text-gray-500 uppercase tracking-widest block font-bold">
-                  03 // COMPILER UTILITY UTILS:
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {[
-                    { key: "slackFeeder", label: "Slack Feeder", desc: "+$29/mo" },
-                    { key: "pdfBriefing", label: "PDF Briefing", desc: "+$49/mo" },
-                    { key: "sqlAgent", label: "Autonomous SQL", desc: "+$119/mo" }
-                  ].map((item) => {
-                    const isChecked = selectedAddons[item.key as keyof typeof selectedAddons];
-                    return (
-                      <button
-                        key={item.key}
-                        onClick={() => setSelectedAddons({
-                          ...selectedAddons,
-                          [item.key]: !isChecked
-                        })}
-                        className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer text-left transition-all ${
-                          isChecked 
-                            ? "bg-white/10 border-peach/50 text-[#FFAF87]" 
-                            : "bg-black/50 border-white/5 text-gray-400 hover:border-white/10"
-                        }`}
-                      >
-                        <span className="font-sans text-xs font-semibold">{item.label}</span>
-                        <span className="font-mono text-[9px] opacity-85">{item.desc}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Estimator display box (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col justify-between bg-black border border-white/8 rounded-3xl p-6 sm:p-8 h-full min-h-[280px]">
-              <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-4 select-none">
-                <span className="font-mono text-[9px] text-[#C5E898] font-bold uppercase tracking-widest flex items-center gap-1.5">
-                  <Coins className="w-4 h-4 text-[#C5E898]" /> ESTIMATED RATE:
-                </span>
-                <span className="font-mono text-[7px] text-gray-500 uppercase">SYS_ESTIMATE</span>
-              </div>
-
-              {/* Price output */}
-              <div className="py-6 flex flex-col gap-1">
-                <span className="font-sans text-[11px] text-gray-500 uppercase tracking-widest font-bold">Deployment cost:</span>
-                <h4 className="text-4xl sm:text-5xl lg:text-6xl font-mono font-black text-white glow-peach flex items-baseline">
-                  ${calculateCost()}
-                  <span className="text-sm font-sans font-light text-gray-400 lowercase ml-1">/month</span>
-                </h4>
-              </div>
-
-              {/* Estimated spec stack summaries */}
-              <div className="flex flex-col gap-2.5 bg-[#050505] p-4 rounded-2xl border border-white/5 text-xs select-none">
-                <div className="flex justify-between items-center text-gray-400">
-                  <span>Selected Tier:</span>
-                  <strong className="text-white capitalize">{selectedTier}</strong>
-                </div>
-                <div className="flex justify-between items-center text-gray-400">
-                  <span>Transport Encryption:</span>
-                  <strong className="text-white uppercase">
-                    {securityLevel === "aes" ? "AES-256" : securityLevel === "e2ee" ? "E2EE" : "Quantum"}
-                  </strong>
-                </div>
-                <div className="flex justify-between items-center text-gray-400 border-t border-white/5 pt-2 mt-1">
-                  <span>Consensus latency:</span>
-                  <strong className="text-[#C5E898]">0.02ms</strong>
-                </div>
-              </div>
-
-              {/* Ingress CTA button */}
-              <button 
-                onClick={() => onNavigate("contact")}
-                className="w-full mt-6 py-3 rounded-xl bg-gradient-to-tr from-peach to-mint text-black font-sans font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]"
-              >
-                <span>Initiate Core Deployment</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
           </div>
-        </div>
 
-      </div>
+          {/* Estimator display box (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col justify-between bg-black border border-white/8 rounded-3xl p-6 sm:p-8 h-full min-h-[300px]">
+            <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-4 select-none font-mono">
+              <span className="text-[9px] text-[#ffaf87] font-bold uppercase tracking-widest flex items-center gap-1.5">
+                <Coins className="w-4 h-4 text-[#ffaf87]" /> ESTIMATED RATE:
+              </span>
+              <span className="text-gray-500 uppercase">SYS_ESTIMATE</span>
+            </div>
+
+            {/* Price output */}
+            <div className="py-6 flex flex-col gap-1">
+              <span className="font-sans text-[11px] text-gray-500 uppercase tracking-widest font-bold">Deployment cost:</span>
+              <h4 className="text-4xl sm:text-5xl lg:text-6xl font-mono font-black text-white glow-peach flex items-baseline">
+                ${calculateCost()}
+                <span className="text-sm font-sans font-light text-gray-400 lowercase ml-1">/month</span>
+              </h4>
+            </div>
+
+            {/* Estimated spec stack summaries */}
+            <div className="flex flex-col gap-2.5 bg-[#050506] p-4 rounded-2xl border border-white/5 text-xs select-none">
+              <div className="flex justify-between items-center text-slate-400">
+                <span>Selected Tier:</span>
+                <strong className="text-white capitalize">{selectedTier}</strong>
+              </div>
+              <div className="flex justify-between items-center text-slate-400">
+                <span>Transport Encryption:</span>
+                <strong className="text-white uppercase">
+                  {securityLevel === "aes" ? "AES-256" : securityLevel === "e2ee" ? "E2EE" : "Quantum"}
+                </strong>
+              </div>
+              <div className="flex justify-between items-center text-slate-400 border-t border-white/5 pt-2 mt-1">
+                <span>Consensus latency:</span>
+                <strong className="text-[#ffaf87]">0.012ms</strong>
+              </div>
+            </div>
+
+            {/* Ingress CTA button */}
+            <button 
+              onClick={() => onNavigate("contact")}
+              className="w-full mt-6 py-3 rounded bg-gradient-to-tr from-[#ffaf87] to-amber-300 text-black font-sans font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] hover:opacity-95 transition-all"
+            >
+              <span>Initiate Core Deployment</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ===================== FOOTER SECTION ===================== */}
+      <footer className="mt-8 text-center text-[8px] text-slate-600 border-t border-white/5 pt-3 flex justify-between select-none">
+        <span>ZorLix © 2026 | NVIDIA INCEPTION SHOWCASE HIGH-PERFORMANCE INFRASTRUCTURE</span>
+        <span>TACTICAL CONSOLE INTERFACE v3.5 | SECURE PIPELINES</span>
+      </footer>
+
     </div>
   );
 }
