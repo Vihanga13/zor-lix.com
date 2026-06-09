@@ -330,9 +330,9 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
           </div>
           
           <div className="grid grid-cols-2 gap-3 pt-2">
-            <button className="bg-white/5 border border-[#ffaf87]/30 text-white font-bold uppercase tracking-widest py-3 px-2 rounded hover:bg-[#ffaf87]/10 transition-all text-[10px]">
+            <a href="https://app.zor-lix.com/" target="_blank" rel="noopener noreferrer" className="bg-white/5 border border-[#ffaf87]/30 text-white font-bold uppercase tracking-widest py-3 px-2 rounded hover:bg-[#ffaf87]/10 transition-all text-[10px] text-center block no-underline">
               Platform ›
-            </button>
+            </a>
             
           </div>
         </div>
