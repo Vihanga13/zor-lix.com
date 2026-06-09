@@ -291,10 +291,16 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
           <button onClick={() => onNavigate("faq")} className="hover:text-white transition-colors px-2 py-1 cursor-pointer bg-transparent border-0">06 // FAQ</button>
           <button onClick={() => onNavigate("contact")} className="hover:text-white transition-colors px-2 py-1 cursor-pointer bg-transparent border-0">07 // Contact</button>
         </nav>
-        <button onClick={() => onNavigate("contact")} className="border border-[#ffaf87] text-[#ffaf87] hover:bg-[#ffaf87] hover:text-black transition-all font-bold uppercase tracking-widest px-4 py-2 rounded flex items-center gap-2 text-[10px] cursor-pointer bg-transparent">
-          <span>ESTABLISH HANDSHAKE</span>
-          <span>↗</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button onClick={() => onNavigate("contact")} className="border border-[#ffaf87] text-[#ffaf87] hover:bg-[#ffaf87] hover:text-black transition-all font-bold uppercase tracking-widest px-4 py-2 rounded flex items-center gap-2 text-[10px] cursor-pointer bg-transparent">
+            <span>ESTABLISH HANDSHAKE</span>
+            <span>↗</span>
+          </button>
+          <a href="https://app.zor-lix.com/" target="_blank" rel="noopener noreferrer" className="border border-[#C5E898] text-[#C5E898] hover:bg-[#C5E898] hover:text-black transition-all font-bold uppercase tracking-widest px-4 py-2 rounded flex items-center gap-2 text-[10px] cursor-pointer bg-transparent no-underline">
+            <span>PLATFORM</span>
+            <span>↗</span>
+          </a>
+        </div>
       </header>
       
       {/* Core Grid Matrix */}
