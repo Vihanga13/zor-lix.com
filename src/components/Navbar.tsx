@@ -130,7 +130,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           color: #FFAF87;
           cursor: pointer;
           font-family: 'Syne', sans-serif;
-          font-size: 13px;
+          font-size: 11px;
           font-weight: 800;
           letter-spacing: .12em;
           text-transform: uppercase;
@@ -149,7 +149,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
         .nb-hs-btn .nb-arrow { transition: transform .18s ease; }
         .nb-hs-btn:hover .nb-arrow { transform: translate(2px,-2px); }
 
-        /* ── NAV PILL — FONT SIZE INCREASED ── */
+        /* ── NAV PILL ── */
         .nb-nav-item {
           position: relative;
           display: flex; align-items: center; gap: 6px;
@@ -157,7 +157,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           border-radius: 999px;
           cursor: pointer;
           font-family: 'Syne', sans-serif;
-          font-size: 13px;
+          font-size: 11px;
           font-weight: 800;
           letter-spacing: .08em;
           text-transform: uppercase;
@@ -202,7 +202,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           background:linear-gradient(90deg,#FFAF87,#C5E898);
         }
 
-        /* ── MOBILE STRIP — FONT SIZE INCREASED ── */
+        /* ── MOBILE STRIP ── */
         .nb-mob-strip {
           -webkit-overflow-scrolling:touch;
           scrollbar-width:none;
@@ -217,7 +217,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           background:rgba(255,255,255,.04);
           color:#d1d5db;
           font-family:'Syne',sans-serif;
-          font-size: 13px;
+          font-size: 11px;
           font-weight: 800;
           letter-spacing:.05em; text-transform:uppercase;
           white-space:nowrap;
