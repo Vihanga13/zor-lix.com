@@ -255,7 +255,7 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
   }, []);
   
   return (
-    <div className="min-h-screen bg-[#050506] text-[#D1D5DB] font-mono p-4 antialiased selection:bg-[#ffaf87]/30 selection:text-white relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#050506] text-[#D1D5DB] font-mono px-4 pb-4 pt-40 lg:pt-52 antialiased selection:bg-[#ffaf87]/30 selection:text-white relative overflow-x-hidden">
       {/* Telemetry Ticker */}
       <div className="w-full border-b border-white/10 pb-1.5 mb-3 flex items-center justify-between text-[9px] text-slate-500 tracking-tight overflow-x-auto whitespace-nowrap gap-6">
         <div className="flex items-center gap-4">
@@ -274,33 +274,9 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
       
       {/* Header Panel */}
       <header className="w-full border border-white/10 bg-[#0b0c0e]/60 backdrop-blur-md rounded px-4 py-3 flex flex-wrap items-center justify-between gap-4 mb-4">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={onBackToLanding}>
-          <div className="text-base font-black tracking-widest text-white uppercase flex items-center gap-1">
-            <span>Z</span><span className="text-[#ffaf87]">OR</span><span>-LIX</span>
-          </div>
-          <span className="text-[9px] text-[#ffaf87] border border-[#ffaf87]/20 bg-[#ffaf87]/5 px-2 py-0.5 rounded uppercase tracking-wider font-bold">
-            SSL_SECURE | NVIDIA INCEPTION SHOWCASE
-          </span>
-        </div>
-        <nav className="flex flex-wrap items-center gap-1 sm:gap-4 text-[10px] uppercase font-bold tracking-wider text-slate-400">
-          <button onClick={() => onNavigate("home")} className="text-[#ffaf87] border border-[#ffaf87]/20 bg-[#ffaf87]/5 px-2 py-1 rounded cursor-pointer bg-transparent">01 // Home</button>
-          <button onClick={() => onNavigate("features")} className="hover:text-white transition-colors px-2 py-1 cursor-pointer bg-transparent border-0">02 // Features</button>
-          <button onClick={() => onNavigate("pipeline")} className="hover:text-white transition-colors px-2 py-1 cursor-pointer bg-transparent border-0">03 // Solution</button>
-          <button onClick={() => onNavigate("dashboard")} className="hover:text-white transition-colors px-2 py-1 cursor-pointer bg-transparent border-0">04 // Dashboard</button>
-          <button onClick={() => onNavigate("pricing")} className="hover:text-white transition-colors px-2 py-1 cursor-pointer bg-transparent border-0">05 // Pricing</button>
-          <button onClick={() => onNavigate("faq")} className="hover:text-white transition-colors px-2 py-1 cursor-pointer bg-transparent border-0">06 // FAQ</button>
-          <button onClick={() => onNavigate("contact")} className="hover:text-white transition-colors px-2 py-1 cursor-pointer bg-transparent border-0">07 // Contact</button>
-        </nav>
-        <div className="flex flex-wrap items-center gap-3">
-          <button onClick={() => onNavigate("contact")} className="border border-[#ffaf87] text-[#ffaf87] hover:bg-[#ffaf87] hover:text-black transition-all font-bold uppercase tracking-widest px-4 py-2 rounded flex items-center gap-2 text-[10px] cursor-pointer bg-transparent">
-            <span>ESTABLISH HANDSHAKE</span>
-            <span>↗</span>
-          </button>
-          <a href="https://app.zor-lix.com/" target="_blank" rel="noopener noreferrer" className="border border-[#C5E898] text-[#C5E898] hover:bg-[#C5E898] hover:text-black transition-all font-bold uppercase tracking-widest px-4 py-2 rounded flex items-center gap-2 text-[10px] cursor-pointer bg-transparent no-underline">
-            <span>PLATFORM</span>
-            <span>↗</span>
-          </a>
-        </div>
+       
+        
+       
       </header>
       
       {/* Core Grid Matrix */}
@@ -331,7 +307,7 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
             <div className="text-[9px] text-[#ffaf87] font-bold uppercase tracking-wider">3D HARMONIZER VOLTAGE</div>
             <div className="space-y-1">
               <div className="flex justify-between text-[10px] text-slate-400">
-                <span>🌀 CYBER CORE SPIN SPEED (FREQ)</span>
+                <span> CYBER CORE SPIN SPEED (FREQ)</span>
                 <span className="text-white font-bold">{waveFreq} Hz</span>
               </div>
               <input 
@@ -342,7 +318,7 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
             </div>
             <div className="space-y-1">
               <div className="flex justify-between text-[10px] text-slate-400">
-                <span>⚡ RADIAL EXPANSION AMPLITUDE</span>
+                <span> RADIAL EXPANSION AMPLITUDE</span>
                 <span className="text-white font-bold">{waveAmp}%</span>
               </div>
               <input 
@@ -355,12 +331,9 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
           
           <div className="grid grid-cols-2 gap-3 pt-2">
             <button className="bg-white/5 border border-[#ffaf87]/30 text-white font-bold uppercase tracking-widest py-3 px-2 rounded hover:bg-[#ffaf87]/10 transition-all text-[10px]">
-              Explore Solutions ›
+              Platform ›
             </button>
-            <button className="bg-white/5 border border-white/10 text-slate-300 font-bold uppercase tracking-widest py-3 px-2 rounded hover:bg-white/10 transition-all text-[10px] flex items-center justify-center gap-1.5">
-              <span>Launch 3D Console</span>
-              <span className="w-1.5 h-1.5 bg-[#ffaf87] rounded-full inline-block animate-pulse"></span>
-            </button>
+            
           </div>
         </div>
 
@@ -424,7 +397,7 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
               <p className="text-slate-600 flex items-start gap-1"><span>&gt;</span> <span>SECURITY: Nvidia Triton multi-instance clusters validated, safe execution loops.</span></p>
             </div>
             <div className="flex justify-between items-center text-[8px] text-slate-600 border-t border-white/5 pt-1.5">
-              <span>🔒 AES_256 SHADER STREAM</span>
+              <span> AES_256 SHADER STREAM</span>
               <span>GPU: DIRECT_HARDWARE_RENDER</span>
             </div>
           </div>

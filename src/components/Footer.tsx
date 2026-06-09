@@ -17,9 +17,21 @@ import {
   Workflow,
   Sparkles,
   RefreshCw,
-  Layers
+  Layers,
+  Youtube
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+
+const PinterestIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    {...props}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    stroke="none"
+  >
+    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.182 0 7.434 2.981 7.434 6.953 0 4.156-2.623 7.502-6.265 7.502-1.222 0-2.373-.635-2.766-1.385l-.754 2.877c-.274 1.042-1.018 2.348-1.516 3.141 1.189.367 2.456.568 3.768.568 6.621 0 11.988-5.367 11.988-11.988C24.005 5.367 18.638 0 12.017 0z"/>
+  </svg>
+);
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
@@ -268,10 +280,10 @@ export default function Footer({ onNavigate }: FooterProps) {
             {/* Social Node Connectors */}
             <div className="grid grid-cols-4 gap-2.5 w-full sm:w-auto">
               {[
-                { label: "Twitter", icon: Twitter, href: "https://twitter.com" },
-                { label: "LinkedIn", icon: Linkedin, href: "https://linkedin.com" },
-                { label: "GitHub", icon: Github, href: "https://github.com" },
-                { label: "Facebook", icon: Facebook, href: "https://facebook.com" }
+                { label: "Twitter", icon: Twitter, href: "https://x.com/ZorLixfx" },
+                { label: "Facebook", icon: Facebook, href: "https://www.facebook.com/ZorLix/" },
+                { label: "Pinterest", icon: PinterestIcon, href: "https://www.pinterest.com/Zor_Lix/" },
+                { label: "Youtube", icon: Youtube, href: "https://www.youtube.com/@ZorLixConsole" }
               ].map((social, idx) => {
                 const Icon = social.icon;
                 return (
