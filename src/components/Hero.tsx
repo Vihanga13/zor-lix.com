@@ -291,7 +291,7 @@ export default function Hero({ onNavigate }: HeroProps) {
   return (
     <section
       id="home"
-      className="relative min-h-screen pt-20 pb-12 lg:py-24 overflow-hidden flex flex-col justify-center border-b border-white/5"
+      className="relative min-h-screen pt-36 pb-12 lg:pt-44 lg:pb-24 overflow-hidden flex flex-col justify-center border-b border-white/5"
       style={{
         backgroundImage: "linear-gradient(to bottom, rgba(2, 2, 2, 0.2), rgba(2, 2, 2, 0.5)), url('/hero.webp')",
         backgroundSize: "cover",
