@@ -280,12 +280,11 @@ export default function Footer({ onNavigate }: FooterProps) {
             {/* Social Node Connectors */}
             <div className="grid grid-cols-4 gap-2.5 w-full sm:w-auto">
               {[
-                { label: "Twitter", icon: Twitter, href: "https://x.com/ZorLixfx" },
-                { label: "Facebook", icon: Facebook, href: "https://www.facebook.com/ZorLix/" },
-                { label: "Pinterest", icon: PinterestIcon, href: "https://www.pinterest.com/Zor_Lix/" },
-                { label: "Youtube", icon: Youtube, href: "https://www.youtube.com/@ZorLixConsole" }
+                { label: "Twitter", img: "/social.svg", href: "https://x.com/ZorLixfx" },
+                { label: "Facebook", img: "/social (2).svg", href: "https://www.facebook.com/ZorLix/" },
+                { label: "Pinterest", img: "/social (3).svg", href: "https://www.pinterest.com/Zor_Lix/" },
+                { label: "Youtube", img: "/social (4).svg", href: "https://www.youtube.com/@ZorLixConsole" }
               ].map((social, idx) => {
-                const Icon = social.icon;
                 return (
                   <a
                     key={idx}
@@ -295,7 +294,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                     className="p-3 bg-[#050505] hover:bg-black border border-white/5 hover:border-peach/50 rounded-xl text-gray-400 hover:text-peach flex items-center justify-center transition-all duration-300"
                     aria-label={social.label}
                   >
-                    <Icon className="w-4 h-4" />
+                    <img src={social.img} alt={social.label} className="w-5 h-5 object-contain opacity-70 group-hover:opacity-100 transition-opacity" />
                   </a>
                 );
               })}
