@@ -294,7 +294,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                     className="p-3 bg-[#050505] hover:bg-black border border-white/5 hover:border-peach/50 rounded-xl text-gray-400 hover:text-peach flex items-center justify-center transition-all duration-300"
                     aria-label={social.label}
                   >
-                    <img src={social.img} alt={social.label} className="w-5 h-5 object-contain opacity-70 group-hover:opacity-100 transition-opacity" />
+                    <img src={social.img} alt={social.label} className="w-11 h-11 object-contain opacity-70 group-hover:opacity-100 transition-opacity" />
                   </a>
                 );
               })}
