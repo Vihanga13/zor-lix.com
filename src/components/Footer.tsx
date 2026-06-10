@@ -138,6 +138,12 @@ export default function Footer({ onNavigate }: FooterProps) {
               <p className="text-xs text-gray-400 font-light leading-relaxed max-w-sm mt-3">
                 Pre-processing high-throughput database clusters & executing sub-millisecond anomaly detection using secure, client-isolated cryptographic telemetry networks.
               </p>
+
+              <div className="mt-5 flex flex-col gap-1.5 font-mono text-[10px] text-gray-500">
+                <span className="text-white/70">525 Market St, San Francisco, CA 94105, United States</span>
+                <span className="text-white/70">Phone: +1 415-683-7294</span>
+                <span className="text-white/70">Email: contact@zor-lix.com</span>
+              </div>
             </div>
 
             {/* Simulated Live Console Widget Inside the Brand Block */}

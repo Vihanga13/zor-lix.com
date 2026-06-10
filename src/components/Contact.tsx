@@ -441,6 +441,32 @@ export default function Contact() {
               </div>
             </div>
 
+            {/* Headquarters / Contact Details */}
+            <div className="bg-[#050505] border border-white/5 p-5 rounded-2.5xl mt-6 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-peach/5 blur-xl pointer-events-none" />
+              <span className="font-mono text-[9px] text-gray-500 uppercase tracking-widest block border-b border-white/5 pb-2.5 mb-4 select-none">
+                GLOBAL HEADQUARTERS
+              </span>
+              <div className="flex flex-col gap-3 font-mono text-xs text-gray-400 relative z-10">
+                <div className="flex items-start gap-3">
+                  <Globe className="w-4 h-4 text-gray-500 mt-0.5 shrink-0" />
+                  <div>
+                    <span className="block text-white">525 Market St</span>
+                    <span className="block">San Francisco, CA 94105</span>
+                    <span className="block">United States</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <TermIcon className="w-4 h-4 text-peach shrink-0" />
+                  <span className="text-peach">+1 415-683-7294</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Mail className="w-4 h-4 text-mint shrink-0" />
+                  <span className="text-mint">contact@zor-lix.com</span>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           {/* COLUMN B: Responsive Interactive Contact Terminal (7 Columns) */}
