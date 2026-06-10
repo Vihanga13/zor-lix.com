@@ -374,27 +374,6 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
               </div>
             </div>
 
-            {/* ── MOBILE NAV STRIP (below lg) ── */}
-            <nav
-              className="flex lg:hidden items-center gap-1.5 overflow-x-auto overflow-y-hidden border-t border-white/[0.08] w-full px-3.5 py-2.5 nb-mob-strip"
-              aria-label="Mobile navigation"
-            >
-              {navLinks.map(({ name, id, code, Icon }) => {
-                const isActive = activeSection === id;
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => { onNavigate(id); setIsOpen(false); }}
-                    className={`nb-mob-link focus:outline-none ${isActive ? "nb-active" : ""}`}
-                  >
-                    <span className="nb-code">{code}</span>
-                    <Icon className={`w-3.5 h-3.5 flex-shrink-0 ${isActive ? "text-[#FFAF87]" : "text-gray-400"}`} />
-                    <span>{name}</span>
-                  </button>
-                );
-              })}
-            </nav>
           </div>
         </div>
 
@@ -425,9 +404,29 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                   </div>
                 </div>
 
-                <p className="text-xs text-gray-400 font-light leading-relaxed">
-                  Use the navigation strip above for section links, or jump to contact below.
-                </p>
+                <div className="flex flex-col gap-2">
+                  {navLinks.map(({ name, id, code, Icon }) => {
+                    const isActive = activeSection === id;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => { onNavigate(id); setIsOpen(false); }}
+                        className={`nb-mob-card focus:outline-none ${isActive ? "nb-active" : ""}`}
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center gap-3">
+                            <Icon className={`w-4 h-4 ${isActive ? "text-[#FFAF87]" : "text-gray-400"}`} />
+                            <span className={`font-syne text-xs font-bold tracking-wider uppercase ${isActive ? "text-white" : "text-gray-300"}`}>
+                              {name}
+                            </span>
+                          </div>
+                          <span className="nb-mono text-[10px] text-gray-500">{code}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
 
                 {/* Status bar */}
                 <div className="flex items-center justify-between bg-black/50 px-4 py-2.5 rounded-xl border border-white/[0.05]">

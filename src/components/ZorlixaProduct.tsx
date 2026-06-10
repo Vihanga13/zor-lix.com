@@ -274,9 +274,12 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
       
       {/* Header Panel */}
       <header className="w-full border border-white/10 bg-[#0b0c0e]/60 backdrop-blur-md rounded px-4 py-3 flex flex-wrap items-center justify-between gap-4 mb-4">
-       
-        
-       
+        <button 
+          onClick={onBackToLanding} 
+          className="bg-white/5 border border-[#ffaf87]/30 text-white font-bold uppercase tracking-widest py-2 px-4 rounded hover:bg-[#ffaf87]/10 transition-all text-[10px] flex items-center gap-2"
+        >
+          &larr; Back to Platform
+        </button>
       </header>
       
       {/* Core Grid Matrix */}
@@ -344,16 +347,16 @@ const ZorLixConsole: React.FC<ZorLixConsoleProps> = ({ onBackToLanding, onNaviga
             <span className="text-slate-500 text-xs tracking-widest">● LIVE RUNNING</span>
           </div>
           <div ref={mountRef} className="flex-1 w-full min-h-[380px] bg-black/40 rounded border border-white/5 shadow-inner" />
-          <div className="w-full grid grid-cols-3 gap-2 border-t border-white/5 pt-3 mt-3 text-center text-[9px] font-mono">
-            <div>
+          <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-2 border-t border-white/5 pt-3 mt-3 text-center text-[9px] font-mono">
+            <div className="flex sm:block justify-between items-center sm:text-center px-2 sm:px-0">
               <div className="text-slate-500 uppercase">Target Velocity</div>
               <div className="text-white font-bold mt-0.5">{((0.3 + ((waveFreq-1)/11)*2.0)).toFixed(2)} rad/s</div>
             </div>
-            <div>
+            <div className="flex sm:block justify-between items-center sm:text-center px-2 sm:px-0">
               <div className="text-slate-500 uppercase">Pulse Volatiles</div>
               <div className="text-[#ffaf87] font-bold mt-0.5">{Math.floor(((waveAmp-10)/110)*100)}%</div>
             </div>
-            <div>
+            <div className="flex sm:block justify-between items-center sm:text-center px-2 sm:px-0">
               <div className="text-slate-500 uppercase">Matrix Dense Grid</div>
               <div className="text-white font-bold mt-0.5">1.2K NODE VECTORS</div>
             </div>
