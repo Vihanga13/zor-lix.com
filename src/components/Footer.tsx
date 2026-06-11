@@ -289,7 +289,7 @@ export default function Footer({ onNavigate }: FooterProps) {
                 { label: "Twitter", img: "/social.svg", href: "https://x.com/ZorLixfx" },
                 { label: "Facebook", img: "/social (2).svg", href: "https://www.facebook.com/ZorLix/" },
                 { label: "Pinterest", img: "/social (3).svg", href: "https://www.pinterest.com/Zor_Lix/" },
-                { label: "Youtube", img: "/social (4).svg", href: "https://www.youtube.com/@ZorLixConsole" }
+                { label: "Youtube", img: "/social (4).svg", href: "https://www.youtube.com/@ZorLix-b4w" }
               ].map((social, idx) => {
                 return (
                   <a
