@@ -329,7 +329,7 @@ export default function Hero({ onNavigate }: HeroProps) {
 
           {/* ===================== SECTOR 1 ===================== */}
           <div
-            className="lg:col-span-5 flex flex-col gap-6 relative overflow-hidden p-6 sm:p-8"
+            className="lg:col-span-5 flex flex-col gap-4 xl:gap-6 relative overflow-hidden p-5 xl:p-8"
             style={{
               background: "rgba(0,0,0,0.45)",
               border: "1px solid rgba(255,255,255,0.06)",
@@ -390,7 +390,7 @@ export default function Hero({ onNavigate }: HeroProps) {
             <div className="flex flex-col gap-2">
               <h1
                 style={{
-                  fontSize: "clamp(28px, 4.5vw, 52px)",
+                  fontSize: "clamp(26px, 3.2vw, 50px)",
                   fontWeight: 900,
                   letterSpacing: "-0.03em",
                   lineHeight: 1.05,
@@ -410,47 +410,45 @@ export default function Hero({ onNavigate }: HeroProps) {
                   }}
                 >
                   Analytics
-
                 </span>
                 .
-                <span
-                  style={{
-                    display: "block",
-                    fontWeight: 300,
-                    color: "#999",
-                    marginTop: 4,
-                  }}
-                >
-                  AI-Powered Data Analytics &
-                </span>
+              </h1>
+              <h2
+                style={{
+                  fontWeight: 300,
+                  color: "#999",
+                  fontSize: "clamp(14px, 1.8vw, 22px)",
+                  marginTop: 6,
+                  lineHeight: 1.3,
+                }}
+              >
+                AI-Powered Data Analytics &{" "}
                 <span
                   style={{
                     display: "block",
                     fontFamily: "monospace",
-                    fontSize: "clamp(18px, 3vw, 32px)",
+                    fontSize: "clamp(16px, 2.2vw, 26px)",
                     fontWeight: 900,
                     letterSpacing: "0.08em",
-                    textTransform: "none",
                     background: "linear-gradient(90deg,#FFAF87,#fff,#C5E898)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
-                    marginTop: 6,
+                    marginTop: 4,
                   }}
                 >
                   Decision Intelligence
-
                 </span>
-              </h1>
+              </h2>
               <p
-                className="select-none"
+                className="select-none hidden sm:block"
                 style={{
                   color: "#888",
                   fontWeight: 300,
-                  fontSize: "11px",
-                  lineHeight: 1.7,
+                  fontSize: "clamp(10px, 1vw, 11px)",
+                  lineHeight: 1.6,
                   maxWidth: 440,
-                  marginTop: 10,
+                  marginTop: 8,
                 }}
               >
                 Zor-Lix enables organizations to integrate data from multiple systems, automate data quality management, and generate actionable business intelligence through advanced AI analytics.
@@ -620,10 +618,10 @@ export default function Hero({ onNavigate }: HeroProps) {
 
           {/* ===================== SECTOR 2 — RADAR ===================== */}
           <div
-            className="lg:col-span-4 flex flex-col justify-between relative overflow-hidden p-6"
+            className="lg:col-span-4 flex flex-col justify-between relative overflow-hidden p-4 xl:p-6"
             style={{
               backgroundImage: 'url("/herobox_result.webp")',
-              backgroundSize: 'cover',
+              backgroundSize: '100% 100%',
               backgroundPosition: 'center',
               border: "1px solid rgba(255,255,255,0.08)",
             }}
@@ -691,12 +689,13 @@ export default function Hero({ onNavigate }: HeroProps) {
             </div>
 
             {/* SVG Scope */}
-            <div className="flex items-center justify-center py-4 flex-1">
+            <div className="flex items-center justify-center py-2 xl:py-4 flex-1">
               <div
                 className="relative flex items-center justify-center"
                 style={{
-                  width: 260,
-                  height: 260,
+                  width: "100%",
+                  maxWidth: 260,
+                  aspectRatio: "1/1",
                   borderRadius: "50%",
                   border: "1px solid rgba(255,255,255,0.05)",
                   background: "rgba(0,0,0,0.3)",
@@ -816,7 +815,7 @@ export default function Hero({ onNavigate }: HeroProps) {
 
           {/* ===================== SECTOR 3 — RIGHT PANEL ===================== */}
           <div
-            className="lg:col-span-3 flex flex-col gap-4 relative overflow-hidden p-6"
+            className="lg:col-span-3 flex flex-col gap-3 xl:gap-4 relative overflow-hidden p-4 xl:p-6"
             style={{
               background: "rgba(0,0,0,0.4)",
               border: "1px solid rgba(255,255,255,0.05)",

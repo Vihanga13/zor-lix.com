@@ -167,6 +167,17 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           white-space: nowrap;
           background: none;
         }
+        @media (max-width: 1535px) {
+          .nb-nav-item {
+            padding: 6px 10px;
+            gap: 4px;
+            font-size: 10px;
+          }
+          .nb-hs-btn {
+            padding: 8px 16px;
+            font-size: 10px;
+          }
+        }
         .nb-nav-item:hover { color: #e5e7eb; border-color: rgba(255,255,255,.07); background: rgba(255,255,255,.03); }
         .nb-nav-item.nb-active { color: #fff; }
         .nb-nav-item .nb-code {
@@ -174,6 +185,11 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
           font-size: 9px;
           color:#4b5563;
           transition:color .15s;
+        }
+        @media (max-width: 1535px) {
+          .nb-nav-item .nb-code {
+            display: none;
+          }
         }
         .nb-nav-item:hover .nb-code,
         .nb-nav-item.nb-active .nb-code { color: #FFAF87; }
@@ -290,8 +306,8 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                 />
               </button>
 
-              {/* ── ZONE 2 · STATUS (xl only) ── */}
-              <div className="hidden xl:flex flex-col justify-center px-4 border-r self-stretch select-none gap-1">
+              {/* ── ZONE 2 · STATUS (2xl only) ── */}
+              <div className="hidden 2xl:flex flex-col justify-center px-4 border-r self-stretch select-none gap-1">
                 <div className="nb-mono text-[7px] text-gray-600 uppercase tracking-[.18em]">MATRIX SEC_STATUS</div>
                 <div className="nb-mono text-[9px] font-bold tracking-widest flex items-center gap-1.5">
                   <span className="nb-ping rounded-full" />
@@ -299,8 +315,8 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                 </div>
               </div>
 
-              {/* ── ZONE 3 · NAV LINKS (lg+) ── */}
-              <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center px-3 py-2 overflow-hidden">
+              {/* ── ZONE 3 · NAV LINKS (xl+) ── */}
+              <nav className="hidden xl:flex items-center gap-0.5 flex-1 justify-center px-1 xl:px-3 py-2 overflow-hidden">
                 {navLinks.map(({ name, id, code, Icon }) => {
                   const isActive = activeSection === id;
                   return (
@@ -340,11 +356,11 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
               {/* ── ZONE 4 · RIGHT CLUSTER ── */}
               <div className="flex items-center flex-shrink-0 ml-auto border-l border-white/[0.06]">
 
-                {/* Calibrate (lg+) */}
+                {/* Calibrate (xl+) */}
                 <button
                   onClick={calibrate}
                   title="Recalibrate"
-                  className="hidden lg:flex self-stretch px-3 items-center justify-center text-gray-600 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer focus:outline-none relative border-r border-white/[0.06]"
+                  className="hidden xl:flex self-stretch px-3 items-center justify-center text-gray-600 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer focus:outline-none relative border-r border-white/[0.06]"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isCalibrating ? "animate-spin text-[#C5E898]" : ""}`} />
                   <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#FFAF87] ring-[3px] ring-black nb-ping text-[#FFAF87]" />
@@ -367,7 +383,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
                   onClick={() => setIsOpen(!isOpen)}
                   aria-label="Toggle Menu"
                   aria-expanded={isOpen}
-                  className="lg:hidden flex self-stretch items-center justify-center px-4 border-l border-white/[0.06] text-gray-300 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer focus:outline-none"
+                  className="xl:hidden flex self-stretch items-center justify-center px-4 border-l border-white/[0.06] text-gray-300 hover:text-white hover:bg-white/[0.04] transition-colors cursor-pointer focus:outline-none"
                 >
                   {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
@@ -385,7 +401,7 @@ export default function Navbar({ onNavigate, activeSection }: NavbarProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ type: "spring", stiffness: 380, damping: 28 }}
-              className="pointer-events-auto w-full mt-2 bg-[#040404]/98 backdrop-blur-2xl border border-white/[0.12] rounded-[20px] shadow-[0_24px_60px_rgba(0,0,0,.95)] lg:hidden z-[110] overflow-hidden nb-grid-bg max-h-[min(70vh,520px)] overflow-y-auto"
+              className="pointer-events-auto w-full mt-2 bg-[#040404]/98 backdrop-blur-2xl border border-white/[0.12] rounded-[20px] shadow-[0_24px_60px_rgba(0,0,0,.95)] xl:hidden z-[110] overflow-hidden nb-grid-bg max-h-[min(70vh,520px)] overflow-y-auto"
             >
               {/* ambient glows */}
               <div className="absolute top-0 right-0 w-48 h-36 bg-[#FFAF87]/5 blur-3xl pointer-events-none" />
