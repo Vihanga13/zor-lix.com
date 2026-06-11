@@ -16,6 +16,7 @@ import ComplianceVault from "./components/ComplianceVault";
 import ZorlixaProduct from "./components/ZorlixaProduct";
 import Footer from "./components/Footer";
 import ChatwootWidget from "./components/ChatwootWidget";
+import CookieBanner from "./components/CookieBanner";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("home");
@@ -142,6 +143,7 @@ export default function App() {
       <Footer onNavigate={handleNavigation} />
 
       <ChatwootWidget />
+      <CookieBanner />
     </div>
   );
 }
